@@ -6,10 +6,6 @@
 	import init from '$lib/stores/socket';
 	import { onMount } from 'svelte';
 
-	let settingsJson;
-	userSettings.subscribe((value) => {
-		settingsJson = value;
-	});
 	onMount(() => {
 		init();
 	});

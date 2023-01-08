@@ -1,13 +1,13 @@
 <script lang="ts">
-	export let currentVideo: any;
-	export let currentSettings: any;
+	import { video } from '$lib/stores/video';
+	import { userSettings } from '$lib/stores/userSettings';
 	import YouTubePlayer from 'youtube-player';
 	import { onMount } from 'svelte';
-	let player;
+	let player: YoutubePlayer;
 
 	onMount(() => {
 		player = YouTubePlayer('player', {
-			videoId: currentVideo.url
+			videoId: $video.url
 		});
 		player
 			// Play video is a Promise.
@@ -20,13 +20,13 @@
 			syncTime();
 			setInterval(function () {
 				syncTime();
-			}, currentSettings.sync.threshold);
+			}, $userSettings.sync.threshold);
 		};
 
 		const syncTime = async () => {
 			let clientTime = await player.getCurrentTime();
-			let serverTime = currentVideo.seekTime;
-			if (Math.abs(clientTime - serverTime) > currentSettings.sync.threshold / 1000) {
+			let serverTime = $video.seekTime;
+			if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000) {
 				player.seekTo(serverTime);
 			}
 		};

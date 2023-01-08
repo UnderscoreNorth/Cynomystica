@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
+	import { blocker } from '$lib/stores/blocker';
 	let inputValue: string;
-	let userObj: any;
-	user.subscribe((value) => {
-		userObj = value;
-	});
 	const handleKeyPress = (e: KeyboardEvent) => {
 		if (e.key == 'Enter' && inputValue.trim().length > 0) {
-			if (!userObj.username.length) {
+			if (!$user.username.length) {
 				io.emit('login-guest', inputValue.trim());
 			} else {
 				io.emit('message', inputValue.trim());
@@ -18,7 +15,7 @@
 	};
 	io.on('name', (message) => {
 		if (message.status == 'success') {
-			userObj.username = message.username;
+			$user.username = message.username;
 			inputValue = '';
 		}
 	});
@@ -26,7 +23,8 @@
 
 <input
 	id="inputBar"
-	placeholder={userObj.username ? '' : 'Enter a username'}
+	placeholder={$user.username ? '' : 'Enter a username'}
+	disabled={$blocker.login}
 	bind:value={inputValue}
 	on:keypress={handleKeyPress}
 />

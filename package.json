@@ -2,6 +2,7 @@
 	"name": "Cynomystica",
 	"version": "0.0.1",
 	"scripts": {
+		"dev-host": "vite dev --host",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -16,6 +17,8 @@
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^1.0.0",
 		"@sveltejs/kit": "^1.0.0",
+		"@types/bcryptjs": "^2.4.2",
+		"@types/better-sqlite3": "^7.6.3",
 		"@types/cookie": "^0.5.1",
 		"@types/youtube-player": "^5.5.6",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -34,6 +37,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"better-sqlite3": "^8.0.1",
 		"get-video-duration": "^4.1.0",
 		"pg": "^8.8.0",
 		"socket.io": "^4.5.4",

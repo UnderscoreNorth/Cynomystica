@@ -8,7 +8,7 @@ export type playlistOrderType = Array<number>;
 export type playlistObjType = Array<object>;
 
 export const sendPlaylist = (
-	socket: Socket | Server,
+	socket: unknown,
 	playlistOrder: playlistOrderType,
 	playlistObj: playlistObjType,
 	playlistIndex: number,

@@ -1,7 +1,7 @@
 export interface MessageType {
 	from: string;
 	message: string;
-	time: string;
+	time: Date;
 }
 export type MessagesType = Array<MessageType>;
 
@@ -12,7 +12,7 @@ export const trimMessages = (messages: MessagesType) => {
 };
 
 export const sendMessage = (
-	socket: any,
+	socket: unknown,
 	username: string,
 	message: string,
 	messages: MessagesType
@@ -20,12 +20,12 @@ export const sendMessage = (
 	const messageObj = {
 		from: username,
 		message: message,
-		time: new Date().toLocaleString()
+		time: new Date()
 	};
 	messages.push(messageObj);
 	socket.emit('message', messageObj);
 };
 
-export const sendLatestMessage = (socket: any, messages: MessagesType) => {
+export const sendLatestMessage = (socket: unknown, messages: MessagesType) => {
 	socket.emit('messages', messages);
 };

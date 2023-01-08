@@ -1,14 +1,10 @@
 <script lang="ts">
 	import { userSettings } from '$lib/stores/userSettings';
 	import Video from './Video.svelte';
-	let settingsJson: any;
-	userSettings.subscribe((value) => {
-		settingsJson = value;
-	});
-	const getVideoCSS = (settingsJson: any) => {
+	const getVideoCSS = () => {
 		let returnValue = '';
-		if (['Chatbar-left', 'Chatbar-right'].includes(settingsJson.chat.display)) {
-			returnValue = settingsJson.video.width;
+		if (['Chatbar-left', 'Chatbar-right'].includes($userSettings.chat.display)) {
+			returnValue = $userSettings.video.width;
 		} else {
 			returnValue = '100vw';
 		}
@@ -16,7 +12,7 @@
 	};
 </script>
 
-<div id="videoContainer" style:width={getVideoCSS(settingsJson)}><Video /></div>
+<div id="videoContainer" style:width={getVideoCSS()}><Video /></div>
 
 <style>
 	#videoContainer {

@@ -6,6 +6,7 @@
 	import MdSettings from 'svelte-icons/md/MdSettings.svelte';
 	import MdViewList from 'svelte-icons/md/MdViewList.svelte';
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
+	import Alert from './Alert.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -15,15 +16,19 @@
 	const togglePlaylist = () => {
 		playListModalOpen = !playListModalOpen;
 	};
+	const dummy = () => {
+
+	}
 </script>
 
 <header>
 	<nav>
 		<div id="siteName">Cynomystica |</div>
-		<div class="svgIcon" on:click={toggleSettings}><MdSettings /></div>
-		<div class="svgIcon" on:click={toggleSettings}><MdPoll /></div>
-		<div class="svgIcon" on:click={togglePlaylist}><MdViewList /></div>
+		<div class="svgIcon" on:click={toggleSettings} on:keypress={dummy}><MdSettings /></div>
+		<div class="svgIcon" on:click={toggleSettings} on:keypress={dummy}><MdPoll /></div>
+		<div class="svgIcon" on:click={togglePlaylist} on:keypress={dummy}><MdViewList /></div>
 		<div id="loginLi"><Login /></div>
+		<Alert></Alert>
 	</nav>
 	{#if userSettingsModalOpen}
 		<UserSettingsContainer closeModal={toggleSettings} />

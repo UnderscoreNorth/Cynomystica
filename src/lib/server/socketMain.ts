@@ -2,13 +2,25 @@ import { Server } from 'socket.io';
 import type { ViteDevServer } from 'vite';
 import * as Playlist from './socketPlaylist';
 import * as Chat from './socketChat';
+
+//SQL imports
+import { db } from './sqliteDB';
+import * as userTable from './sqliteTables/users';
+//import type { Socket } from 'socket.io-client';
+const errorDelay = 100;
+
 const init = (server: ViteDevServer) => {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore
 	const io = new Server(server.httpServer);
 	const interval = 1000;
 	const playlistObj: Playlist.playlistObjType = [];
 	const playlistOrder: Playlist.playlistOrderType = [];
-	const users: any = {};
-	const sockets: any = {};
+	//const users: any = {};
+	const sockets: Array<unknown> = [];
+
+	//SQL init
+	checkTables();
 
 	let playlistIndex = 0;
 	let currentSeekTime = 0;
@@ -36,7 +48,7 @@ const init = (server: ViteDevServer) => {
 		Chat.sendLatestMessage(socket, messages);
 		//Init
 
-		socket.on('disconnect', (reason) => {
+		socket.on('disconnect', () => {
 			console.log('disconnected');
 			delete sockets[socketID];
 			io.emit('connected-users', Object.values(sockets).length);
@@ -46,10 +58,14 @@ const init = (server: ViteDevServer) => {
 			Playlist.sendPlaylist(socket, playlistOrder, playlistObj, playlistIndex, currentSeekTime);
 		});
 		socket.on('login-guest', (message) => {
+			if (userTable.existsUser(message)) {
+				socket.emit('alert', { type: 'login', message: 'Username already taken' });
+				return;
+			}
 			username = message;
-			socket.emit('name', {
-				status: 'success',
-				username: username
+			socket.emit('login', {
+				username: username,
+				accessLevel: 0
 			});
 		});
 
@@ -79,6 +95,29 @@ const init = (server: ViteDevServer) => {
 				currentVideoDuration = 0;
 			}
 			cycle();
+		});
+
+		socket.on('sign-up', async (signUp) => {
+			const result = await userTable.createUser(signUp.username, signUp.password);
+			if (result.pass) {
+				username = signUp.username;
+				socket.emit('login', { username: signUp.username });
+			} else {
+				setTimeout(() => {
+					socket.emit('alert', { type: 'login', message: result.message });
+				}, errorDelay);
+			}
+		});
+		socket.on('sign-in', async (signIn) => {
+			const result = await userTable.authenticateUser(signIn.username, signIn.password);
+			if (result.pass) {
+				username = result.username;
+				socket.emit('login', { username: result.username, accessLevel: 1 });
+			} else {
+				setTimeout(() => {
+					socket.emit('alert', { type: 'login', message: result.message });
+				}, errorDelay);
+			}
 		});
 	});
 	const cycle = () => {
@@ -129,6 +168,18 @@ const init = (server: ViteDevServer) => {
 		cycle();
 	}, interval);
 	console.log('SocketIO injected');
+};
+
+const checkTables = () => {
+	const tableList = [userTable];
+	for (const table of tableList) {
+		const result = db
+			.prepare(`SELECT COUNT(*) as 'count' FROM sqlite_master WHERE name='${table.name}'`)
+			.get();
+		if (result.count == 0) {
+			db.prepare(table.create).run();
+		}
+	}
 };
 
 export default init;

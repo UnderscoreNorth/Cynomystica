@@ -6,6 +6,7 @@ import { playlist } from './playlist';
 import { chat } from './chat';
 import { io } from '$lib/realtime';
 import { users } from './users';
+import { blocker } from './blocker';
 
 const init = () => {
 	let currentChat: Array<object>;
@@ -51,6 +52,20 @@ const init = () => {
 		users.update((n) => {
 			n.connectedUsers = e;
 			return n;
+		});
+	});
+	io.on('login', (e) => {
+		blocker.update((n) => {
+			n.login = false;
+			return n;
+		});
+		console.log(e);
+		user.set({
+			username: e.username,
+			accessLevel: e.accessLevel,
+			icon: '',
+			accessToken: '',
+			refreshToken: ''
 		});
 	});
 };

@@ -1,6 +1,5 @@
 import config from '../../server/config.json';
 const parseYoutube = (mediaURL: string) => {
-	console.log('yeah');
 	return new Promise((resolve, reject) => {
 		try {
 			fetch(
