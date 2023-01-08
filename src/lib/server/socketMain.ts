@@ -62,6 +62,11 @@ const init = (server: ViteDevServer) => {
 				socket.emit('alert', { type: 'login', message: 'Username already taken' });
 				return;
 			}
+			const usernameCheckResults = userTable.usernameCheck(message);
+			if (usernameCheckResults.length) {
+				socket.emit('alert', { type: 'login', message: usernameCheckResults.join('\n') });
+				return;
+			}
 			username = message;
 			socket.emit('login', {
 				username: username,

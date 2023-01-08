@@ -7,18 +7,13 @@
 		if (e.key == 'Enter' && inputValue.trim().length > 0) {
 			if (!$user.username.length) {
 				io.emit('login-guest', inputValue.trim());
+				inputValue = '';
 			} else {
 				io.emit('message', inputValue.trim());
 				inputValue = '';
 			}
 		}
 	};
-	io.on('name', (message) => {
-		if (message.status == 'success') {
-			$user.username = message.username;
-			inputValue = '';
-		}
-	});
 </script>
 
 <input
