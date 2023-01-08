@@ -5,9 +5,10 @@ Cynomystica is named after the prairie dog.
 
 ## Installation
 
-Download this repo
-Fill in src/lib/server.config.json
-Fill in src/lib/clientconfig.json
+- Download this repo
+- Fill in [src/lib/server/config.json](src/lib/server/config.example.json)
+- Fill in [src/lib/clientconfig.json](src/lib/clientconfig.example.json)
+- Open up a terminal and navigate to the repo folder
 
 ```bash
 # Download the dependencies
