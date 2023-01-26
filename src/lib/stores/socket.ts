@@ -50,7 +50,8 @@ const init = () => {
 	});
 	io.on('connected-users', (e) => {
 		users.update((n) => {
-			n.connectedUsers = e;
+			n.connectedUsers = Object.values(e).length;
+			n.users = Object.values(e);
 			return n;
 		});
 	});

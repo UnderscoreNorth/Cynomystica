@@ -7,8 +7,10 @@
 	import type { usersType } from '$lib/stores/users';
 	import ChatBar from './ChatBar.svelte';
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
+	import { user } from '$lib/stores/user';
 	let settingsObj: any;
 	let usersObj: usersType;
+	$: userListOpen = false;
 	userSettings.subscribe((value) => {
 		settingsObj = value;
 	});
@@ -33,15 +35,29 @@
 			width = '100vw';
 		}
 	};
+	const toggleUserList = () => {
+		userListOpen = !userListOpen;
+		console.log(userListOpen);
+	};
 </script>
 
 <div id="chatContainer" style:width>
 	<div id="grid">
 		<div id="chatHeader">
-			<div class="svgIcon"><MdGroup /></div>
-			{usersObj.connectedUsers} connected users
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
+			{$users.connectedUsers} connected users
 		</div>
 		<div id="chatMessages">
+			{#if userListOpen}
+				<div id="userList">
+					Userlist
+					<hr />
+					{#each $users.users as userItem}
+						<div>{userItem.username}</div>
+					{/each}
+				</div>
+			{/if}
 			<table id="chatTable">
 				{#each messages as message}
 					<tr>
@@ -67,6 +83,7 @@
 	#chatHeader {
 		display: flex;
 		line-height: 2em;
+		border-bottom: solid 1px black;
 	}
 	.chatUser {
 		text-align: right;
@@ -107,5 +124,16 @@
 	}
 	#chatMessages {
 		overflow-y: scroll;
+		position: relative;
+	}
+	#userList {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		background: var(--color-bg-dark-3);
+		height: calc(100% - 1em);
+		padding: 0.5em;
+		box-shadow: 4px 0px 4px black, inset 0px 0.5em var(--color-bg-dark-1);
 	}
 </style>

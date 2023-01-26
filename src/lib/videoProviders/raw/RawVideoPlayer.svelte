@@ -11,13 +11,23 @@
 		let clientTime = e.currentTime;
 		let serverTime = $video.seekTime;
 		if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000) {
+			console.log('Syncing');
 			e.currentTime = serverTime;
 		}
+	};
+	const seekLeader = (e: Event) => {
+		console.log(e);
 	};
 </script>
 
 <!-- svelte-ignore a11y-media-has-caption -->
-<video src={`${$video.url}`} on:loadedmetadata={initSyncTime} autoplay controls />
+<video
+	src={`${$video.url}`}
+	on:loadedmetadata={initSyncTime}
+	on:seeked={seekLeader}
+	autoplay
+	controls
+/>
 
 <style>
 	video {

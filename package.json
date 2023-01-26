@@ -1,5 +1,5 @@
 {
-	"name": "Cynomystica",
+	"name": "cynomystica",
 	"version": "0.0.1",
 	"scripts": {
 		"dev-host": "vite dev --host",
@@ -39,8 +39,8 @@
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
 		"better-sqlite3": "^8.0.1",
+		"csv": "^6.2.5",
 		"get-video-duration": "^4.1.0",
-		"pg": "^8.8.0",
 		"socket.io": "^4.5.4",
 		"socket.io-client": "^4.5.4",
 		"svelte-icons": "^2.1.0",

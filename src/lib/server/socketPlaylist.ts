@@ -5,7 +5,10 @@ import parseRawVideo from '../videoProviders/raw/parseRawVideo.server';
 import parseYoutube from '../videoProviders/youtube/parseYoutube.server';
 
 export type playlistOrderType = Array<number>;
-export type playlistObjType = Array<object>;
+export type playlistObjType = Array<playlistItemType>;
+export interface playlistItemType {
+	duration: number;
+}
 
 export const sendPlaylist = (
 	socket: unknown,
@@ -35,7 +38,6 @@ export const queueVideo = async (
 ) => {
 	const parsedURL = parseURL(mediaURL);
 	let playlistItem: any;
-	console.log(parsedURL);
 	switch (parsedURL.type) {
 		case 'raw':
 			playlistItem = await parseRawVideo(parsedURL.id);

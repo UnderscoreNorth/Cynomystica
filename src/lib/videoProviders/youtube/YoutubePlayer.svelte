@@ -27,6 +27,7 @@
 			let clientTime = await player.getCurrentTime();
 			let serverTime = $video.seekTime;
 			if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000) {
+				console.log('Syncing');
 				player.seekTo(serverTime);
 			}
 		};

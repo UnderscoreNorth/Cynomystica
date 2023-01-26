@@ -5,7 +5,7 @@
 
 <table>
 	{#each data.users as user}
-		<tr><td>{user.username}</td><td>{user.dateCreated}</td></tr>
+		<tr><td>{user.username}</td><td>{user.accessLevel}</td><td>{user.dateCreated}</td></tr>
 	{/each}
 </table>
 

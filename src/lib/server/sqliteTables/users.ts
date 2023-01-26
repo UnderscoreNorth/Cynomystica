@@ -5,6 +5,7 @@ export const create = `CREATE TABLE 'users' (
     'username' VARCHAR(20) NOT NULL,
     'email' VARCHAR(100),
     'passwordHash' VARCHAR(100) NOT NULL,
+	'accessLevel' int,
     'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
     PRIMARY KEY ('username')
 );`;
@@ -50,15 +51,17 @@ export const insertUser = (username: string, passwordHash: string) => {
 	if (existsUser(username)) {
 		return { pass: false, message: 'Username already taken.' };
 	}
+	const results = db.prepare(`SELECT COUNT(*) AS 'count' FROM users`).get({ username: username });
+	const access = results.count > 0 ? 0 : 4;
 	db.prepare(
 		`
         INSERT INTO users 
-        (username, email, passwordHash) 
-        VALUES (@username,'',@passwordHash)
+        (username, email, accessLevel, passwordHash) 
+        VALUES (@username,'',${access},@passwordHash)
         ON CONFLICT(username) DO UPDATE SET
             passwordHash = @passwordHash`
 	).run({ username: username, passwordHash: passwordHash });
-	return { pass: true, message: 'User created' };
+	return { pass: true, message: 'User created', accessLevel: access };
 };
 
 export const createUser = async (username: string, password: string) => {
@@ -76,7 +79,9 @@ export const createUser = async (username: string, password: string) => {
 };
 
 export const getUsers = () => {
-	const results = db.prepare(`SELECT username, dateCreated FROM users ORDER BY username`).all();
+	const results = db
+		.prepare(`SELECT username, accessLevel, dateCreated FROM users ORDER BY username`)
+		.all();
 	return results;
 };
 
@@ -91,11 +96,11 @@ export const authenticateUser = async (username: string, password: string) => {
 		return { pass: false, message: 'Invalid username/password' };
 	}
 	const sqlResult = db
-		.prepare(`SELECT username,passwordHash from users where username=@username`)
+		.prepare(`SELECT username,passwordHash, accessLevel from users where username=@username`)
 		.get({ username: username });
 	const passwordCheckResult = await passwordHashCheck(password, sqlResult.passwordHash);
 	if (passwordCheckResult) {
-		return { pass: true, username: sqlResult.username };
+		return { pass: true, username: sqlResult.username, accessLevel: sqlResult.accessLevel };
 	}
 	return { pass: false, message: 'Invalid username/password' };
 };

@@ -13,3 +13,4 @@ vite.config.ts.timestamp-*
 /src/lib/server/config.json
 sqlite.db*
 src/lib/clientconfig.json
+/chatlogs

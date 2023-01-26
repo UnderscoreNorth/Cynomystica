@@ -2,14 +2,16 @@ import { Server } from 'socket.io';
 import type { ViteDevServer } from 'vite';
 import * as Playlist from './socketPlaylist';
 import * as Chat from './socketChat';
+import * as ChatLogger from './chatLogging';
 
 //SQL imports
 import { db } from './sqliteDB';
 import * as userTable from './sqliteTables/users';
+
 //import type { Socket } from 'socket.io-client';
 const errorDelay = 100;
 
-const init = (server: ViteDevServer) => {
+const init = async (server: ViteDevServer) => {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore
 	const io = new Server(server.httpServer);
@@ -25,7 +27,9 @@ const init = (server: ViteDevServer) => {
 	let playlistIndex = 0;
 	let currentSeekTime = 0;
 	let currentVideoDuration = 0;
-	const messages: Chat.MessagesType = [];
+	let startTime = new Date();
+	const recentMessages: Chat.MessagesType = await ChatLogger.getChatFromLog();
+	const unloggedMessages: Chat.MessagesType = [];
 	let lastPlaylist = '';
 	let inCycle = false;
 
@@ -43,15 +47,13 @@ const init = (server: ViteDevServer) => {
 			socket.disconnect();
 		}
 		sockets[socketID] = socket;
-
-		io.emit('connected-users', (await io.fetchSockets()).length);
-		Chat.sendLatestMessage(socket, messages);
+		sendUserList(io);
+		Chat.sendLatestMessage(socket, recentMessages);
 		//Init
-
-		socket.on('disconnect', () => {
+		socket.on('disconnect', async () => {
 			console.log('disconnected');
 			delete sockets[socketID];
-			io.emit('connected-users', Object.values(sockets).length);
+			sendUserList(io);
 		});
 
 		socket.on('get-playlist', () => {
@@ -68,6 +70,9 @@ const init = (server: ViteDevServer) => {
 				return;
 			}
 			username = message;
+			socket.username = username;
+			socket.accessLevel = 0;
+			sendUserList(io);
 			socket.emit('login', {
 				username: username,
 				accessLevel: 0
@@ -75,19 +80,25 @@ const init = (server: ViteDevServer) => {
 		});
 
 		socket.on('queue-next', async (mediaURL: string) => {
-			console.log(mediaURL);
 			await Playlist.queueVideo(mediaURL, playlistObj, playlistOrder, playlistIndex)
 				.then(() => {
 					Playlist.sendPlaylist(io, playlistOrder, playlistObj, playlistIndex, currentSeekTime);
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log('queuevideo', err);
 				});
 		});
 
-		// Receive incoming messages and broadcast them
+		// Receive incoming recentMessages and broadcast them
 		socket.on('message', (message) => {
-			Chat.sendMessage(io, username, message, messages);
+			const messageObj = {
+				from: username,
+				message: message,
+				time: new Date()
+			};
+			recentMessages.push(messageObj);
+			unloggedMessages.push(messageObj);
+			Chat.sendMessage(io, messageObj);
 		});
 
 		socket.on('delete-item', (playlistItem) => {
@@ -98,6 +109,7 @@ const init = (server: ViteDevServer) => {
 			if (itemIndex == playlistIndex) {
 				currentSeekTime = 0;
 				currentVideoDuration = 0;
+				startTime = new Date();
 			}
 			cycle();
 		});
@@ -106,7 +118,10 @@ const init = (server: ViteDevServer) => {
 			const result = await userTable.createUser(signUp.username, signUp.password);
 			if (result.pass) {
 				username = signUp.username;
-				socket.emit('login', { username: signUp.username });
+				socket.username = signUp.username;
+				socket.accessLevel = signUp.accessLevel;
+				sendUserList(io);
+				socket.emit('login', { username: signUp.username, accessLevel: signUp.accessLevel });
 			} else {
 				setTimeout(() => {
 					socket.emit('alert', { type: 'login', message: result.message });
@@ -117,7 +132,10 @@ const init = (server: ViteDevServer) => {
 			const result = await userTable.authenticateUser(signIn.username, signIn.password);
 			if (result.pass) {
 				username = result.username;
-				socket.emit('login', { username: result.username, accessLevel: 1 });
+				socket.username = result.username;
+				socket.accessLevel = result.accessLevel;
+				sendUserList(io);
+				socket.emit('login', { username: result.username, accessLevel: result.accessLevel });
 			} else {
 				setTimeout(() => {
 					socket.emit('alert', { type: 'login', message: result.message });
@@ -129,7 +147,7 @@ const init = (server: ViteDevServer) => {
 		if (!inCycle) {
 			inCycle = true;
 			try {
-				currentSeekTime += interval / 1000;
+				currentSeekTime = Math.abs(new Date().getTime() - startTime.getTime()) / 1000;
 				let currentPlaylist = JSON.stringify([playlistOrder, playlistObj]);
 				if (playlistOrder.length && Object.values(playlistOrder).length) {
 					if (currentSeekTime > currentVideoDuration) {
@@ -145,6 +163,7 @@ const init = (server: ViteDevServer) => {
 							currentVideoDuration = 0;
 						}
 						currentSeekTime = 0;
+						startTime = new Date();
 						Playlist.sendPlaylist(io, playlistOrder, playlistObj, playlistIndex, currentSeekTime);
 					} else {
 						io.emit('seek-update', {
@@ -155,6 +174,7 @@ const init = (server: ViteDevServer) => {
 					currentPlaylist = JSON.stringify([playlistOrder, playlistObj]);
 				} else {
 					currentSeekTime = 0;
+					startTime = new Date();
 					playlistIndex = 0;
 					currentVideoDuration = 0;
 				}
@@ -163,11 +183,12 @@ const init = (server: ViteDevServer) => {
 				}
 				lastPlaylist = currentPlaylist;
 			} catch (err) {
-				console.log(126, err);
+				console.log('cycle', err);
 			} finally {
 				inCycle = false;
 			}
 		}
+		ChatLogger.writeChatToLog(unloggedMessages);
 	};
 	setInterval(function () {
 		cycle();
@@ -185,6 +206,17 @@ const checkTables = () => {
 			db.prepare(table.create).run();
 		}
 	}
+};
+
+const sendUserList = async (io: Server) => {
+	const userList = {};
+	for (let socket of Object.values(await io.sockets.fetchSockets())) {
+		userList[socket.id] = {
+			username: socket.username ?? socket.id,
+			accessLevel: socket.accessLevel ?? 0
+		};
+	}
+	io.emit('connected-users', userList);
 };
 
 export default init;

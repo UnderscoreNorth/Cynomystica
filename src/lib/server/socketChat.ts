@@ -11,19 +11,8 @@ export const trimMessages = (messages: MessagesType) => {
 	}
 };
 
-export const sendMessage = (
-	socket: unknown,
-	username: string,
-	message: string,
-	messages: MessagesType
-) => {
-	const messageObj = {
-		from: username,
-		message: message,
-		time: new Date()
-	};
-	messages.push(messageObj);
-	socket.emit('message', messageObj);
+export const sendMessage = (socket: unknown, message: MessageType) => {
+	socket.emit('message', message);
 };
 
 export const sendLatestMessage = (socket: unknown, messages: MessagesType) => {
