@@ -66,12 +66,16 @@ const init = () => {
 			username: e.username,
 			accessLevel: e.accessLevel,
 			icon: '',
-			accessToken: '',
-			refreshToken: ''
+			accessToken: e.accessToken,
+			refreshToken: e.refreshToken
 		});
+		localStorage.setItem('accessToken', e.accessToken.token);
+		localStorage.setItem('accessTokenExpires', e.accessToken.expires);
+		localStorage.setItem('refreshToken', e.refreshToken.token);
+		localStorage.setItem('refreshTokenExpires', e.refreshToken.expires);
+		localStorage.setItem('username', e.username);
 	});
 	io.on('schedule', (e) => {
-		console.log(e);
 		if (e.status == 'success') {
 			schedule.set(e.schedule);
 		}

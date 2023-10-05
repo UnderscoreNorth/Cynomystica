@@ -54,6 +54,9 @@ io.on("connection", async (socket: socketInterface) => {
       ioEvents[event](socket, msg);
     });
   }
+  socket.on("connection", (socket2) => {
+    console.log("reconnection", socket.username, socket2.username);
+  });
   sendUserList();
   await getSchedule();
 });

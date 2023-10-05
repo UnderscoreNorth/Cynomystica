@@ -7,4 +7,7 @@ export default class {
     'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
     PRIMARY KEY ('username','action','byUser')
 );`;
+  static init = () => {
+    return "";
+  };
 }

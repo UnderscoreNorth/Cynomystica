@@ -4,6 +4,7 @@
 	import MdDelete from 'svelte-icons/md/MdDelete.svelte';
 	export let item: any;
 	export let deleteItem: Function;
+	console.log(item);
 </script>
 
 <tr>

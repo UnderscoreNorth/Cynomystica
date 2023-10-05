@@ -3,9 +3,17 @@ import users from "../sqliteTables/users";
 import userSettings from "../sqliteTables/userSettings";
 import userModeration from "../sqliteTables/userModeration";
 import schedule from "../sqliteTables/schedule";
+import permissions from "../sqliteTables/permissions";
 export default function dbInit() {
-  const tableList = [users, userSettings, userModeration, schedule];
+  const tableList = [
+    users,
+    userSettings,
+    userModeration,
+    schedule,
+    permissions,
+  ];
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
+
   for (const table of tableList) {
     const result = db
       .prepare(
@@ -14,6 +22,7 @@ export default function dbInit() {
       .get();
     if (result.count == 0) {
       db.prepare(table.tableCreate).run();
+      if (table.init()) db.prepare(table.init()).run();
       console.log(table.tableName + " created");
     }
   }

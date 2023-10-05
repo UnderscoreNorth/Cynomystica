@@ -10,6 +10,9 @@ export default class {
 		'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
 		PRIMARY KEY ('username')
 	);`;
+  static init = () => {
+    return "";
+  };
   static usernameCheck = (username: string) => {
     const errorMessages = [];
     if (username.length <= 2) {
@@ -37,7 +40,7 @@ export default class {
   };
 
   static passwordHashCheck = async (input: string, passwordHash: string) => {
-    return await bcrypt.compare(input, passwordHash);
+    return (await bcrypt.compare(input, passwordHash)) ?? false;
   };
 
   static existsUser = (username: string) => {
@@ -107,7 +110,7 @@ export default class {
         .get({ username: username });
       const passwordCheckResult = await this.passwordHashCheck(
         password,
-        sqlResult?.passwordHash
+        sqlResult?.passwordHash ?? ""
       );
       if (passwordCheckResult) {
         return {

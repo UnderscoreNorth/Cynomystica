@@ -1,16 +1,21 @@
 import { writable } from 'svelte/store';
+export interface Token {
+	token: string;
+	username: string;
+	expires: string;
+}
 export interface userType {
 	username: string;
 	accessLevel: number;
 	icon: string;
-	accessToken: string;
-	refreshToken: string;
+	accessToken: Token | undefined;
+	refreshToken: Token | undefined;
 }
 const userObj: userType = {
 	username: '',
 	accessLevel: -1,
 	icon: '',
-	accessToken: '',
-	refreshToken: ''
+	accessToken: undefined,
+	refreshToken: undefined
 };
 export const user = writable(userObj);

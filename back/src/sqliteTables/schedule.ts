@@ -15,6 +15,9 @@ export default class {
         'visible' INT,
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
+  static init = () => {
+    return "";
+  };
   static getAll = (past = false) => {
     let date = past
       ? formatDate(new Date("Jan 1 2000"))

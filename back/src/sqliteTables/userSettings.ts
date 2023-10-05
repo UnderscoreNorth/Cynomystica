@@ -14,4 +14,7 @@ export default class {
     'syncThreshold' INT,    
     PRIMARY KEY ('username','useragent')
 );`;
+  static init = () => {
+    return "";
+  };
 }
