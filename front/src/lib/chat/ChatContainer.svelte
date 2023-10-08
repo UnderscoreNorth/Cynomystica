@@ -8,6 +8,7 @@
 	import ChatBar from './ChatBar.svelte';
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	import { user } from '$lib/stores/user';
+	import {icons} from '$lib/stores/icons';
 	let settingsObj: any;
 	let usersObj: usersType;
 	$: userListOpen = false;
@@ -25,6 +26,7 @@
 
 	onMount(() => {
 		chat.subscribe((value) => {
+			console.log(value);
 			messages = value;
 			let chatMessages = document.getElementById('chatMessages');
 			console.log(chatMessages.scrollTop, chatMessages?.scrollHeight);
@@ -64,14 +66,21 @@
 			<table id="chatTable">
 				{#each messages as message}
 					<tr>
+						<td class='chatIcon'>
+							{#if message.icon && $icons[message.icon]?.url}
+								<img src={'https://implyingrigged.info/' + $icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
+							{/if}
+						</td>
 						<td class="chatTime">
 							[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
 						</td>
-						<td class="chatUser">
-							{message.username}
-						</td>
-						<td class="chatMsg">
-							{message.message}
+						<td >
+							<span class="chatUser">
+								{message.username}: 
+							</span>
+							<span class="chatMsg">
+								{message.message}
+							</span>
 						</td>
 					</tr>
 				{/each}
@@ -90,7 +99,6 @@
 	}
 	.chatUser {
 		text-align: right;
-		border-right: 1px solid black;
 		padding: 0 5px;
 		font-weight: bold;
 		min-width: 10rem;
@@ -98,9 +106,18 @@
 	.chatMsg {
 		width: 100%;
 	}
+	.chatIcon{
+		padding-left:0.5rem;
+	}
+	.chatIcon img{
+		height:1rem;
+		width:1rem;
+	}
 	.chatTime {
 		font-size: 0.7em;
 		padding-left: 5px;
+		
+		border-right: 1px solid black;
 	}
 	#chatTable {
 		border-collapse: collapse;

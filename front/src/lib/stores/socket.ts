@@ -8,6 +8,8 @@ import { io } from '$lib/realtime';
 import { users } from './users';
 import { blocker } from './blocker';
 import { schedule } from './schedule';
+import type { iconList } from './icons';
+import { icons } from './icons';
 
 const init = () => {
 	let currentChat: Array<object>;
@@ -65,6 +67,10 @@ const init = () => {
 			n.users = Object.values(e);
 			return n;
 		});
+	});
+	io.on('icons', (e: iconList) => {
+		console.log(72, e);
+		icons.set(e);
 	});
 	io.on('login', (e) => {
 		blocker.update((n) => {

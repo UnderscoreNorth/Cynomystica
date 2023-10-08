@@ -1,11 +1,15 @@
 import { socketInterface } from "../server/socket";
 import { default as chat } from "../server/chat";
-export default function message(socket: socketInterface, msg: string) {
+interface incomingMessage {
+  icon: string;
+  msg: string;
+}
+export default function message(socket: socketInterface, obj: incomingMessage) {
   const messageObj = {
     username: socket.username,
-    message: msg,
+    message: obj.msg,
+    icon: obj.icon,
     time: new Date(),
   };
-  console.log(9, msg);
   chat().message(messageObj);
 }

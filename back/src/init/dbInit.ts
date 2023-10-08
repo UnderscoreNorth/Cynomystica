@@ -4,6 +4,7 @@ import userSettings from "../sqliteTables/userSettings";
 import userModeration from "../sqliteTables/userModeration";
 import schedule from "../sqliteTables/schedule";
 import permissions from "../sqliteTables/permissions";
+import icons from "../sqliteTables/icons";
 export default function dbInit() {
   const tableList = [
     users,
@@ -11,6 +12,7 @@ export default function dbInit() {
     userModeration,
     schedule,
     permissions,
+    icons,
   ];
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
 

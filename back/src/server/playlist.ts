@@ -83,9 +83,10 @@ class PlayList {
       seekTime: this.currentSeekTime,
     });
   }
-  queueVideo = async (mediaURL: string) => {
+  queueVideo = async (mediaURL: string, username: string) => {
     const id: number = Math.random();
     let playlistItem = await parseURL(mediaURL);
+    playlistItem.username = username;
     this.playlist.push(playlistItem);
   };
   deleteVideo(index: number) {

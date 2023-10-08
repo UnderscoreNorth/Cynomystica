@@ -41,7 +41,7 @@
 			<button on:click={queueNext} disabled={queueNextDisabled || $user.accessLevel < 0}>Queue Next</button>
 			<table>
 				<tr>
-					<th>Controls</th><th style:width="100%">Item</th>
+					<th>Controls</th><th>Item</th><th>End Date</th><th>Added By</th><th>Duration</th>
 				</tr>
 				{#each items as item}
 					<PlaylistItem {item} {deleteItem} />
@@ -59,5 +59,8 @@
 	}
 	table th {
 		color: var(--color-text-dark);
+	}
+	table{
+		width:100%;
 	}
 </style>

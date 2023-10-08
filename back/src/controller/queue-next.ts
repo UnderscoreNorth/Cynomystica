@@ -2,7 +2,7 @@ import { socketInterface } from "../server/socket";
 import { default as playlist } from "../server/playlist";
 export default async function queueNext(socket: socketInterface, message: any) {
   await playlist
-    .queueVideo(message)
+    .queueVideo(message, socket.username)
     .then(() => {
       playlist.send(null);
     })

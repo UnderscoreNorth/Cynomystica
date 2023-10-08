@@ -12,6 +12,7 @@ import {
 } from "./server/socket";
 import { getSchedule } from "./server/schedule";
 import { default as chat } from "./server/chat";
+import Icons from "./sqliteTables/icons";
 
 import message from "./controller/message";
 import deleteItem from "./controller/delete-item";
@@ -60,6 +61,7 @@ io.on("connection", async (socket: socketInterface) => {
   });
   sendUserList();
   chat().getRecent(socket);
+  socket.emit("icons", await Icons.get("default"));
   await getSchedule();
 });
 
