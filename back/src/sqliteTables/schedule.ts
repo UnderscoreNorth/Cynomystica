@@ -12,6 +12,7 @@ export default class {
         'playTimeUTC' DATETIME(20),
         'leeWayBefore' INT,
         'leeWayAfter' INT,
+        'addToPlayList' DATETIME(20),
         'visible' INT,
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
@@ -38,16 +39,20 @@ export default class {
     obj.id = obj.id ?? uuidv4();
     obj.visible = obj.visible ? 1 : 0;
     obj.title = obj.title ?? "";
+    obj.addTo = obj.addTo ?? 60;
+    obj.addTo = formatDate(
+      new Date(new Date(obj.playtime).getTime() + obj.addTo * 600000)
+    );
     obj.playtime = formatDate(new Date(obj.playtime));
 
     await db
       .prepare(
         `
               INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible) 
-              VALUES (@id,@username,@title,@url,@playtime,@leewayBefore,@leewayAfter,@visible)
+              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,addToPlayList) 
+              VALUES (@id,@username,@title,@url,@playtime,@leewayBefore,@leewayAfter,@visible,@addTo)
               ON CONFLICT(id) DO UPDATE SET
-                  playTimeUTC = @playtime`
+                  playTimeUTC = @playtime, addToPlayList=@addTo`
       )
       .run(obj);
   };

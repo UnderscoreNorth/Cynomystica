@@ -11,6 +11,7 @@ import {
   sendUserList,
 } from "./server/socket";
 import { getSchedule } from "./server/schedule";
+import { default as chat } from "./server/chat";
 
 import message from "./controller/message";
 import deleteItem from "./controller/delete-item";
@@ -58,6 +59,7 @@ io.on("connection", async (socket: socketInterface) => {
     console.log("reconnection", socket.username, socket2.username);
   });
   sendUserList();
+  chat().getRecent(socket);
   await getSchedule();
 });
 

@@ -9,10 +9,12 @@ const parseRawVideo = (mediaURL: string) => {
           id: 0,
           name: mediaURL,
           url: mediaURL,
+          startDate: null,
           endDate: null,
-          user: "N/A",
+          username: "N/A",
           duration: duration,
           type: "raw",
+          scheduledID: null,
         });
       });
     } catch (err) {

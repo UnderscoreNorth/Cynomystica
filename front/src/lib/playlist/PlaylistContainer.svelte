@@ -3,6 +3,7 @@
 	import PlaylistItem from './PlaylistItem.svelte';
 	import { playlist } from '$lib/stores/playlist';
 	import { io } from '$lib/realtime';
+	import { user } from '$lib/stores/user';
 	export let closeModal: Function;
 	let items: Array<object> = [];
 	let currentIndex: number = 0;
@@ -14,7 +15,6 @@
 		io.emit('queue-next', mediaURL);
 		queueNextDisabled = true;
 	};
-
 	const deleteItem = async (playlistItem: PlaylistItem) => {
 		io.emit('delete-item', playlistItem);
 	};
@@ -38,7 +38,7 @@
 			<h3>Playlist</h3>
 			<hr />
 			<input bind:value={mediaURL} />
-			<button on:click={queueNext} disabled={queueNextDisabled}>Queue Next</button>
+			<button on:click={queueNext} disabled={queueNextDisabled || $user.accessLevel < 0}>Queue Next</button>
 			<table>
 				<tr>
 					<th>Controls</th><th style:width="100%">Item</th>

@@ -33,8 +33,18 @@ const init = () => {
 	});
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
-			oldChat.push(e);
-			if (oldChat.length > 100) oldChat.splice(0, oldChat.length - 100);
+			const pushMsg = (msg) => {
+				oldChat.push(msg);
+				if (oldChat.length > 100) oldChat.splice(0, oldChat.length - 100);
+			};
+			if (e?.length > 0) {
+				for (let msg of e) {
+					pushMsg(msg);
+				}
+			} else {
+				pushMsg(e);
+			}
+
 			return oldChat;
 		});
 	});

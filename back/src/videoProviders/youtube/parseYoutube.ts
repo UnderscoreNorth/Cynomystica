@@ -27,10 +27,12 @@ const parseYoutube = (mediaURL: string) => {
             id: 0,
             name: item.snippet.title,
             url: mediaURL,
+            startDate: null,
             endDate: null,
-            user: "N/A",
+            username: "N/A",
             duration: duration,
             type: "yt",
+            scheduledID: null,
           });
         } else {
           reject();

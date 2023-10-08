@@ -4,6 +4,7 @@ export default class {
     'username' VARCHAR(20) NOT NULL,
     'title' VARCHAR(512) NOT NULL,
     'url' VARCHAR(512),
+    'permanent' INT NOT NULL,
     'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
 );`;
   static init = () => {

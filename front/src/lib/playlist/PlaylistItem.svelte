@@ -15,8 +15,8 @@
 		</div>
 	</td>
 	<td><a href={item.url} target="_blank" rel="noreferrer">{item.name}</a></td>
-	<td>{item.endDate}</td>
-	<td>{item.user}</td>
+	<td>{new Date(item.endDate).toLocaleTimeString()}</td>
+	<td>{item.username}</td>
 	<td>{secondsToTime(item.duration)}</td>
 </tr>
 

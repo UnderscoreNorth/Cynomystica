@@ -10,6 +10,14 @@ export default class {
 		'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
 		PRIMARY KEY ('username')
 	);`;
+  /*
+  Access Levels
+  -1: Anon
+  0: Guest
+  1: User
+  2: Mod
+  3: Admin
+  */
   static init = () => {
     return "";
   };

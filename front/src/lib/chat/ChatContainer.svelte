@@ -26,6 +26,9 @@
 	onMount(() => {
 		chat.subscribe((value) => {
 			messages = value;
+			let chatMessages = document.getElementById('chatMessages');
+			console.log(chatMessages.scrollTop, chatMessages?.scrollHeight);
+			chatMessages.scrollTop = chatMessages?.scrollHeight
 		});
 	});
 	const getCSS = (settingsObj: any) => {
@@ -48,7 +51,7 @@
 			<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
 			{$users.connectedUsers} connected users
 		</div>
-		<div id="chatMessages">
+		<div id="chatMessages" >
 			{#if userListOpen}
 				<div id="userList">
 					Userlist Last Active
@@ -65,7 +68,7 @@
 							[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
 						</td>
 						<td class="chatUser">
-							{message.from}
+							{message.username}
 						</td>
 						<td class="chatMsg">
 							{message.message}
@@ -119,7 +122,7 @@
 		grid-template-columns: 1fr;
 		grid-template-rows: 2em 1fr 2em 2em;
 		gap: 0px 0px;
-		height: 100%;
+		height: calc(100vh - 2rem);
 		width: 100%;
 	}
 	#chatMessages {

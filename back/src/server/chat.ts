@@ -1,7 +1,8 @@
-import { default as IO } from "./socket";
+import { default as IO, socketInterface } from "./socket";
+import { Server } from "socket.io";
 
 export interface Message {
-  from: string;
+  username: string;
   message: string;
   time: Date;
 }
@@ -15,9 +16,13 @@ export class Chat {
     this.unloggedMsgs = [];
   }
   message(message: Message) {
+    if (this.recentMsgs.length > 100) this.recentMsgs.splice(0, 1);
     this.recentMsgs.push(message);
     this.unloggedMsgs.push(message);
     IO().emit("message", message);
+  }
+  getRecent(socket: Server | socketInterface) {
+    socket.emit("message", this.recentMsgs);
   }
 }
 let chat = new Chat();
