@@ -29,7 +29,6 @@
 			console.log(value);
 			messages = value;
 			let chatMessages = document.getElementById('chatMessages');
-			console.log(chatMessages.scrollTop, chatMessages?.scrollHeight);
 			chatMessages.scrollTop = chatMessages?.scrollHeight
 		});
 	});
@@ -46,7 +45,7 @@
 	};
 </script>
 
-<div id="chatContainer" style:width>
+<div id="chatContainer" style='width:100%'>
 	<div id="grid">
 		<div id="chatHeader">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -65,21 +64,27 @@
 			{/if}
 			<table id="chatTable">
 				{#each messages as message}
-					<tr>
-						<td class='chatIcon'>
-							{#if message.icon && $icons[message.icon]?.url}
-								<img src={'https://implyingrigged.info/' + $icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
-							{/if}
-						</td>
+					<tr class='chatRow'>
+						
 						<td class="chatTime">
 							[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
 						</td>
-						<td >
+						<td style='width:99%'>
+							<span class='chatIcon'>
+								{#if message.icon && $icons[message.icon]?.url}
+									<img src={'https://implyingrigged.info/' + $icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
+								{/if}
+							</span>
 							<span class="chatUser">
 								{message.username}: 
 							</span>
 							<span class="chatMsg">
+								{#if message.message?.[0] == '>'}
+								<span class='greentext'>{message.message}</span>
+								{:else}
 								{message.message}
+								{/if}
+								
 							</span>
 						</td>
 					</tr>
@@ -87,7 +92,6 @@
 			</table>
 		</div>
 		<ChatBar />
-		<div id="chatFooter">Settings</div>
 	</div>
 </div>
 
@@ -99,9 +103,7 @@
 	}
 	.chatUser {
 		text-align: right;
-		padding: 0 5px;
 		font-weight: bold;
-		min-width: 10rem;
 	}
 	.chatMsg {
 		width: 100%;
@@ -109,18 +111,22 @@
 	.chatIcon{
 		padding-left:0.5rem;
 	}
+	.chatRow{
+		font-size:0.9em;
+	}
 	.chatIcon img{
-		height:1rem;
-		width:1rem;
+		height:0.9em;
+		width:0.9em;
 	}
 	.chatTime {
-		font-size: 0.7em;
+		font-size: 0.6em;
 		padding-left: 5px;
 		
 		border-right: 1px solid black;
 	}
 	#chatTable {
 		border-collapse: collapse;
+		width:100%;
 	}
 	#chatTable tr td {
 		line-height: 1rem;
@@ -137,9 +143,9 @@
 	#grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-template-rows: 2em 1fr 2em 2em;
+		grid-template-rows: 2em 1fr 2em;
 		gap: 0px 0px;
-		height: calc(100vh - 2rem);
+		height: 100%;
 		width: 100%;
 	}
 	#chatMessages {

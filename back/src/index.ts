@@ -23,6 +23,7 @@ import queueNext from "./controller/queue-next";
 import signIn from "./controller/sign-in";
 import signUp from "./controller/sign-up";
 import upsertSchedule from "./controller/upsert-schedule";
+import loginToken from "./controller/login-token";
 
 dbInit();
 const app = express();
@@ -41,6 +42,7 @@ const ioEvents = {
   "sign-in": signIn,
   "sign-up": signUp,
   "upsert-schedule": upsertSchedule,
+  "login-token": loginToken,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -61,7 +63,7 @@ io.on("connection", async (socket: socketInterface) => {
   });
   sendUserList();
   chat().getRecent(socket);
-  socket.emit("icons", await Icons.get("default"));
+  socket.emit("icons", await Icons.get("Toradora"));
   await getSchedule();
 });
 

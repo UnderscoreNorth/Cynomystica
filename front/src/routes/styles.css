@@ -133,3 +133,6 @@ button:focus:not(:focus-visible) {
 	background: var(--color-bg-light);
 	border-radius: 3px;
 }
+.greentext {
+	color: #789922;
+}

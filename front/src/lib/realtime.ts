@@ -4,6 +4,6 @@ const ENDPOINT = `${CONFIG.SERVER_URL}${CONFIG.SERVER_PORT ? `:${CONFIG.SERVER_P
 console.log({ ENDPOINT });
 const socket = ioClient(ENDPOINT, { transports: ['websocket'], upgrade: false });
 socket.onAny((eventName, ...args) => {
-	console.log('onany', eventName, args);
+	//console.log('onany', eventName, args);
 });
 export const io = socket;

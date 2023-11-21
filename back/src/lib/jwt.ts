@@ -46,18 +46,22 @@ export async function verify(
 ) {
   //check for debugger key
   if (Config.DEBUG === true) return true;
-  jwt.verify(token, Config.JWT_SALT, function (err, decoded) {
-    if (err) {
-      return false;
-    } else {
-      if (
-        decoded.payload.username != username ||
-        decoded.payload.type != type
-      ) {
+  if (
+    !jwt.verify(token, Config.JWT_SALT, function (err, decoded) {
+      if (err) {
         return false;
+      } else {
+        if (
+          decoded.payload.username != username ||
+          decoded.payload.type != type
+        ) {
+          return false;
+        }
       }
-    }
-  });
+      return true;
+    })
+  )
+    return false;
   if (type == "refresh") {
     await RefreshTokens.check(token).then((result) => {
       if (!result) return false;

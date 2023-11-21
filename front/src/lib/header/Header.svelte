@@ -31,13 +31,16 @@
 		scheduleModalOpen = !scheduleModalOpen;
 	}
 	const dummy = () => {};
+	/*
+	<IconButton Icon={MdPoll} onClick={togglePlaylist} tooltip={'Polls'} />
+	*/
 </script>
 
 <header>
 	<nav>
 		<div id="siteName">Cynomystica |</div>
 		<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
-		<IconButton Icon={MdPoll} onClick={togglePlaylist} tooltip={'Polls'} />
+		
 		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
 		<IconButton
 			Icon={MdSentimentVeryDissatisfied}

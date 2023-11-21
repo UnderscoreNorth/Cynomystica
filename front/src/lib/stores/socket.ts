@@ -12,6 +12,12 @@ import type { iconList } from './icons';
 import { icons } from './icons';
 
 const init = () => {
+	if (localStorage.getItem('username')) {
+		io.emit('login-token', {
+			username: localStorage.getItem('username'),
+			refreshToken: localStorage.getItem('refreshToken')
+		});
+	}
 	let currentChat: Array<object>;
 	chat.subscribe((value) => {
 		currentChat = value;

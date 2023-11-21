@@ -12,7 +12,7 @@
 	};
 </script>
 
-<div id="videoContainer" style:width={getVideoCSS()}><Video /></div>
+<div id="videoContainer" style='width:100%'><Video /></div>
 
 <style>
 	#videoContainer {

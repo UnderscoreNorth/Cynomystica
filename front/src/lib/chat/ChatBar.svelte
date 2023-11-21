@@ -4,7 +4,8 @@
 	import { blocker } from '$lib/stores/blocker';
 	import type { Icon } from '$lib/stores/icons';
 	import { icons} from '$lib/stores/icons';
-	import { browser } from '$app/environment'
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	let inputValue: string;
 	let iconListOpen = false;
 	let selectedIcon = '';
@@ -26,12 +27,13 @@
 	const selectIcon = (icon:any)=>{
 		selectedIcon = icon;
 	}
+	onMount(() => {
 	if(browser){
 		window.addEventListener("click", function(event) {
 			iconListOpen = false;
 		});
 	}
-	
+});
 	
 </script>
 <div id='chatBarContainer'>	
@@ -51,7 +53,7 @@
 	{/if}
 	<input
 	id="inputBar"
-	placeholder={$user.username ? '' : 'Enter a username'}
+	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
 	bind:value={inputValue}
 	on:keypress={handleKeyPress}

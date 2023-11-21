@@ -5,6 +5,7 @@ import userModeration from "../sqliteTables/userModeration";
 import schedule from "../sqliteTables/schedule";
 import permissions from "../sqliteTables/permissions";
 import icons from "../sqliteTables/icons";
+import refreshTokens from "../sqliteTables/refreshTokens";
 export default function dbInit() {
   const tableList = [
     users,
@@ -13,6 +14,7 @@ export default function dbInit() {
     schedule,
     permissions,
     icons,
+    refreshTokens,
   ];
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
 
@@ -23,9 +25,14 @@ export default function dbInit() {
       )
       .get();
     if (result.count == 0) {
-      db.prepare(table.tableCreate).run();
-      if (table.init()) db.prepare(table.init()).run();
-      console.log(table.tableName + " created");
+      try {
+        db.prepare(table.tableCreate).run();
+        if (table.init()) db.prepare(table.init()).run();
+        console.log(table.tableName + " created");
+      } catch (err) {
+        console.log(table.tableName);
+        throw err;
+      }
     }
   }
 }

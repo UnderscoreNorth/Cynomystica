@@ -10,9 +10,27 @@ export default class {
         PRIMARY KEY ('id','preset')
     );`;
   static init = () => {
-    return `INSERT INTO icons (id, display, color, url,preset)
-    VALUES ('3','/3/','#33CCCC','/w/images/4/41/3_icon.png','default'),
-    ('a','/a/','#FF0099','/w/images/3/3a/A_icon.png','default')`;
+    let icons = {
+      Toradora: [
+        ["Taiga", "#000000", "/w/images/3/3a/A_icon.png"],
+        ["Ami", "#000000", "/w/images/3/3a/A_icon.png"],
+        ["Minori", "#000000", "/w/images/3/3a/A_icon.png"],
+        ["Inko", "#000000", "/w/images/3/3a/A_icon.png"],
+        ["Ryuuji", "#000000", "/w/images/3/3a/A_icon.png"],
+        ["Yasuko", "#000000", "/w/images/3/3a/A_icon.png"],
+      ],
+    };
+    let insertText =
+      "INSERT INTO icons (id, display, color, url,preset) VALUES";
+    let insertRows = [];
+    for (let preset in icons) {
+      for (let row of icons[preset]) {
+        insertRows.push(
+          `('${row[0]}','${row[0]}','${row[1]}','${row[2]}','${preset}') `
+        );
+      }
+    }
+    return insertText + insertRows.join(",");
   };
   static get = (preset: string) => {
     const results = db.prepare(`SELECT * FROM icons WHERE preset=@preset`).all({

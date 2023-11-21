@@ -6,7 +6,7 @@ export default class {
       'username' INT NOT NULL,
       'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
       'dateExpires' DATETIME(20) NOT NULL,
-      'dateRevoked' DATETIME(20) DEFAULT NULL
+      'dateRevoked' DATETIME(20) DEFAULT NULL,
       PRIMARY KEY ('token')
   );`;
   static init = () => {
