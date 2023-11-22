@@ -8,9 +8,12 @@ const parseRawVideo = (mediaURL: string) => {
         mediaURL,
         CONFIG.FFPROBE ? CONFIG.FFPROBE : null
       ).then((duration: number) => {
+        let regex = /^.+\/(.+)\.mp4$/;
+        //@ts-ignore
+        let name = decodeURI(mediaURL.match(regex)[1]);
         resolve({
           id: 0,
-          name: mediaURL,
+          name: name,
           url: mediaURL,
           startDate: null,
           endDate: null,

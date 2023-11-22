@@ -26,7 +26,7 @@ export const sendUserList = async () => {
   ) as unknown as socketInterface[]) {
     userList[socket.id] = {
       username: socket.username ?? socket.id,
-      accessLevel: socket.accessLevel ?? 0,
+      accessLevel: socket.accessLevel ?? -1,
     };
   }
   io.emit("connected-users", userList);

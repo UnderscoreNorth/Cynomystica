@@ -51,7 +51,7 @@
 		<div id="chatHeader">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
-			{$users.connectedUsers} connected users
+			{$users.connectedUsers} connected user{$users.connectedUsers > 1 ? 's' : ''}
 		</div>
 		<div id="chatMessages" >
 			{#if userListOpen}
@@ -59,7 +59,9 @@
 					Userlist Last Active
 					<hr />
 					{#each $users.users as userItem}
-						<div>{userItem.username}</div>
+						{#if userItem.accessLevel >= 0}
+							<div>{userItem.username}</div>
+						{/if}
 					{/each}
 				</div>
 			{/if}
