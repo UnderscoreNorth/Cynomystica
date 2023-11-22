@@ -11,7 +11,7 @@ let io: Server | undefined;
 
 export const init = (server: Server) => {
   //@ts-ignore
-  io = new Server(server);
+  io = new Server(server, { path: "/ws" });
   console.log("Socket Server Initialized");
   return io;
 };
