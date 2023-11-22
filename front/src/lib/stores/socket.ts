@@ -91,11 +91,13 @@ const init = () => {
 			accessToken: e.accessToken,
 			refreshToken: e.refreshToken
 		});
-		localStorage.setItem('accessToken', e.accessToken.token);
-		localStorage.setItem('accessTokenExpires', e.accessToken.expires);
-		localStorage.setItem('refreshToken', e.refreshToken.token);
-		localStorage.setItem('refreshTokenExpires', e.refreshToken.expires);
-		localStorage.setItem('username', e.username);
+		if (e.accessLevel >= 1) {
+			localStorage.setItem('accessToken', e.accessToken.token);
+			localStorage.setItem('accessTokenExpires', e.accessToken.expires);
+			localStorage.setItem('refreshToken', e.refreshToken.token);
+			localStorage.setItem('refreshTokenExpires', e.refreshToken.expires);
+			localStorage.setItem('username', e.username);
+		}
 	});
 	io.on('schedule', (e) => {
 		if (e.status == 'success') {

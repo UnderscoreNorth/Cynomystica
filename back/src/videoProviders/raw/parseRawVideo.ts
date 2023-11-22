@@ -1,10 +1,13 @@
 import { getVideoDurationInSeconds } from "get-video-duration";
 import { PlaylistItem } from "../../server/playlist";
-
+import * as CONFIG from "../../../config.json";
 const parseRawVideo = (mediaURL: string) => {
   return new Promise<PlaylistItem>((resolve, reject) => {
     try {
-      getVideoDurationInSeconds(mediaURL).then((duration: number) => {
+      getVideoDurationInSeconds(
+        mediaURL,
+        CONFIG.FFPROBE ? CONFIG.FFPROBE : null
+      ).then((duration: number) => {
         resolve({
           id: 0,
           name: mediaURL,

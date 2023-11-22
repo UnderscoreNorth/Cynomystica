@@ -1,5 +1,6 @@
 import socketLogin from "../lib/socketLogin";
 import { socketInterface, sendUserList } from "../server/socket";
+import * as jwt from "../lib/jwt";
 import users from "../sqliteTables/users";
 export default async function loginGuest(
   socket: socketInterface,
@@ -30,11 +31,15 @@ export default async function loginGuest(
     }, 5000);
     return;
   }
+  let accessToken = jwt.sign(message, "access");
+  let refreshToken = jwt.sign(message, "refresh");
   socket.username = message;
   socket.accessLevel = 0;
   sendUserList();
   socket.emit("login", {
     username: message,
     accessLevel: 0,
+    accessToken,
+    refreshToken,
   });
 }

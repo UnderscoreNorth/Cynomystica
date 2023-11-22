@@ -17,7 +17,7 @@
 <style>
 	#videoContainer {
 		background: black;
-		aspect-ratio: 16/9;
+		height:100%;
 		display: inline-block;
 		vertical-align: top;
 	}

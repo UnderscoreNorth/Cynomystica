@@ -18,31 +18,47 @@
 
 <section id='app'>
 	<c id='cHeader'><Header /></c>
-	<c id='cVideo'><VideoContainer /></c>
-	<c id='cChat'><ChatContainer /></c>
+	<main>
+		<c id='cVideo'><VideoContainer /></c>
+		<c id='cChat'><ChatContainer /></c>
+	</main>
 </section>
 
 <style>
 	#app{
-		position: relative;
-		display: grid;
-		grid-template-columns: 2fr 8fr;
-		grid-template-rows: 2rem 1fr;
-		grid-column-gap: 0px;
-		grid-row-gap: 0px;
 		height:100vh;
+		width:100vw;
+		overflow:hidden;
+	}
+	main{
+		display:flex;
+		height:calc(100vh - 2rem);
 		width:100vw;
 		overflow-y:hidden;
 	}
-	#cHeader { grid-area: 1 / 1 / 2 / 3; }
-	#cChat { grid-area: 2 / 1 / 3 / 2; }
-	#cVideo { grid-area: 2 / 2 / 3 / 3; }
+	#cVideo,#cChat{
+		height:calc(100vh - 2rem);
+	}
+	#cChat{
+		width:23rem;
+		order:1;
+	}
+	#cVideo{
+		width:calc(100vw - 5rem);
+		flex-shrink: 1;
+		flex-grow: 1;
+		order:2;
+	}
 	@media only screen and (max-width: 768px) {
-		#app{
-			display:flex;
+		main{
 			flex-direction: column;
 		}
-		#cChat { flex-grow: 1;}
+		#cChat { flex-grow: 1;order:2;}
+		#cVideo{flex-grow:unset; 
+			flex-shrink: unset;order:1;}
+		#cChat,#cVideo{
+			width:100vw;
+		}
 	}
 
 </style>
