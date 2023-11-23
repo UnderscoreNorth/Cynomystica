@@ -10,13 +10,11 @@ import { blocker } from './blocker';
 import { schedule } from './schedule';
 import type { iconList } from './icons';
 import { icons } from './icons';
+import { login } from '$lib/utilities/login';
 
 const init = () => {
 	if (localStorage.getItem('username')) {
-		io.emit('login-token', {
-			username: localStorage.getItem('username'),
-			refreshToken: localStorage.getItem('refreshToken')
-		});
+		login(localStorage.getItem('username'), localStorage.getItem('refreshToken'), 'token');
 	}
 	let currentChat: Array<object>;
 	chat.subscribe((value) => {

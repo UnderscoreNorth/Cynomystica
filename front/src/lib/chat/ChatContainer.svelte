@@ -20,9 +20,7 @@
 		usersObj = value;
 	});
 	let width: string;
-	$: {
-		getCSS(settingsObj);
-	}
+	
 	let messages: any[] = [];
 
 	onMount(() => {
@@ -33,13 +31,7 @@
 			chatMessages.scrollTop = chatMessages?.scrollHeight
 		});
 	});
-	const getCSS = (settingsObj: any) => {
-		if (['Chatbar-left', 'Chatbar-right'].includes(settingsObj.chat.display)) {
-			width = `calc(100vw - ${settingsObj.video.width} - 2rem)`;
-		} else {
-			width = '100vw';
-		}
-	};
+	
 	const toggleUserList = () => {
 		userListOpen = !userListOpen;
 		console.log(userListOpen);

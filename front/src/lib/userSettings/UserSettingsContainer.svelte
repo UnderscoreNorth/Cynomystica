@@ -2,18 +2,15 @@
 	import { userSettings } from '$lib/stores/userSettings';
 	import { stop_propagation } from 'svelte/internal';
 	export let closeModal: any;
-	let settingsJson: any;
-
-	userSettings.subscribe((value) => {
-		settingsJson = value;
-	});
+	let settingsJson = structuredClone($userSettings);
+	
 	const saveChanges = () => {
 		userSettings.set(settingsJson);
 	};
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="modalbg" on:click={closeModal()}>
+<div class="modalbg" on:click={()=>{settingsJson = structuredClone($userSettings);closeModal()}}>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id="userSettingsContainer">
 		<span
@@ -26,9 +23,8 @@
 			<hr />
 			<table>
 				<tr>
-					<th>Video</th>
-					<td>Video Width</td>
-					<td><input bind:value={settingsJson.video.width} /></td>
+					<th>Video Sync Threshold (ms)</th>
+					<td><input type="number" step=1 bind:value={settingsJson.sync.threshold} /></td>
 				</tr>
 				<button on:click={saveChanges}>Save Changes</button>
 			</table>

@@ -13,7 +13,7 @@
 	const queueNext = async () => {
 		let duration: number = 0;
 		io.emit('queue-next', mediaURL);
-		queueNextDisabled = true;
+		//queueNextDisabled = true;
 	};
 	const deleteItem = async (playlistItem: PlaylistItem) => {
 		io.emit('delete-item', playlistItem);

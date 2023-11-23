@@ -1,15 +1,6 @@
 <script lang="ts">
 	import { userSettings } from '$lib/stores/userSettings';
 	import Video from './Video.svelte';
-	const getVideoCSS = () => {
-		let returnValue = '';
-		if (['Chatbar-left', 'Chatbar-right'].includes($userSettings.chat.display)) {
-			returnValue = $userSettings.video.width;
-		} else {
-			returnValue = '100vw';
-		}
-		return returnValue;
-	};
 </script>
 
 <div id="videoContainer" style='width:100%'><Video /></div>

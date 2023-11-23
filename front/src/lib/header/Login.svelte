@@ -2,12 +2,14 @@
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
 	import { blocker } from '$lib/stores/blocker';
+	import { login } from '$lib/utilities/login';
 	import type { blockerType } from '$lib/stores/blocker';
 	let usernameInput = '';
 	let passwordInput = '';
+	let toggleLogin = true;
 	const signIn = () => {
 		if (usernameInput.length && passwordInput.length) {
-			io.emit('sign-in', { username: usernameInput, password: passwordInput });
+			login(usernameInput,passwordInput,'password');			
 			blocker.update((n: blockerType) => {
 				n.login = true;
 				return n;
@@ -26,23 +28,56 @@
 </script>
 
 <div>
-	{#if $user.username}
-		<span>
-			Signed in as {$user.username}
-			{$user.accessLevel === 0 ? ' (guest)' : ''}
-		</span>
-	{:else}
-		<form>
-			<input type="text" placeholder="Username" bind:value={usernameInput} />
-			<input type="password" placeholder="Password" bind:value={passwordInput} />
-			<button on:click={signIn} disabled={$blocker.login}>Sign In</button>
-			<button on:click={signUp} disabled={$blocker.login}>Sign Up</button>
-		</form>
-	{/if}
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<span id='loginToggle' on:click={()=>{toggleLogin = !toggleLogin}}>Account</span>
+	
+		<div id='loginDiv' style='display:{toggleLogin ? 'block' : 'none' }'>
+			{#if $user.username}
+				<span>
+					Signed in as {$user.username}
+					{$user.accessLevel === 0 ? ' (guest)' : ''}
+				</span>
+			{:else}
+				<form>
+					<input type="text" placeholder="Username" bind:value={usernameInput} />
+					<input type="password" placeholder="Password" bind:value={passwordInput} />
+					<span>
+						<button on:click={signIn} disabled={$blocker.login}>Sign In</button>
+						<button on:click={signUp} disabled={$blocker.login}>Sign Up</button>
+					</span>
+				</form>
+			{/if}
+		</div>
 </div>
 
 <style>
 	input {
 		width: 8rem;
+	}
+	#loginToggle{
+		display:none;
+	}
+	@media only screen and (min-width: 769px) {	
+		#loginDiv{
+			display: block !important;;
+		}
+	}
+	@media only screen and (max-width: 768px) {
+		#loginToggle{
+			display:unset;
+		}
+		#loginDiv{
+			position:fixed;
+			background-color: var(--color-bg-dark-1);
+			left:0;
+			right:0;
+			padding:1rem;
+		}
+		#loginDiv form{
+			display:flex;
+			flex-wrap: wrap;
+			flex-direction: column;
+			align-items: center;
+		}
 	}
 </style>

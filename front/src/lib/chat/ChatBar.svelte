@@ -6,18 +6,18 @@
 	import { icons} from '$lib/stores/icons';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { login } from '$lib/utilities/login';
 	let inputValue: string;
 	let iconListOpen = false;
 	let selectedIcon = '';
 	const handleKeyPress = (e: KeyboardEvent) => {
 		if (e.key == 'Enter' && inputValue.trim().length > 0) {
 			if (!$user.username.length) {
-				io.emit('login-guest', inputValue.trim());
-				inputValue = '';
+				login(inputValue.trim(),'','guest');
 			} else {
 				io.emit('message', {icon:selectedIcon ?? '', msg:inputValue.trim()});
-				inputValue = '';
 			}
+			inputValue = '';
 		}
 	};
 	const toggleIconList = (e:MouseEvent)=>{

@@ -86,6 +86,7 @@ class PlayList {
   queueVideo = async (mediaURL: string, username: string) => {
     const id: number = Math.random();
     let playlistItem = await parseURL(mediaURL);
+    playlistItem.id = id;
     playlistItem.username = username;
     this.playlist.push(playlistItem);
   };
