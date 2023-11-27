@@ -1,3 +1,4 @@
+import { writeChatToLog } from "../lib/chatLogging";
 import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
 
@@ -13,7 +14,7 @@ export class Chat {
   unloggedMsgs: Messages;
   constructor() {
     this.recentMsgs = [];
-    this.unloggedMsgs = [];
+    this.unloggedMsgs = [] as Array<Message>;
   }
   message(message: Message) {
     if (this.recentMsgs.length > 100) this.recentMsgs.splice(0, 1);
@@ -23,6 +24,9 @@ export class Chat {
   }
   getRecent(socket: Server | socketInterface) {
     socket.emit("message", this.recentMsgs);
+  }
+  logMessages() {
+    writeChatToLog(this.unloggedMsgs);
   }
 }
 let chat = new Chat();

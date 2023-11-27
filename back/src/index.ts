@@ -10,7 +10,6 @@ import {
   default as IO,
   sendUserList,
 } from "./server/socket";
-import { getSchedule } from "./server/schedule";
 import { default as chat } from "./server/chat";
 import Icons from "./sqliteTables/icons";
 
@@ -24,6 +23,7 @@ import signIn from "./controller/sign-in";
 import signUp from "./controller/sign-up";
 import upsertSchedule from "./controller/upsert-schedule";
 import loginToken from "./controller/login-token";
+import getSchedule from "./controller/get-schedule";
 
 dbInit();
 const app = express();
@@ -43,6 +43,7 @@ const ioEvents = {
   "sign-up": signUp,
   "upsert-schedule": upsertSchedule,
   "login-token": loginToken,
+  "get-schedule": getSchedule,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -64,7 +65,7 @@ io.on("connection", async (socket: socketInterface) => {
   sendUserList();
   chat().getRecent(socket);
   socket.emit("icons", await Icons.get("Toradora"));
-  await getSchedule();
+  await getSchedule(socket);
 });
 
 server.listen(port, () => {

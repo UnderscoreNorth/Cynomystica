@@ -1,24 +1,14 @@
 import parseRawVideo from "../videoProviders/raw/parseRawVideo";
 import parseYoutube from "../videoProviders/youtube/parseYoutube";
 export default async function parseURL(url: string) {
-  const indeterminable = () => {
-    return new Error(
-      "Could not determine video type. " +
-        "Check https://git.io/fjtOK for a list of supported media providers."
-    );
-  };
-  try {
-    let parsedURL = parseRaw(new URL(url));
-    switch (parsedURL.type) {
-      case "raw":
-        return await parseRawVideo(parsedURL.id);
-      case "yt":
-        return await parseYoutube(parsedURL.id);
-      default:
-        throw "type not accounted for yet";
-    }
-  } catch (err) {
-    throw indeterminable();
+  let parsedURL = parseRaw(new URL(url));
+  switch (parsedURL.type) {
+    case "raw":
+      return await parseRawVideo(parsedURL.id);
+    case "yt":
+      return await parseYoutube(parsedURL.id);
+    default:
+      throw "type not accounted for yet";
   }
 }
 
@@ -38,6 +28,10 @@ const parseRaw = (url: URL) => {
     case "youtu.be":
       return { type: "yt", id: url.pathname.slice(1) || "" };
     default:
-      return { type: "raw", id: url.toString() || "" };
+      if (url.href.match(/^.*\.mp4$/)) {
+        return { type: "raw", id: url.toString() || "" };
+      } else {
+        return { type: "not supported" };
+      }
   }
 };

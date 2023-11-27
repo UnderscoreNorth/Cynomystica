@@ -1,7 +1,7 @@
 import { default as playlist } from "./playlist";
 import { default as IO } from "./socket";
 import schedule from "../sqliteTables/schedule";
-import { writeChatToLog } from "../chatLogging";
+import chat from "./chat";
 
 let inCycle = false;
 let playlistIndex = 0;
@@ -47,7 +47,7 @@ export const cycle = async () => {
       }
     }
   }
-  //writeChatToLog(unloggedMessages);
+  chat().logMessages();
 };
 setInterval(function () {
   cycle();

@@ -22,7 +22,8 @@
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2",
     "ts-node": "^10.9.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",

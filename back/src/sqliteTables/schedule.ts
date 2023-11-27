@@ -1,7 +1,7 @@
 import { db } from "../sqliteDB";
 import { v4 as uuidv4 } from "uuid";
 import formatDate from "../lib/formatDate";
-import { format } from "path";
+
 export default class {
   static tableName = "schedule";
   static tableCreate = `CREATE TABLE 'schedule' (
@@ -14,10 +14,11 @@ export default class {
         'leeWayAfter' INT,
         'addToPlayList' DATETIME(20),
         'visible' INT,
+        'duration' INT,
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
   static init = () => {
-    return "";
+    return `DELETE FROM schedule`;
   };
   static getAll = (past = false) => {
     let date = past
@@ -35,7 +36,7 @@ export default class {
   static upsert = async (username: string, obj: any) => {
     obj.username = username ?? "_North";
     obj.leewayBefore = obj.leewayBefore ?? 0;
-    obj.leewayAfter = obj.leewayAfter ?? 0;
+    obj.leewayAfter = obj.leewayAfter ?? 15;
     obj.id = obj.id ?? uuidv4();
     obj.visible = obj.visible ? 1 : 0;
     obj.title = obj.title ?? "";

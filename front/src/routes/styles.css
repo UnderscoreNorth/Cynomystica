@@ -77,6 +77,10 @@ button {
 	font-size: inherit;
 	font-family: inherit;
 }
+button {
+	background: var(--color-bg-light);
+	border: solid 1px;
+}
 
 button:focus:not(:focus-visible) {
 	outline: none;

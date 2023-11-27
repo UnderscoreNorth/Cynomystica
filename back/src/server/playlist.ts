@@ -83,12 +83,24 @@ class PlayList {
       seekTime: this.currentSeekTime,
     });
   }
-  queueVideo = async (mediaURL: string, username: string) => {
+  queueVideo = async (
+    mediaURL: string,
+    username: string,
+    socket: socketInterface
+  ) => {
     const id: number = Math.random();
-    let playlistItem = await parseURL(mediaURL);
-    playlistItem.id = id;
-    playlistItem.username = username;
-    this.playlist.push(playlistItem);
+    parseURL(mediaURL)
+      .then((playlistItem) => {
+        playlistItem.id = id;
+        playlistItem.username = username;
+        this.playlist.push(playlistItem);
+      })
+      .catch(() => {
+        socket.emit("alert", {
+          type: "queue",
+          message: "Video type not supported",
+        });
+      });
   };
   deleteVideo(index: number) {
     this.playlist.splice(index, 1);

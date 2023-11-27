@@ -14,10 +14,9 @@
 				e.stopPropagation();
 			}}
 		>
-			<h3>Schedule/Manage</h3>
+			<h3>Schedule</h3>
 			<hr />
 			<ViewSchedule />
-            <Manage />
 		</span>
 	</div>
 </div>
