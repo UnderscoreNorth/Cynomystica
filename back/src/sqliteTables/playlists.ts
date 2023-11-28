@@ -13,7 +13,7 @@ export default class {
         'duration' INT,
         'playlist' VARCHAR(100),
         'playcount' INT,
-        'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
+        'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
   static init = () => {
     const cdn = "https://cynomystica.nyc3.cdn.digitaloceanspaces.com/";
