@@ -172,7 +172,7 @@ class PlayList {
           let lastItem = this.playlist[this.playlist.length - 1];
           let diff =
             moment.utc(item.playTimeUTC).diff(moment(lastItem.endDate)) / 1000;
-          if (diff <= 300 && diff > 0) {
+          if (diff <= 300 && diff > 0 && !lastItem.url.includes(item.url)) {
             await this.queuePlaylist({
               mode: "weighted",
               playlist: "Commercials",
