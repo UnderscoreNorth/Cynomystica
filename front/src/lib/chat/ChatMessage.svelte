@@ -10,7 +10,7 @@
     <td style='width:99%'>
         <span class='chatIcon'>
             {#if message.icon && $icons[message.icon]?.url}
-                <img src={'https://implyingrigged.info/' + $icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
+                <img src={$icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
             {/if}
         </span>
         <span class="chatUser">

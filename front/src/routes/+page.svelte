@@ -13,7 +13,7 @@
 
 <svelte:head>
 	<title>Cynomystica</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="description" content="Prairie Dog Streaming" />
 </svelte:head>
 
 <section id='app'>

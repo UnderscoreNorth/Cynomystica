@@ -12,7 +12,8 @@ export default class {
         'url' VARCHAR(512),
         'duration' INT,
         'playlist' VARCHAR(100),
-        'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
+        'playcount' INT,
+        'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
     );`;
   static init = () => {
     const cdn = "https://cynomystica.nyc3.cdn.digitaloceanspaces.com/";
@@ -32,18 +33,20 @@ export default class {
     });
     return "DELETE FROM playlists";
   };
-  static getAll = (past = false) => {
-    let date = past
-      ? formatDate(new Date("Jan 1 2000"))
-      : formatDate(new Date());
+  static getPlaylist = (playlist: string) => {
     const results = db
       .prepare(
-        `SELECT * FROM schedule WHERE playTimeUTC > @date ORDER BY playTimeUTC DESC`
+        `SELECT * FROM playlists WHERE playlist = @playlist ORDER BY playcount, id `
       )
       .all({
-        date,
+        playlist,
       });
     return results;
+  };
+  static updatePlayCount = async (id: string) => {
+    await db
+      .prepare(`UPDATE playlists SET playcount = playcount + 1 WHERE id=@id`)
+      .run({ id });
   };
 
   static insert = async (username: string, playlist: string, obj: any) => {

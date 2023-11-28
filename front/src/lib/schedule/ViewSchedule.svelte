@@ -62,6 +62,8 @@
         width:100%;
         table-layout: fixed;
         border-collapse: collapse;
+        border:1px solid;
+        background:var(--color-bg-light-2);
     }
     td{text-align: center;width:20%;border:1px solid}
 </style>

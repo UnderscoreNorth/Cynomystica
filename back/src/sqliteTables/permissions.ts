@@ -10,13 +10,14 @@ export default class {
     let initPerms = {
       toggleSpam: 2,
       schedule: 2,
-      queueSongs: 1,
       chat: 0,
       createPoll: 2,
       postImage: 1,
       ignore: 0,
       pm: 0,
       userMod: 2,
+      queuePlaylist: 0,
+      managePlaylist: 2,
       togglePlaylist: 2,
     };
     let insertArr = [];
@@ -35,5 +36,13 @@ export default class {
     return await db
       .prepare("SELECT level from permissions WHERE permission=@permission")
       .get({ permission })?.level;
+  };
+  static getAll = async () => {
+    let res = await db.prepare("SELECT * FROM permissions").all();
+    let obj = {};
+    for (let row of res) {
+      obj[row.permission] = row.level;
+    }
+    return obj;
   };
 }

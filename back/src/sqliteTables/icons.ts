@@ -12,12 +12,13 @@ export default class {
   static init = () => {
     let icons = {
       Toradora: [
-        ["Taiga", "#000000", "/w/images/3/3a/A_icon.png"],
-        ["Ami", "#000000", "/w/images/3/3a/A_icon.png"],
-        ["Minori", "#000000", "/w/images/3/3a/A_icon.png"],
-        ["Inko", "#000000", "/w/images/3/3a/A_icon.png"],
-        ["Ryuuji", "#000000", "/w/images/3/3a/A_icon.png"],
-        ["Yasuko", "#000000", "/w/images/3/3a/A_icon.png"],
+        ["", "#000000", ""],
+        ["Taiga", "#000000", "/icons/toradora/taiga.png"],
+        ["Ami", "#000000", "/icons/toradora/ami.png"],
+        ["Minori", "#000000", "/icons/toradora/minori.png"],
+        ["Inko", "#000000", "/icons/toradora/inko.png"],
+        ["Ryuuji", "#000000", "/icons/toradora/ryuuji.png"],
+        ["Yasuko", "#000000", "/icons/toradora/mom.png"],
       ],
     };
     let insertText =

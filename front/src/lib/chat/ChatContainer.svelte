@@ -4,14 +4,16 @@
 	import { onMount } from 'svelte';
 	import { users } from '$lib/stores/users';
 	import { chat } from '$lib/stores/chat';
-	import type { usersType } from '$lib/stores/users';
+	import type { usersType,otherUser } from '$lib/stores/users';
 	import ChatBar from './ChatBar.svelte';
 	import ChatMessage from './ChatMessage.svelte';
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	import { user } from '$lib/stores/user';
+	import OtherUserModal from './OtherUserModal.svelte';
 	
 	let settingsObj: any;
 	let usersObj: usersType;
+	let selectedOtherUser:otherUser;	
 	$: userListOpen = false;
 	userSettings.subscribe((value) => {
 		settingsObj = value;
@@ -22,10 +24,11 @@
 	let width: string;
 	
 	let messages: any[] = [];
-
+	const selectOtherUser = (user:otherUser|null)=>{
+		selectedOtherUser = user;
+	}
 	onMount(() => {
 		chat.subscribe((value) => {
-			console.log(value);
 			messages = value;
 			let chatMessages = document.getElementById('chatMessages');
 			chatMessages.scrollTop = chatMessages?.scrollHeight
@@ -34,7 +37,6 @@
 	
 	const toggleUserList = () => {
 		userListOpen = !userListOpen;
-		console.log(userListOpen);
 	};
 </script>
 
@@ -48,11 +50,18 @@
 		<div id="chatMessages" >
 			{#if userListOpen}
 				<div id="userList">
-					Userlist Last Active
+					Userlist
 					<hr />
 					{#each $users.users as userItem}
 						{#if userItem.accessLevel >= 0}
-							<div>{userItem.username}</div>
+							{#if userItem.username == $user.username || 1==1}
+							<div class='userListItemYou'>{userItem.username}</div>
+							{:else}
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
+							<div class='userListItem' on:click={()=>{selectOtherUser(userItem)}}>{userItem.username}</div>
+							{/if}
+							
+							
 						{/if}
 					{/each}
 				</div>
@@ -64,10 +73,18 @@
 			</table>
 		</div>
 		<ChatBar />
+		{#if selectedOtherUser}
+		<OtherUserModal otherUser={selectedOtherUser} closeModal={selectOtherUser} />
+		{/if}
+		
 	</div>
 </div>
 
 <style>
+	.userListItem:hover{
+		cursor: pointer;
+		text-decoration: underline;
+	}
 	#chatHeader {
 		display: flex;
 		line-height: 2em;
@@ -79,7 +96,7 @@
 		width:100%;
 	}	
 	:global(#chatTable tr:nth-child(2n)) {
-		background: rgba(0, 0, 0, 0.25);
+		background: rgba(0, 0, 0, 0.15);
 	}
 	#chatContainer {
 		background: var(--color-bg-dark-3);

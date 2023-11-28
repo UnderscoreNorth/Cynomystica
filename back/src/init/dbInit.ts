@@ -41,7 +41,8 @@ export default function dbInit() {
         throw err;
       }
     }
-    if (table.tableName == "schedule") {
+    let init = false;
+    if (table.tableName == "schedule" && init) {
       db.prepare(table.init()).run();
       const cdn = "https://cynomystica.nyc3.cdn.digitaloceanspaces.com/";
       fetch(cdn).then(async (res) => {

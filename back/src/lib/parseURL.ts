@@ -2,17 +2,21 @@ import parseRawVideo from "../videoProviders/raw/parseRawVideo";
 import parseYoutube from "../videoProviders/youtube/parseYoutube";
 export default async function parseURL(url: string) {
   let parsedURL = parseRaw(new URL(url));
-  switch (parsedURL.type) {
-    case "raw":
-      return await parseRawVideo(parsedURL.id);
-    case "yt":
-      return await parseYoutube(parsedURL.id);
-    default:
-      throw "type not accounted for yet";
+  try {
+    switch (parsedURL.type) {
+      case "raw":
+        return await parseRawVideo(parsedURL.id);
+      case "yt":
+        return await parseYoutube(parsedURL.id);
+      default:
+        throw "type not accounted for yet";
+    }
+  } catch {
+    throw "type not accounted for yet";
   }
 }
 
-const parseRaw = (url: URL) => {
+export const parseRaw = (url: URL) => {
   switch (url.hostname.replace("www.", "")) {
     case "youtube.com":
       if (url.pathname == "/watch") {

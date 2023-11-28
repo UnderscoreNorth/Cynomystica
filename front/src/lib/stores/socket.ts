@@ -11,11 +11,15 @@ import { schedule } from './schedule';
 import type { iconList } from './icons';
 import { icons } from './icons';
 import { login } from '$lib/utilities/login';
+import { permissions } from './permissions';
 
 const init = () => {
-	if (localStorage.getItem('username')) {
-		login(localStorage.getItem('username'), localStorage.getItem('refreshToken'), 'token');
-	}
+	io.on('connected', () => {
+		if (localStorage.getItem('username')) {
+			login(localStorage.getItem('username'), localStorage.getItem('refreshToken'), 'token');
+		}
+	});
+
 	let currentChat: Array<object>;
 	chat.subscribe((value) => {
 		currentChat = value;
@@ -73,7 +77,6 @@ const init = () => {
 		});
 	});
 	io.on('icons', (e: iconList) => {
-		console.log(72, e);
 		icons.set(e);
 	});
 	io.on('login', (e) => {
@@ -81,7 +84,6 @@ const init = () => {
 			n.login = false;
 			return n;
 		});
-		console.log(e);
 		user.set({
 			username: e.username,
 			accessLevel: e.accessLevel,
@@ -101,6 +103,9 @@ const init = () => {
 		if (e.status == 'success') {
 			schedule.set(e.schedule);
 		}
+	});
+	io.on('permissions', (e) => {
+		permissions.set(e);
 	});
 };
 export default init;

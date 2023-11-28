@@ -5,6 +5,7 @@ export interface socketInterface extends Socket {
   username: string;
   uuid: string;
   accessLevel: number;
+  lastQueue: Date;
 }
 
 let io: Server | undefined;

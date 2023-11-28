@@ -9,7 +9,7 @@
 	let views = [
 		{
 			name:'Ignored Users',
-			minLevel:-1,
+			minLevel:1,
 			function:''
 		},
 		{
@@ -44,11 +44,15 @@
 				e.stopPropagation();
 			}}
 		>
-			<h3>{#each allowedViews as view}
-				<span on:click={()=>{selectedView = view.name}} class='viewButton {view.name == selectedView && 'selected'}'>{view.name}</span>
-			{/each}</h3>
-			<hr />
-			<button>Clear All</button>
+			{#if $user.accessLevel < 1}
+				<h3>A registered account is required</h3>
+			{:else}
+				<h3>{#each allowedViews as view}
+					<span on:click={()=>{selectedView = view.name}} class='viewButton {view.name == selectedView && 'selected'}'>{view.name}</span>
+				{/each}</h3>
+				<hr />
+				<button>Clear All</button>
+			{/if}
 		</span>
 	</div>
 </div>

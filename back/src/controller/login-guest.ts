@@ -28,7 +28,7 @@ export default async function loginGuest(
         type: "login",
         message: "Username already taken",
       });
-    }, 5000);
+    }, 1000);
     return;
   }
   let accessToken = jwt.sign(message.username, "access");

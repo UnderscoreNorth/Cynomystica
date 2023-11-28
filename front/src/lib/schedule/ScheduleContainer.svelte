@@ -2,6 +2,8 @@
 	export let closeModal: any;
     import Manage from "./Manage.svelte";
 	import ViewSchedule from "./ViewSchedule.svelte";
+	import { permissions } from "$lib/stores/permissions";
+	import { user } from "$lib/stores/user";
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -17,6 +19,9 @@
 			<h3>Schedule</h3>
 			<hr />
 			<ViewSchedule />
+			{#if $user.accessLevel >= $permissions.schedule}
+				<Manage />
+			{/if}
 		</span>
 	</div>
 </div>

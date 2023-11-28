@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { permissions } from '$lib/stores/permissions';
 	import PlaylistItem from './PlaylistItem.svelte';
 	import { playlist } from '$lib/stores/playlist';
 	import { io } from '$lib/realtime';
@@ -11,9 +12,12 @@
 	let queueNextDisabled = false;
 
 	const queueNext = async () => {
-		let duration: number = 0;
+		if(mediaURL){
+			let duration: number = 0;
 		io.emit('queue-next', mediaURL);
 		//queueNextDisabled = true;
+		mediaURL = '';
+		}
 	};
 	const deleteItem = async (playlistItem: PlaylistItem) => {
 		io.emit('delete-item', playlistItem);
@@ -35,18 +39,31 @@
 				e.stopPropagation();
 			}}
 		>
-			<h3>Playlist</h3>
+			<h3>
+				Playlist 
+				<input bind:value={mediaURL} 
+				placeholder={
+					$user.accessLevel == -1 && $permissions.queuePlaylist > -1 ? 'Login required' : (
+					$user.accessLevel < $permissions.queuePlaylist ? 'Insufficient Permission': '')}
+				/>
+				<button on:click={queueNext} disabled={queueNextDisabled || $user.accessLevel < $permissions.queuePlaylist}>Queue Next</button>
+			</h3>
 			<hr />
-			<input bind:value={mediaURL} />
-			<button on:click={queueNext} disabled={queueNextDisabled || $user.accessLevel < 0}>Queue Next</button>
-			<table>
-				<tr>
-					<th>Controls</th><th>Item</th><th>End Date</th><th>Added By</th><th>Duration</th>
-				</tr>
-				{#each items as item}
-					<PlaylistItem {item} {deleteItem} />
-				{/each}
-			</table>
+			<div id='tableContainer'>
+				<table>
+					<tr>
+						<th style='width:5rem'>Controls</th>
+						<th>Item</th>
+						<th style='width:7rem'>Start</th>
+						<th style='width:7rem'>Finish</th>
+						<th style='width:5rem'>Duration</th>
+						<th style='width:5rem'>Added By</th>
+					</tr>
+					{#each items as item}
+						<PlaylistItem {item} {deleteItem} />
+					{/each}
+				</table>
+			</div>
 		</span>
 	</div>
 </div>
@@ -59,8 +76,15 @@
 	}
 	table th {
 		color: var(--color-text-dark);
+		position:sticky;
+		top:0;
 	}
 	table{
 		width:100%;
+	}
+	#tableContainer{
+		max-height:60vh;
+		width:100%;
+		overflow-y: scroll;
 	}
 </style>

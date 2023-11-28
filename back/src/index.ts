@@ -24,6 +24,9 @@ import signUp from "./controller/sign-up";
 import upsertSchedule from "./controller/upsert-schedule";
 import loginToken from "./controller/login-token";
 import getSchedule from "./controller/get-schedule";
+import sendPermissions from "./lib/sendPermissions";
+
+import playlist from "./server/playlist";
 
 dbInit();
 const app = express();
@@ -32,6 +35,8 @@ const server = createServer(app);
 // @ts-ignore
 init(server);
 let io = IO();
+//playlist.queuePlaylist({ playlist: "Commercials", duration: 500 });
+
 const ioEvents = {
   "delete-item": deleteItem,
   disconnect: disconnect,
@@ -53,16 +58,21 @@ io.on("connection", async (socket: socketInterface) => {
     socket.request.headers["user-agent"]
   );
   if (!socket.request.headers["user-agent"]) socket.disconnect();
-
+  socket.emit("connected");
   for (let event in ioEvents) {
-    socket.on(event, async (msg) => {
-      ioEvents[event](socket, msg);
-    });
+    try {
+      socket.on(event, async (msg) => {
+        ioEvents[event](socket, msg);
+      });
+    } catch (err) {
+      console.log(socket.username, new Date(), err);
+    }
   }
   socket.on("connection", (socket2) => {
     console.log("reconnection", socket.username, socket2.username);
   });
   sendUserList();
+  sendPermissions(socket);
   chat().getRecent(socket);
   socket.emit("icons", await Icons.get("Toradora"));
   await getSchedule(socket);

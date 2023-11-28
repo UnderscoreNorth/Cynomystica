@@ -1,17 +1,11 @@
 import { default as playlist } from "./playlist";
 import { default as IO } from "./socket";
-import schedule from "../sqliteTables/schedule";
 import chat from "./chat";
 
 let inCycle = false;
-let playlistIndex = 0;
-let currentSeekTime = 0;
-let currentVideoDuration = 0;
-let startTime = new Date();
 let lastPlaylist = "";
 const interval = 1000;
 let beat = 0;
-let currentPlaylist = "";
 function getCurrentPlayList() {
   return JSON.stringify(playlist.playlist);
 }
@@ -38,6 +32,7 @@ export const cycle = async () => {
         playlist.send(IO());
       }
       lastPlaylist = currentPlaylist;
+      chat().logMessages();
     } catch (err) {
       console.log("cycle", err);
     } finally {
@@ -47,7 +42,6 @@ export const cycle = async () => {
       }
     }
   }
-  chat().logMessages();
 };
 setInterval(function () {
   cycle();

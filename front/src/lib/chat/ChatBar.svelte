@@ -39,15 +39,22 @@
 <div id='chatBarContainer'>	
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id='iconSelect' on:click={toggleIconList} >
-		{#if selectedIcon}
-		<img src={'https://implyingrigged.info/' + $icons[selectedIcon].url} alt='icon' />
+		{#if selectedIcon && $icons[selectedIcon]?.url}
+		<img src={$icons[selectedIcon].url} alt='icon' />
 		{/if}
 	</div>
 	{#if iconListOpen}	
 	<div id='iconList'>
 		{#each Object.entries($icons) as [id,icon]}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div on:click={()=>{selectIcon(id)}} class='iconListItem'><img src={'https://implyingrigged.info/' + icon.url} alt='icon' />{icon.display}</div>
+		<div on:click={()=>{selectIcon(id)}} class='iconListItem'>
+			{#if icon.url}
+				<img src={icon.url} alt='icon' />
+			{/if}
+			<span>
+				{icon.display}
+			</span>
+		</div>
 		{/each}
 	</div>
 	{/if}
@@ -71,6 +78,7 @@
 		height:1.8rem;
 		top:0.1rem;
 		z-index: 2;
+		border-right:solid 1px;
 	}
 	#iconList{
 		position:absolute;
@@ -81,7 +89,8 @@
 		background:white;
 	}
 	.iconListItem{
-		vertical-align: middle;
+		display:flex;
+		align-items: center;
 		height:1.8rem
 	}
 	.iconListItem:hover{

@@ -11,12 +11,10 @@
 		let clientTime = e.currentTime;
 		let serverTime = $video.seekTime;
 		if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000) {
-			console.log('Syncing');
 			e.currentTime = serverTime;
 		}
 	};
 	const seekLeader = (e: Event) => {
-		console.log(e);
 	};
 </script>
 

@@ -1,6 +1,7 @@
 import { db } from "../sqliteDB";
 import { v4 as uuidv4 } from "uuid";
 import formatDate from "../lib/formatDate";
+import parseURL from "../lib/parseURL";
 
 export default class {
   static tableName = "schedule";
@@ -20,26 +21,31 @@ export default class {
   static init = () => {
     return `DELETE FROM schedule`;
   };
-  static getAll = (past = false) => {
-    let date = past
-      ? formatDate(new Date("Jan 1 2000"))
-      : formatDate(new Date());
+  static getAll = (date = new Date()) => {
+    let dateString = formatDate(date);
     const results = db
       .prepare(
-        `SELECT * FROM schedule WHERE playTimeUTC > @date ORDER BY playTimeUTC DESC`
+        `SELECT * FROM schedule WHERE playTimeUTC > @date ORDER BY playTimeUTC ASC`
       )
       .all({
-        date,
+        date: dateString,
       });
     return results;
   };
   static upsert = async (username: string, obj: any) => {
+    if (obj.url.includes(" ")) return;
+    if (!obj.url) return;
+
+    await parseURL(obj.url).then((playlistItem) => {
+      obj.title = obj.title ?? playlistItem.name;
+      obj.duration = Math.ceil(playlistItem.duration);
+    });
+
     obj.username = username ?? "_North";
     obj.leewayBefore = obj.leewayBefore ?? 0;
     obj.leewayAfter = obj.leewayAfter ?? 15;
     obj.id = obj.id ?? uuidv4();
     obj.visible = obj.visible ? 1 : 0;
-    obj.title = obj.title ?? "";
     obj.addTo = obj.addTo ?? 60;
     obj.addTo = formatDate(
       new Date(new Date(obj.playtime).getTime() + obj.addTo * 600000)
@@ -50,8 +56,8 @@ export default class {
       .prepare(
         `
               INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,addToPlayList) 
-              VALUES (@id,@username,@title,@url,@playtime,@leewayBefore,@leewayAfter,@visible,@addTo)
+              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,addToPlayList,duration) 
+              VALUES (@id,@username,@title,@url,@playtime,@leewayBefore,@leewayAfter,@visible,@addTo,@duration)
               ON CONFLICT(id) DO UPDATE SET
                   playTimeUTC = @playtime, addToPlayList=@addTo`
       )
