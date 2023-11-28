@@ -77,7 +77,7 @@
 		width:1.8rem;
 		height:1.8rem;
 		top:0.1rem;
-		z-index: 2;
+		z-index: 1;
 		border-right:solid 1px;
 	}
 	#iconList{
@@ -87,6 +87,7 @@
 		max-height:70vh;
 		overflow-y: scroll;
 		background:white;
+		z-index:2;
 	}
 	.iconListItem{
 		display:flex;
