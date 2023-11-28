@@ -16,7 +16,15 @@ export default async function upsertSchedule(
     (await users.getAccessLevel(socket.username)) >=
     (await permissions.get("schedule"))
   ) {
-    await schedule.upsert(socket.username, msg);
-    await getSchedule();
+    try {
+      await schedule.upsert(socket.username, msg);
+      await getSchedule();
+    } catch (err) {
+      console.log(err);
+      socket.emit("alert", {
+        type: "queue",
+        message: "Something is wrong with request",
+      });
+    }
   }
 }

