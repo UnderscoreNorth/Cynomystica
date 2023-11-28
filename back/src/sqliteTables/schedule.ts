@@ -37,7 +37,7 @@ export default class {
     if (!obj.url) return;
 
     await parseURL(obj.url).then((playlistItem) => {
-      obj.title = obj.title ?? playlistItem.name;
+      obj.title = obj.title || playlistItem.name;
       obj.duration = Math.ceil(playlistItem.duration);
     });
 
