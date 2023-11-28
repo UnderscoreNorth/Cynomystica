@@ -30,8 +30,12 @@
 	onMount(() => {
 		chat.subscribe((value) => {
 			messages = value;
-			let chatMessages = document.getElementById('chatMessages');
-			chatMessages.scrollTop = chatMessages?.scrollHeight
+			setTimeout(()=>{
+				let chatMessages = document.getElementById('chatScroller');
+				let parent = document.getElementById('chatMessages');
+				if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight)	
+					chatMessages.scrollTop = chatMessages?.scrollHeight;
+			},50);
 		});
 	});
 	
@@ -66,11 +70,13 @@
 					{/each}
 				</div>
 			{/if}
-			<table id="chatTable">
-				{#each messages as message}
-					<ChatMessage {message} />
-				{/each}
-			</table>
+			<div id='chatScroller'>
+				<table id="chatTable">
+					{#each messages as message}
+						<ChatMessage {message} />
+					{/each}
+				</table>
+			</div>
 		</div>
 		<ChatBar />
 		{#if selectedOtherUser}
@@ -113,17 +119,24 @@
 		width: 100%;
 	}
 	#chatMessages {
-		overflow-y: scroll;
 		position: relative;
+		overflow-y: hidden;
+	}
+	#chatScroller{
+		height:calc(100% - 0.5rem);
+		overflow-y: scroll;
+		padding-bottom:0.5rem;
 	}
 	#userList {
-		position: absolute;
+		position:absolute;
 		top: 0;
 		left: 0;
 		z-index: 1;
 		background: var(--color-bg-dark-3);
+		width:8rem;
 		height: calc(100% - 1em);
 		padding: 0.5em;
 		box-shadow: 4px 0px 4px black, inset 0px 0.5em var(--color-bg-dark-1);
+		overflow-y: scroll;
 	}
 </style>

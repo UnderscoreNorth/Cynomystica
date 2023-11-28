@@ -7,7 +7,7 @@ interface incomingMessage {
 export default function message(socket: socketInterface, obj: incomingMessage) {
   const messageObj = {
     username: socket.username,
-    message: obj.msg,
+    message: obj.msg.substring(0, 500),
     icon: obj.icon,
     time: new Date(),
   };
