@@ -23,8 +23,11 @@
             leewayAfter,
             visible
         }
-        console.log(sendObj);
         io.emit('upsert-schedule',sendObj);
+        url = '';
+        title = '';
+        playtime = null;
+        
     }
 </script>
 <table>

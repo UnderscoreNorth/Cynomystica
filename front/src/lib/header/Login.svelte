@@ -25,6 +25,10 @@
 			});
 		}
 	};
+	const signOut = () => {
+		localStorage.clear();
+		location.reload();
+	}
 </script>
 
 <div>
@@ -36,6 +40,7 @@
 				<span>
 					Signed in as {$user.username}
 					{$user.accessLevel === 0 ? ' (guest)' : ''}
+					<button title='Sign out' on:click={()=>signOut()}>X</button>
 				</span>
 			{:else}
 				<form>
