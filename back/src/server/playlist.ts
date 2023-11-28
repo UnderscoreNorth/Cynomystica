@@ -183,7 +183,7 @@ class PlayList {
           } else {
             if (
               moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 0 &&
-              this.playlist[0].url != item.url
+              !this.playlist[0].url.includes(item.url)
             ) {
               tempPlaylist = structuredClone(this.playlist);
               this.playlist = [];
