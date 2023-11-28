@@ -6,7 +6,7 @@
 	import type { blockerType } from '$lib/stores/blocker';
 	let usernameInput = '';
 	let passwordInput = '';
-	let toggleLogin = true;
+	let toggleLogin = false;
 	const signIn = () => {
 		if (usernameInput.length && passwordInput.length) {
 			login(usernameInput,passwordInput,'password');			

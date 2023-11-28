@@ -27,7 +27,9 @@
 			items = value;
 		});
 	});
+	let innerWidth = 0;
 </script>
+<svelte:window bind:innerWidth />
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="modalbg" on:click={closeModal()}>
@@ -51,6 +53,7 @@
 			<hr />
 			<div id='tableContainer'>
 				<table>
+					{#if innerWidth > 768}
 					<tr>
 						<th style='width:5rem'>Controls</th>
 						<th>Item</th>
@@ -59,6 +62,7 @@
 						<th style='width:5rem'>Duration</th>
 						<th style='width:5rem'>Added By</th>
 					</tr>
+					{/if}
 					{#each items as item}
 						<PlaylistItem {item} {deleteItem} />
 					{/each}
@@ -86,5 +90,11 @@
 		max-height:60vh;
 		width:100%;
 		overflow-y: scroll;
+	}
+	@media only screen and (max-width: 768px) {
+		#playlistContainer{
+			font-size: 0.7rem;
+			width:calc(100vw - 6em);
+		}
 	}
 </style>

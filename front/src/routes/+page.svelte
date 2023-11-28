@@ -61,11 +61,17 @@
 	}
 	@media only screen and (max-width: 768px) {
 		main{
-			flex-direction: column;
+			display:block
 		}
-		#cChat { flex-grow: 1;order:2;}
-		#cVideo{flex-grow:unset; 
-			flex-shrink: unset;order:1;}
+		#cChat {
+			display:block;
+			height:calc(100vh - 2rem - 100vw * 9 / 16)}
+		#cVideo{
+			order:1;
+			display:block;
+			aspect-ratio: 16/9;
+			height:auto;
+		}
 		#cChat,#cVideo{
 			width:100vw;
 		}
