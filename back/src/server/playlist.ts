@@ -172,7 +172,7 @@ class PlayList {
           let lastItem = this.playlist[this.playlist.length - 1];
           let diff =
             moment.utc(item.playTimeUTC).diff(moment(lastItem.endDate)) / 1000;
-          if (diff <= 300 && diff > 0 && !lastItem.url.includes(item.url)) {
+          if (diff <= 300 && diff > 0 && !item.url.includes(lastItem.url)) {
             await this.queuePlaylist({
               mode: "weighted",
               playlist: "Commercials",
@@ -183,7 +183,7 @@ class PlayList {
           } else {
             if (
               moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 0 &&
-              !this.playlist[0].url.includes(item.url)
+              !item.url.includes(this.playlist[0].url)
             ) {
               tempPlaylist = structuredClone(this.playlist);
               this.playlist = [];
