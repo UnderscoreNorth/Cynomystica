@@ -33,6 +33,11 @@
 	const dummy = () => {};
 	/*
 	<IconButton Icon={MdPoll} onClick={togglePlaylist} tooltip={'Polls'} />
+	<IconButton
+			Icon={MdSentimentVeryDissatisfied}
+			onClick={toggleModeration}
+			tooltip={'User Management'}
+		/>
 	*/
 </script>
 
@@ -42,11 +47,7 @@
 		<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
 		
 		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
-		<IconButton
-			Icon={MdSentimentVeryDissatisfied}
-			onClick={toggleModeration}
-			tooltip={'User Management'}
-		/>
+		
 		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
 		<div id="loginLi"><Login /></div>
 		<Alert />
