@@ -19,7 +19,7 @@
 
 <section id='app'>
 	<c id='cHeader'><Header /></c>
-	<main>
+	<main class={$bulletMode ? 'bulletMode' : ''}>
 		<c id={'cVideo' + ($bulletMode ? 'b' : '')}><VideoContainer /></c>
 		<c id={'cChat' + ($bulletMode ? 'b' : '')}><ChatContainer /></c>
 	</main>
@@ -62,6 +62,9 @@
 	@media only screen and (max-width: 768px) {
 		main{
 			display:block
+		}
+		main.bulletMode{
+			display:flex;
 		}
 		#cChat {
 			display:block;
