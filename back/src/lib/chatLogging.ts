@@ -6,7 +6,7 @@ export const writeChatToLog = (messages: Messages) => {
   if (messages.length) {
     const date = messages[0].time;
     const path = `./chatlogs/${date.getFullYear()}/${date.getMonth() + 1}/`;
-    const fileName = `${date.getDay()}.csv`;
+    const fileName = `${date.getDate()}.csv`;
     createFolder(path);
     csv.stringify(messages, { header: false }, (err, output) => {
       fs.appendFile(path + fileName, output, (err) => {

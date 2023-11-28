@@ -17,7 +17,7 @@ export class Chat {
     this.unloggedMsgs = [] as Array<Message>;
   }
   message(message: Message) {
-    if (this.recentMsgs.length > 100) this.recentMsgs.splice(0, 1);
+    if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
     this.recentMsgs.push(message);
     this.unloggedMsgs.push(message);
     IO().emit("message", message);

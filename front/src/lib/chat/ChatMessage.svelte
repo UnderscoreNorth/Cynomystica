@@ -1,9 +1,10 @@
 <script lang='ts'>
     export let message:any;
     import {icons} from '$lib/stores/icons';
+    import { bulletMode } from '$lib/stores/bulletmode';
 </script>
 {#if message?.username}
-<tr class='chatRow'>						
+<tr class={$bulletMode ? 'chatRow bulletMode' : 'chatRow'}>						
     <td class="chatTime">
         [{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
     </td>
@@ -22,7 +23,6 @@
             {:else}
             {message.message}
             {/if}
-            
         </span>
     </td>
 </tr>

@@ -11,6 +11,9 @@
 	let iconListOpen = false;
 	let selectedIcon = '';
 	const handleKeyPress = (e: KeyboardEvent) => {
+		if(e.key == 'Tab'){
+			e.preventDefault();
+		}
 		if (e.key == 'Enter' && inputValue.trim().length > 0) {
 			if (!$user.username.length) {
 				login(inputValue.trim(),'','guest');
@@ -63,7 +66,7 @@
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
 	bind:value={inputValue}
-	on:keypress={handleKeyPress}
+	on:keydown={handleKeyPress}
 />
 </div>
 <style>

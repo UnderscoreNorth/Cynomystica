@@ -10,6 +10,8 @@
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	import { user } from '$lib/stores/user';
 	import OtherUserModal from './OtherUserModal.svelte';
+	import { bulletMode } from '$lib/stores/bulletmode';
+	import BulletMessage from './BulletMessage.svelte';
 	
 	let settingsObj: any;
 	let usersObj: usersType;
@@ -24,18 +26,39 @@
 	let width: string;
 	
 	let messages: any[] = [];
+	let bulletMessages: Record<string,any> = {};
 	const selectOtherUser = (user:otherUser|null)=>{
 		selectedOtherUser = user;
 	}
+	let bulletHeight = 0;
 	onMount(() => {
 		chat.subscribe((value) => {
 			messages = value;
-			setTimeout(()=>{
-				let chatMessages = document.getElementById('chatScroller');
-				let parent = document.getElementById('chatMessages');
-				if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight)	
-					chatMessages.scrollTop = chatMessages?.scrollHeight;
-			},50);
+			if($bulletMode){
+				for(let message of messages){
+					if(!message.played){
+						message.played = true;
+						let id = Math.random().toString();
+						
+						message.bulletHeight = bulletHeight;
+						bulletHeight += 2;
+						if(bulletHeight > 90)
+						bulletHeight = 0;
+						bulletMessages[id] = message;
+						setTimeout(()=>{
+							delete bulletMessages[id];
+							bulletMessages = bulletMessages;
+						},15000)
+					}
+				}
+			} else {
+				setTimeout(()=>{
+					let chatMessages = document.getElementById('chatScroller');
+					let parent = document.getElementById('chatMessages');
+					if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight)	
+						chatMessages.scrollTop = chatMessages?.scrollHeight;
+				},50);
+			}
 		});
 	});
 	
@@ -44,7 +67,7 @@
 	};
 </script>
 
-<div id="chatContainer" style='width:100%'>
+<div class="chatContainer" id={$bulletMode ? 'chatContainerb' : ''} style='width:100%'>
 	<div id="grid">
 		<div id="chatHeader">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -52,6 +75,13 @@
 			{$users.connectedUsers} connected user{$users.connectedUsers > 1 ? 's' : ''}
 		</div>
 		<div id="chatMessages" >
+			{#if $bulletMode}
+				{#if bulletMessages}
+					{#each Object.values(bulletMessages) as message}
+						<BulletMessage {message} />
+					{/each}
+				{/if}
+			{:else}
 			{#if userListOpen}
 				<div id="userList">
 					Userlist
@@ -64,8 +94,6 @@
 							<!-- svelte-ignore a11y-click-events-have-key-events -->
 							<div class='userListItem' on:click={()=>{selectOtherUser(userItem)}}>{userItem.username}</div>
 							{/if}
-							
-							
 						{/if}
 					{/each}
 				</div>
@@ -77,6 +105,7 @@
 					{/each}
 				</table>
 			</div>
+			{/if}
 		</div>
 		<ChatBar />
 		{#if selectedOtherUser}
@@ -104,12 +133,15 @@
 	:global(#chatTable tr:nth-child(2n)) {
 		background: rgba(0, 0, 0, 0.15);
 	}
-	#chatContainer {
+	:global(#chatContainerb #chatTable tr:nth-child(2n)) {
+		background: none;
+	}
+	.chatContainer {
 		background: var(--color-bg-dark-3);
 		height: 100%;
 		display: inline-block;
 		vertical-align: top;
-	}
+	}	
 	#grid {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -126,7 +158,9 @@
 		height:calc(100% - 0.5rem);
 		overflow-y: scroll;
 		padding-bottom:0.5rem;
+		overflow-x: hidden;
 	}
+
 	#userList {
 		position:absolute;
 		top: 0;
@@ -138,5 +172,20 @@
 		padding: 0.5em;
 		box-shadow: 4px 0px 4px black, inset 0px 0.5em var(--color-bg-dark-1);
 		overflow-y: scroll;
+	}
+
+	#chatContainerb{
+		background:none;
+	}
+	#chatContainerb #chatHeader{
+		border:none;
+	}
+
+	#chatContainerb #chatScroller::-webkit-scrollbar {
+		display: none;
+	}
+	#chatContainerb #chatScroller {
+		-ms-overflow-style: none;  /* IE and Edge */
+		scrollbar-width: none;  /* Firefox */
 	}
 </style>

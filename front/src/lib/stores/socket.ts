@@ -44,6 +44,7 @@ const init = () => {
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
 			const pushMsg = (msg) => {
+				msg.played = false;
 				oldChat.push(msg);
 				if (oldChat.length > 100) oldChat.splice(0, oldChat.length - 100);
 			};

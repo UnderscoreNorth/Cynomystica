@@ -6,6 +6,7 @@
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
 	import Alert from './Alert.svelte';
+	import { bulletMode } from '$lib/stores/bulletmode';
 
 	import IconButton from '$lib/ui/iconButton.svelte';
 	import MdPoll from 'svelte-icons/md/MdPoll.svelte';
@@ -13,6 +14,7 @@
 	import MdViewList from 'svelte-icons/md/MdViewList.svelte';
 	import MdSentimentVeryDissatisfied from 'svelte-icons/md/MdSentimentVeryDissatisfied.svelte';
 	import MdDateRange from 'svelte-icons/md/MdDateRange.svelte';
+	import MdClearAll from 'svelte-icons/md/MdClearAll.svelte'
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -29,6 +31,9 @@
 	};
 	const toggleSchedule = () =>{
 		scheduleModalOpen = !scheduleModalOpen;
+	}
+	const toggleBulletMode = ()=>{
+		bulletMode.set(!$bulletMode);
 	}
 	const dummy = () => {};
 	/*
@@ -49,6 +54,7 @@
 		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
 		
 		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
+		<IconButton Icon={MdClearAll} onClick={toggleBulletMode} tooltip={'Fullscreen Bullet Mode'} />
 		<div id="loginLi"><Login /></div>
 		<Alert />
 	</nav>
