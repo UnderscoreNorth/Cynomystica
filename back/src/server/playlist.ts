@@ -157,7 +157,7 @@ class PlayList {
     cycle();
   }
   checkSchedule = async () => {
-    let scheduled = await schedule.getAll(new Date(Date.now() - 60000));
+    let scheduled = await schedule.getAll(new Date(Date.now() - 5000));
     let nextScheduled = scheduled[0];
     if (nextScheduled) {
       let tempPlaylist = [];
@@ -181,10 +181,8 @@ class PlayList {
             });
             await this.queueVideo(item.url, item.username, null);
           } else {
-            if (
-              moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 0 &&
-              !item.url.includes(this.playlist[0].url)
-            ) {
+            let diff = moment.utc(item.playTimeUTC).diff(moment()) / 1000;
+            if (diff <= 0 && !item.url.includes(this.playlist[0].url)) {
               tempPlaylist = structuredClone(this.playlist);
               this.playlist = [];
               await this.queueVideo(item.url, item.username, null);
