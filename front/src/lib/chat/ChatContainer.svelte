@@ -11,7 +11,7 @@
 	import { user } from '$lib/stores/user';
 	import OtherUserModal from './OtherUserModal.svelte';
 	import { bulletMode } from '$lib/stores/bulletmode';
-	import BulletMessage from './BulletMessage.svelte';
+	import { browser } from '$app/environment';
 	
 	let settingsObj: any;
 	let usersObj: usersType;
@@ -31,6 +31,9 @@
 		selectedOtherUser = user;
 	}
 	let bulletHeight = 0;
+	let chatMessageElem:HTMLElement|null;
+	if(browser)
+		chatMessageElem = document.getElementById('chatMessages');
 	onMount(() => {
 		chat.subscribe((value) => {
 			messages = value;
@@ -38,16 +41,16 @@
 				for(let message of messages){
 					if(!message.played){
 						message.played = true;
-						let id = Math.random().toString();
-						
-						message.bulletHeight = bulletHeight;
+						let bulletMessage = document.createElement('div');
+						bulletMessage.innerText = message.message;
+						bulletMessage.classList.add('bulletText');
+						bulletMessage.style.top = `calc(2rem + ${bulletHeight}vh)`;
+						chatMessageElem?.appendChild(bulletMessage);
 						bulletHeight += 2;
-						if(bulletHeight > 90)
+						if(bulletHeight > 80)
 						bulletHeight = 0;
-						bulletMessages[id] = message;
 						setTimeout(()=>{
-							delete bulletMessages[id];
-							bulletMessages = bulletMessages;
+							bulletMessage.remove();
 						},15000)
 					}
 				}
@@ -75,33 +78,27 @@
 			{$users.connectedUsers} connected user{$users.connectedUsers > 1 ? 's' : ''}
 		</div>
 		<div id="chatMessages" >
-			{#if $bulletMode}
-				{#if bulletMessages}
-					{#each Object.values(bulletMessages) as message}
-						<BulletMessage {message} />
-					{/each}
+			{#if !$bulletMode}
+				{#if userListOpen}
+					<div id="userList">
+						Userlist
+						<hr />
+						{#each $users.users as userItem}
+							{#if userItem.accessLevel >= 0}
+								<div class='userListItem' accessLevel={userItem.accessLevel}>
+									{userItem.username}
+								</div>
+							{/if}
+						{/each}
+					</div>
 				{/if}
-			{:else}
-			{#if userListOpen}
-				<div id="userList">
-					Userlist
-					<hr />
-					{#each $users.users as userItem}
-						{#if userItem.accessLevel >= 0}
-							<div class='userListItem' accessLevel={userItem.accessLevel}>
-								{userItem.username}
-							</div>
-						{/if}
-					{/each}
+				<div id='chatScroller'>
+					<table id="chatTable">
+						{#each messages as message}
+							<ChatMessage {message} />
+						{/each}
+					</table>
 				</div>
-			{/if}
-			<div id='chatScroller'>
-				<table id="chatTable">
-					{#each messages as message}
-						<ChatMessage {message} />
-					{/each}
-				</table>
-			</div>
 			{/if}
 		</div>
 		<ChatBar />
@@ -184,4 +181,31 @@
 		-ms-overflow-style: none;  /* IE and Edge */
 		scrollbar-width: none;  /* Firefox */
 	}
+
+	:global(.bulletText){
+        animation:textScrollAnim 15s linear 1;
+        animation-fill-mode: forwards;
+        font-size:1.2rem;
+        font-weight: bold;
+        position:fixed;
+        z-index: 10;        
+        text-shadow:
+	-1px -1px 0 white,
+	1px -1px 0 white,
+	-1px 1px 0 white,
+	1px 1px 0 white;
+    text-wrap: nowrap;
+    }
+    @keyframes textScrollAnim {
+        0% {
+            left:100vw;
+        }
+        99% {
+            left:-10vw;
+        }
+        100%{
+            left:-10vw;
+            display:none!important;
+        }
+    }
 </style>
