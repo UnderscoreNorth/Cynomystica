@@ -88,12 +88,9 @@
 					<hr />
 					{#each $users.users as userItem}
 						{#if userItem.accessLevel >= 0}
-							{#if userItem.username == $user.username || 1==1}
-							<div class='userListItemYou'>{userItem.username}</div>
-							{:else}
-							<!-- svelte-ignore a11y-click-events-have-key-events -->
-							<div class='userListItem' on:click={()=>{selectOtherUser(userItem)}}>{userItem.username}</div>
-							{/if}
+							<div class='userListItem' accessLevel={userItem.accessLevel}>
+								{userItem.username}
+							</div>
 						{/if}
 					{/each}
 				</div>
@@ -116,9 +113,8 @@
 </div>
 
 <style>
-	.userListItem:hover{
-		cursor: pointer;
-		text-decoration: underline;
+	.userListItem[accessLevel="0"]{
+		font-style: italic;
 	}
 	#chatHeader {
 		display: flex;

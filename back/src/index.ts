@@ -54,7 +54,7 @@ io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
   console.log(
     "new connection",
-    socket.handshake.address,
+    socket.handshake.headers["x-real-ip"],
     socket.request.headers["user-agent"]
   );
   if (!socket.request.headers["user-agent"]) socket.disconnect();

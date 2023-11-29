@@ -6,30 +6,44 @@
     let date = moment().startOf('day');
     let week = [] as Array<Moment>;
     let scheduleArray = [];
-    let scheduleObject = [];
-    io.emit('get-schedule');    
+    let timeSet = new Set();
+    let minSplit = 0;
+    let maxSplit = 1000;
+    io.emit('get-schedule');  
+    const splitToTime = (split:number)=>{
+        let hour = Math.floor(split / 60).toString().padStart(2,'0');
+        let minute = (split % 60).toString().padStart(2,'0');   
+        return `${hour}:${minute}`;
+    }  
     const getSchedule = ()=>{
         week = [];
-        scheduleArray = new Array(288);
-        scheduleObject = new Array();
+        scheduleArray = [];
+        timeSet = new Set();
+        minSplit = 1500;
+        maxSplit = 0;
         for(let i = 0; i<7;i++){
             week.push(date.clone().add(i,'days'));      
         }
         for(let item of $schedule){
             let itemMoment = moment.utc((item.playTimeUTC)).local();        
             let diff = Math.floor(itemMoment.diff(date)/86400000);
-            if(diff < 7){
-                let minute = Math.floor((parseInt(itemMoment.format('H')) * 60 + parseInt(itemMoment.format('m'))) / 5);
-                scheduleArray[minute] = scheduleArray[minute] || ['','','','','','',''];
-                scheduleArray[minute][diff] = item.title;
+            if(diff < 7 && diff >= 0){
+                let startingSplit = Math.floor((parseInt(itemMoment.format('H')) * 60 + parseInt(itemMoment.format('m'))));
+                let endingMinute = itemMoment.clone().add(item.duration,'s');
+                let endingSplit = Math.floor((parseInt(endingMinute.format('H')) * 60 + parseInt(endingMinute.format('m'))))+1;
+                let gridArea = `${startingSplit}/${diff+2}/${endingSplit}/${diff+3}`;
+                scheduleArray.push({
+                    title:item.title,
+                    gridArea
+                })
+                if(startingSplit < minSplit)
+                    minSplit = startingSplit;   
+                if(endingSplit > maxSplit)
+                    maxSplit = endingSplit;
             }
         }
-        for(let minuteShort in scheduleArray){
-            let hour = Math.floor(parseInt(minuteShort) * 5 / 60).toString().padStart(2,'0');
-            let minute = (parseInt(minuteShort) * 5 % 60).toString().padStart(2,'0');   
-            if(scheduleArray[minuteShort]?.length > 0){
-                scheduleObject.push([`${hour}:${minute}`,...scheduleArray[minuteShort]]);
-            }
+        for(let i = minSplit;i<maxSplit;i++){
+            timeSet.add(i);
         }
     }
     const moveDate = (int:number) =>{
@@ -40,30 +54,62 @@
         getSchedule();
     })
 </script>
-<table>
-    <tr>
-        <th style='width:4rem'><button on:click={()=>{moveDate(-1)}}>{`<`}</button><button on:click={()=>{moveDate(1)}}>{`>`}</button></th>
-        {#each week as day}
-            <th>{day.format('ddd DD')}</th>
-        {/each}
-    </tr>        
-    {#if scheduleObject.length > 0}
-        {#each scheduleObject as row}
-        <tr>
-            {#each row as td}
-                <td>{td}</td>
-            {/each}
-        </tr>
-        {/each}
-    {/if}        
-</table>
-<style>
-    table{
+<div id='scheduleGrid'>
+    <div class='scheduleHeader' style='grid-area:1/1/2/2'>
+        <span>
+            <button on:click={()=>{moveDate(-1)}}>{`<`}</button>
+            <button on:click={()=>{moveDate(1)}}>{`>`}</button>
+        </span>
+    </div>
+    {#each week as day,i}
+        <div class='scheduleHeader' style={`grid-area:1/${i+2}/2/${i+3};font-weight:bold`}
+        >{day.format('ddd DD')}</div>
+    {/each}
+    {#each scheduleArray as item}
+    <div style={`grid-area:${item.gridArea}`}>
+        {item.title}
+    </div>
+    {/each}
+    {#each Array.from(timeSet) as item}
+    <div class='scheduleTime' style={`grid-area:${item}/1/${item+1}/2`}>
+        {#if item % 5 == 0} 
+            {splitToTime(item)}
+        {/if}
+    </div>
+    {/each}
+</div>
+<style> 
+    #scheduleGrid{
+        display: grid;
         width:100%;
-        table-layout: fixed;
-        border-collapse: collapse;
-        border:1px solid;
         background:var(--color-bg-light-2);
+        grid-template-columns:4rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows:repeat(1500,1);
+        grid-column-gap: 0;
+        grid-row-gap: 0;
+        max-height:calc(100vh - 12rem);
+        overflow-y: scroll;
+        padding-bottom:1px;
     }
-    td{text-align: center;width:20%;border:1px solid}
+    #scheduleGrid div{
+        display:flex;
+        justify-content: center;
+        align-content: center;
+        text-align: center;
+        flex-direction: column;
+        border:1px solid;
+        margin-left:-1px;
+        margin-bottom:-1px;
+        font-size:0.8rem;
+    }
+    .scheduleHeader{
+        position:sticky;
+        top:0;
+        background:inherit;
+    }
+    .scheduleTime{
+        font-size:0.6rem!important;
+        min-height:4px;
+        border:none!important;
+    }
 </style>

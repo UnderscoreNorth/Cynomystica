@@ -5,7 +5,7 @@ import type { videoType } from './video';
 import { playlist } from './playlist';
 import { chat } from './chat';
 import { io } from '$lib/realtime';
-import { users } from './users';
+import { users, type otherUser } from './users';
 import { blocker } from './blocker';
 import { schedule } from './schedule';
 import type { iconList } from './icons';
@@ -72,8 +72,16 @@ const init = () => {
 	});
 	io.on('connected-users', (e) => {
 		users.update((n) => {
+			const usersArr: Array<otherUser> = Object.values(e);
+			usersArr.sort((a, b) => {
+				if (a.accessLevel < b.accessLevel) return 1;
+				if (a.accessLevel > b.accessLevel) return -1;
+				if (a.username > b.username) return 1;
+				if (a.username < b.username) return -1;
+				return 0;
+			});
 			n.connectedUsers = Object.values(e).length;
-			n.users = Object.values(e);
+			n.users = usersArr;
 			return n;
 		});
 	});
