@@ -9,9 +9,7 @@ export default async function queueNext(socket: socketInterface, message: any) {
   }
   await playlist
     .queueVideo(message, socket.username, socket)
-    .then(() => {
-      playlist.send(null);
-    })
+    .then(() => {})
     .catch((err) => {
       console.log("queuevideo", err);
     });

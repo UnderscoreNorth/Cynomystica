@@ -24,10 +24,12 @@ class PlayList {
   playlist: PlaylistObj;
   currentSeekTime: number;
   playing: boolean;
+  scheduleCheck: boolean;
   constructor() {
     this.playlist = [];
     this.currentSeekTime = 0;
     this.playing = false;
+    this.scheduleCheck = false;
     console.log("Playlist Initialized");
   }
   send(socket: Server | socketInterface | null) {
@@ -87,7 +89,8 @@ class PlayList {
   queueVideo = async (
     mediaURL: string,
     username: string,
-    socket: socketInterface
+    socket: socketInterface,
+    scheduleID: number | null = null
   ) => {
     const id: number = Math.random();
     console.log(mediaURL);
@@ -143,7 +146,9 @@ class PlayList {
             Date.now() + playlistItem.duration * 1000
           );
         }
+        playlistItem.scheduledID = scheduleID;
         this.playlist.push(playlistItem);
+        this.send(null);
       })
       .catch(() => {
         socketError(`Video type not supported`);
@@ -157,42 +162,51 @@ class PlayList {
     cycle();
   }
   checkSchedule = async () => {
-    let scheduled = await schedule.getAll(new Date(Date.now() - 5000));
-    let nextScheduled = scheduled[0];
-    if (nextScheduled) {
-      let tempPlaylist = [];
-      for (let item of scheduled) {
-        if (this.playlist.length == 0) {
-          if (moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 5) {
-            await this.queueVideo(item.url, item.username, null);
-          } else {
-            break;
-          }
-        } else {
-          let lastItem = this.playlist[this.playlist.length - 1];
-          let diff =
-            moment.utc(item.playTimeUTC).diff(moment(lastItem.endDate)) / 1000;
-          if (diff <= 300 && diff > 0 && !item.url.includes(lastItem.url)) {
-            await this.queuePlaylist({
-              mode: "weighted",
-              playlist: "Commercials",
-              duration: diff,
-              leeWayAfter: item.leeWayAfter,
-            });
-            await this.queueVideo(item.url, item.username, null);
-          } else {
-            let diff = moment.utc(item.playTimeUTC).diff(moment()) / 1000;
-            if (diff <= 0 && !item.url.includes(this.playlist[0].url)) {
-              tempPlaylist = structuredClone(this.playlist);
-              this.playlist = [];
-              await this.queueVideo(item.url, item.username, null);
+    if (!this.scheduleCheck) {
+      this.scheduleCheck = true;
+      try {
+        let scheduled = await schedule.getAll(new Date(Date.now() - 5000));
+        let nextScheduled = scheduled[0];
+        if (nextScheduled) {
+          let tempPlaylist = [];
+          for (let item of scheduled) {
+            if (this.playlist.length == 0) {
+              if (moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 5) {
+                await this.queueVideo(item.url, item.username, null, item.id);
+              } else {
+                break;
+              }
             } else {
-              break;
+              let lastItem = this.playlist[this.playlist.length - 1];
+              let diff =
+                moment.utc(item.playTimeUTC).diff(moment(lastItem.endDate)) /
+                1000;
+              let scheduledIDs = this.playlist.map((x) => x.scheduledID);
+              if (diff <= 300 && diff > 0 && !scheduledIDs.includes(item.id)) {
+                await this.queuePlaylist({
+                  mode: "weighted",
+                  playlist: "Commercials",
+                  duration: diff,
+                  leeWayAfter: item.leeWayAfter,
+                });
+                await this.queueVideo(item.url, item.username, null, item.id);
+              } else {
+                let diff = moment.utc(item.playTimeUTC).diff(moment()) / 1000;
+                if (diff <= 0 && !scheduledIDs.includes(item.id)) {
+                  tempPlaylist = structuredClone(this.playlist);
+                  this.playlist = [];
+                  await this.queueVideo(item.url, item.username, null, item.id);
+                } else {
+                  break;
+                }
+              }
             }
           }
+          this.playlist = this.playlist.concat(tempPlaylist);
         }
+      } finally {
+        this.scheduleCheck = false;
       }
-      this.playlist = this.playlist.concat(tempPlaylist);
     }
   };
   queuePlaylist = async (options: any) => {

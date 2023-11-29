@@ -26,7 +26,7 @@ export const cycle = async () => {
       }
       playlist.updateDates();
       let currentPlaylist = getCurrentPlayList();
-      await playlist.checkSchedule();
+      playlist.checkSchedule();
       if (currentPlaylist !== lastPlaylist) {
         console.log("playlist update");
         playlist.send(IO());
