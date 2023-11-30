@@ -10,11 +10,11 @@ function getCurrentPlayList() {
   return JSON.stringify(playlist.playlist);
 }
 function consoleVitals() {
-  /*console.log({
-    playlist: playlist.obj,
-    currentSeekTime,
-    currentVideoDuration,
-  });*/
+  console.log({
+    seek: playlist.currentSeekTime,
+    playing: playlist.playing,
+    current: playlist.playlist[0],
+  });
 }
 export const cycle = async () => {
   if (!inCycle) {

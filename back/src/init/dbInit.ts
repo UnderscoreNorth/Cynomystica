@@ -33,7 +33,7 @@ export default async function dbInit() {
       .get();
     if (result.count == 0) {
       try {
-        db.prepare(table.tableCreate).run();
+        await db.prepare(table.tableCreate).run();
         if (table.init()) db.prepare(table.init()).run();
         console.log(table.tableName + " created");
       } catch (err) {
@@ -41,7 +41,7 @@ export default async function dbInit() {
         throw err;
       }
     }
-    let init = false;
+    let init = true;
     if (table.tableName == "schedule" && init) {
       db.prepare(table.init()).run();
       const cdn = "https://cynomystica.nyc3.cdn.digitaloceanspaces.com/";
@@ -62,10 +62,21 @@ export default async function dbInit() {
             obj.playtime = new Date(`Dec ${ep} 2023 19:50:00`);
             schedule.upsert("_North", obj);
           }
+          if (fileName.indexOf("Popotan/") == 0) {
+            let ep = parseInt(fileName.substring(26, 28));
+            obj.playtime = new Date(`Dec ${ep + 13} 2023 19:50:00`);
+            schedule.upsert("_North", obj);
+          }
           if (fileName.indexOf("Ninin_ga_Shinobu/") == 0) {
             let ep = parseInt(fileName.substring(38, 40));
             obj.title = `Ninin ga Shinobu Ep ${ep}`;
             obj.playtime = new Date(`Dec ${ep} 2023 20:40:00`);
+            schedule.upsert("_North", obj);
+          }
+          if (fileName.indexOf("School_Days/") == 0) {
+            let ep = parseInt(fileName.substring(37, 39));
+            obj.title = `School Days Ep ${ep}`;
+            obj.playtime = new Date(`Dec ${ep + 12} 2023 20:40:00`);
             schedule.upsert("_North", obj);
           }
           if (fileName.indexOf("Toradora/") == 0) {
@@ -112,6 +123,9 @@ export default async function dbInit() {
             } else {
               day = ep + 7;
             }
+            if (ep >= 9) {
+              time = "21:05:45";
+            }
             obj.playtime = new Date(`Dec ${day} 2023 ${time}`);
             schedule.upsert("_North", obj);
           }
@@ -144,6 +158,17 @@ export default async function dbInit() {
             } else if (ep <= 11) {
               day = ep + 4;
             } else {
+              day = 19;
+            }
+            obj.playtime = new Date(`Dec ${day} 2023 ${time}`);
+            schedule.upsert("_North", obj);
+          }
+          if (fileName.indexOf("FLCL/") == 0) {
+            let ep = parseInt(fileName.substring(10, 12));
+            obj.title = `FLCL Ep ${ep}`;
+            let time = "21:55:00";
+            let day = ep + 10;
+            if (ep == 6) {
               day = 19;
             }
             obj.playtime = new Date(`Dec ${day} 2023 ${time}`);
@@ -192,6 +217,7 @@ export default async function dbInit() {
               day = 11 + (ep - 7) / 2;
             }
             if ([8, 10, 12, 14, 16].includes(ep)) {
+              time = "22:54:00";
               day = 11 + (ep - 8) / 2;
             }
 

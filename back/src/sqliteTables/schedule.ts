@@ -11,9 +11,9 @@ export default class {
         'title' VARCHAR(512),
         'url' VARCHAR(512),
         'playTimeUTC' DATETIME(20),
+        'finishTimeUTC' DATETIME(20),
         'leeWayBefore' INT,
         'leeWayAfter' INT,
-        'addToPlayList' DATETIME(20),
         'visible' INT,
         'duration' INT,
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
@@ -46,21 +46,41 @@ export default class {
     obj.leewayAfter = obj.leewayAfter ?? 15;
     obj.id = obj.id ?? uuidv4();
     obj.visible = obj.visible ? 1 : 0;
-    obj.addTo = obj.addTo ?? 60;
-    obj.addTo = formatDate(
-      new Date(new Date(obj.playtime).getTime() + obj.addTo * 600000)
+    obj.startTime = formatDate(new Date(obj.playtime));
+    obj.finishTime = formatDate(
+      new Date(new Date(obj.playtime).getTime() + obj.duration * 1000)
     );
-    obj.playtime = formatDate(new Date(obj.playtime));
-
-    await db
+    let conflict = await db
       .prepare(
         `
-              INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,addToPlayList,duration) 
-              VALUES (@id,@username,@title,@url,@playtime,@leewayBefore,@leewayAfter,@visible,@addTo,@duration)
-              ON CONFLICT(id) DO UPDATE SET
-                  playTimeUTC = @playtime, addToPlayList=@addTo`
+    SELECT 
+      COUNT(*) AS c 
+    FROM 
+      schedule 
+    WHERE 
+      (@start >= playTimeUTC AND @start <= finishTimeUTC)
+      OR
+      (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
       )
-      .run(obj);
+      .get({ start: obj.startTime, finish: obj.finishTime });
+    if (conflict.c >= 0) {
+      await db
+        .prepare(
+          `
+              INSERT INTO schedule 
+              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,finishTimeUTC,duration) 
+              VALUES (@id,@username,@title,@url,@startTime,@leewayBefore,@leewayAfter,@visible,@finishTime,@duration)
+              ON CONFLICT(id) DO UPDATE SET
+                  playTimeUTC = @startTime, 
+                  finishTimeUTC=@finishTime, 
+                  title=@title,
+                  leeWayBefore=@leewayBefore,
+                  leeWayAfter=@leewayAfter,
+                  duration=@duration`
+        )
+        .run(obj);
+    } else {
+      console.log(obj.title, conflict.c);
+    }
   };
 }

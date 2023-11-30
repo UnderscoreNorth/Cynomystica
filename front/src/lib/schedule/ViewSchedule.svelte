@@ -66,7 +66,7 @@
         >{day.format('ddd DD')}</div>
     {/each}
     {#each scheduleArray as item}
-    <div style={`grid-area:${item.gridArea}`}>
+    <div class='scheduleItem' style={`grid-area:${item.gridArea}`}>
         {item.title}
     </div>
     {/each}
@@ -111,5 +111,8 @@
         font-size:0.6rem!important;
         min-height:4px;
         border:none!important;
+    }
+    .scheduleItem{
+        background:rgba(0,0,0,0.05);
     }
 </style>
