@@ -12,6 +12,7 @@ import {
 } from "./server/socket";
 import { default as chat } from "./server/chat";
 import Icons from "./sqliteTables/icons";
+import userModeration from "./sqliteTables/userModeration";
 
 import message from "./controller/message";
 import deleteItem from "./controller/delete-item";
@@ -60,6 +61,14 @@ io.on("connection", async (socket: socketInterface) => {
     socket.handshake
   );
   if (!socket.request.headers["user-agent"]) socket.disconnect();
+  if ((await userModeration.getUser(socket.handshake["x-real-ip"])).length) {
+    socket.emit("alert", {
+      type: "IP banned",
+      message: "This IP has been banned",
+    });
+    socket.disconnect();
+    return;
+  }
   socket.emit("connected");
   for (let event in ioEvents) {
     try {
