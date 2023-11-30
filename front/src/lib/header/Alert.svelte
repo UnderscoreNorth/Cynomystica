@@ -15,6 +15,10 @@
 			localStorage.clear();
 			io.disconnect();
 			return;
+		} else if (messageObj.type =='IP banned'){
+			localStorage.clear();
+			io.disconnect();
+			return;
 		}
 		messages.push(messageObj);
 		messages = messages;

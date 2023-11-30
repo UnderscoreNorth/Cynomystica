@@ -1,10 +1,11 @@
-import { writeChatToLog } from "../lib/chatLogging";
+import { getChatFromLog, writeChatToLog } from "../lib/chatLogging";
 import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
 
 export interface Message {
   username: string;
   message: string;
+  icon: string;
   time: Date;
 }
 export type Messages = Array<Message>;
@@ -27,6 +28,9 @@ export class Chat {
   }
   logMessages() {
     writeChatToLog(this.unloggedMsgs);
+  }
+  async getFromLog() {
+    this.recentMsgs = await getChatFromLog();
   }
 }
 let chat = new Chat();

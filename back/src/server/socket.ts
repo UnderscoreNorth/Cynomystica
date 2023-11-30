@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import chat from "./chat";
 const errorDelay = 100;
 
 export interface socketInterface extends Socket {
@@ -13,6 +14,7 @@ let io: Server | undefined;
 export const init = (server: Server) => {
   //@ts-ignore
   io = new Server(server, { path: "/ws" });
+  chat().getFromLog();
   console.log("Socket Server Initialized");
   return io;
 };

@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { db } from "../sqliteDB";
+import { default as IO, socketInterface } from "../server/socket";
 export default class {
   static tableName = "users";
   static tableCreate = `CREATE TABLE 'users' (
@@ -60,13 +61,17 @@ export default class {
 
   static insertUser = (username: string, passwordHash: string) => {
     if (this.existsUser(username)) {
-      return { pass: false, message: "Username already taken." };
+      return {
+        pass: false,
+        message: "Username already taken.",
+        accessLevel: -1,
+      };
     }
     const results = db
       .prepare(`SELECT COUNT(*) AS 'count' FROM users`)
       .get({ username: username });
     //const access = results.count > 0 ? 0 : 4;
-    const access = ["_North"].includes(username) ? 4 : 0;
+    const access = ["_North"].includes(username) ? 4 : 1;
     db.prepare(
       `
 			INSERT INTO users 
@@ -79,6 +84,17 @@ export default class {
   };
 
   static createUser = async (username: string, password: string) => {
+    for (let otherSocket of Object.values(
+      await IO().sockets.fetchSockets()
+    ) as unknown as socketInterface[]) {
+      if (otherSocket.username == username) {
+        return {
+          pass: false,
+          message: ["User already logged in."],
+          accessLevel: -1,
+        };
+      }
+    }
     const usernameErrors = this.usernameCheck(username);
     const passwordErrors = this.passwordCheck(password);
     const errors =
@@ -86,7 +102,7 @@ export default class {
         ? [usernameErrors.join("\n"), passwordErrors.join("\n")]
         : [];
     if (errors.length) {
-      return { pass: false, message: errors.join("\n") };
+      return { pass: false, message: errors.join("\n"), accessLevel: -1 };
     }
     const passwordHash = await bcrypt.hash(password, 10);
     return this.insertUser(username, passwordHash);

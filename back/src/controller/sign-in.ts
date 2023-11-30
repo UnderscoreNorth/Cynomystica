@@ -12,7 +12,7 @@ export default async function signIn(socket: socketInterface, signIn: any) {
           type: "login",
           message: loginResult,
         });
-      }, 5000);
+      }, 2000);
       return;
     }
     let accessToken = jwt.sign(result.username, "access");
@@ -27,6 +27,6 @@ export default async function signIn(socket: socketInterface, signIn: any) {
   } else {
     setTimeout(() => {
       socket.emit("alert", { type: "login", message: result.message });
-    }, 10000);
+    }, 2000);
   }
 }

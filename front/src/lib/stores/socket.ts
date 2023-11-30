@@ -93,6 +93,7 @@ const init = () => {
 			n.login = false;
 			return n;
 		});
+		console.log(e);
 		user.set({
 			username: e.username,
 			accessLevel: e.accessLevel,

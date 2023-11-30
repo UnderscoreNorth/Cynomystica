@@ -57,7 +57,7 @@ io.on("connection", async (socket: socketInterface) => {
   console.log(
     "new connection",
     socket.handshake.headers["x-real-ip"],
-    socket.request.headers["user-agent"]
+    socket.handshake
   );
   if (!socket.request.headers["user-agent"]) socket.disconnect();
   socket.emit("connected");

@@ -13,7 +13,7 @@ export default async function loginToken(socket: socketInterface, data: any) {
           type: "login",
           message: loginResult,
         });
-      }, 5000);
+      }, 2000);
       return;
     }
     let accessToken = jwt.sign(username, "access");
@@ -28,6 +28,6 @@ export default async function loginToken(socket: socketInterface, data: any) {
   } else {
     setTimeout(() => {
       socket.emit("alert", { type: "login-token", message: "Token failed" });
-    }, 5000);
+    }, 2000);
   }
 }
