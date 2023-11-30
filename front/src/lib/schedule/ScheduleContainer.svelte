@@ -22,7 +22,7 @@
 		>
 			<h3>Schedule 
 				{#if $user.accessLevel >= $permissions.schedule}
-					<button on:click={()=>changeSelectedID("0")} >Add item</button>
+					<button on:click={()=>changeSelectedID({})} >Add item</button>
 				{/if}
 			</h3>
 			<hr />

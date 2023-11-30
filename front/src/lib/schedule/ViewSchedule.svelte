@@ -32,11 +32,17 @@
                 let startingSplit = Math.floor((parseInt(itemMoment.format('H')) * 60 + parseInt(itemMoment.format('m'))));
                 let endingMinute = itemMoment.clone().add(item.duration,'s');
                 let endingSplit = Math.floor((parseInt(endingMinute.format('H')) * 60 + parseInt(endingMinute.format('m'))))+1;
+                if(endingSplit < startingSplit ){
+                    endingSplit += 1440;
+                }
                 let gridArea = `${startingSplit}/${diff+2}/${endingSplit}/${diff+3}`;
                 scheduleArray.push({
                     title:item.title,
                     gridArea,
-                    id:item.id
+                    id:item.id,
+                    playtime:item.playTimeUTC,
+                    finishtime:item.finishTimeUTC,
+                    url:item.url,
                 })
                 if(startingSplit < minSplit)
                     minSplit = startingSplit;   
@@ -69,7 +75,7 @@
     {/each}
     {#each scheduleArray as item}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class='scheduleItem' style={`grid-area:${item.gridArea}`} on:click={()=>changeSelectedID(item.id)}>
+    <div class='scheduleItem' style={`grid-area:${item.gridArea}`} on:click={()=>changeSelectedID(item)}>
         {item.title}
     </div>
     {/each}
@@ -87,7 +93,7 @@
         width:100%;
         background:var(--color-bg-light-2);
         grid-template-columns:4rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows:repeat(1500,1);
+        grid-template-rows:repeat(1800,1);
         grid-column-gap: 0;
         grid-row-gap: 0;
         max-height:calc(100vh - 12rem);

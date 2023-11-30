@@ -1,5 +1,5 @@
 import { default as playlist } from "./playlist";
-import { default as IO } from "./socket";
+import { default as IO, checkVersion } from "./socket";
 import chat from "./chat";
 
 let inCycle = false;
@@ -38,6 +38,7 @@ export const cycle = async () => {
     } finally {
       inCycle = false;
       if (beat == 10) {
+        checkVersion();
         beat = 0;
       }
     }

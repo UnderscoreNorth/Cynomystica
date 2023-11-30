@@ -7,6 +7,7 @@
 	import type { blockerType } from '$lib/stores/blocker';
 	import { io } from '$lib/realtime';
 	io.on('alert', (messageObj) => {
+		console.log(messageObj);
 		if(messageObj.type == 'login-token'){
 			console.log(messageObj)
 			localStorage.clear();
@@ -19,6 +20,8 @@
 			localStorage.clear();
 			io.disconnect();
 			return;
+		} else if (messageObj.type =='Reload'){
+			location.reload();
 		}
 		messages.push(messageObj);
 		messages = messages;

@@ -7,6 +7,7 @@ export interface socketInterface extends Socket {
   uuid: string;
   accessLevel: number;
   lastQueue: Date;
+  version: number;
 }
 
 let io: Server | undefined;
@@ -33,4 +34,15 @@ export const sendUserList = async () => {
     };
   }
   io.emit("connected-users", userList);
+};
+
+export const checkVersion = async () => {
+  for (let socket of Object.values(
+    await io.sockets.fetchSockets()
+  ) as unknown as socketInterface[]) {
+    if (socket.version !== 1 && socket.version) {
+      console.log("wrong version", socket.username, socket.version);
+      socket.emit("alert", { type: "Reload" });
+    }
+  }
 };

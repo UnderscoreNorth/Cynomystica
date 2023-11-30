@@ -1,23 +1,32 @@
 <script lang='ts'>    
     import {io} from "$lib/realtime";
     export let changeSelectedID:Function;
-    export let selectedID:string|null;
+    export let selectedID:any;
+    import moment from "moment";
     let url:String;
     let title:String;
-    let playtime:Date|null = null;
+    let playtime:String|null = null;
     let leewayBefore:Number;
     let leewayAfter:Number;
     let visible:boolean;
-    let loading = true;
+    let finishtime:String|null = null;
+    let id:string;
+    let loading = false;
     let newEntry = false;
-    if(playtime){
-        
+    if(selectedID.id){
+        newEntry = false;
+        url = selectedID.url;
+        title = selectedID.title;
+        finishtime = moment.utc(selectedID.finishtime).local().format('YYYY-MM-DD HH:mm:ss');
+        playtime = moment.utc(selectedID.playtime).local().format('YYYY-MM-DD HH:mm:ss');
+        id = selectedID.id;
     } else{
         newEntry= true;
         loading =false;
     }
     const upsert = ()=>{
         let sendObj = {
+            id,
             url,
             title,
             playtime,
@@ -27,10 +36,7 @@
             selectedID
         }
         io.emit('upsert-schedule',sendObj);
-        url = '';
-        title = '';
-        playtime = null;
-        
+        changeSelectedID(null);
     }
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -44,6 +50,9 @@
         </tr>
         <tr>
             <th>Playtime</th><td><input type='datetime-local' bind:value={playtime}  disabled={loading}/></td>
+        </tr>
+        <tr>
+            <th>Finish time</th><td><input type='datetime-local' disabled bind:value={finishtime}/></td>
         </tr>
         <tr>
             <th>Leeway Before (s)</th><td><input type="number" bind:value={leewayBefore}  disabled={loading}/></td>

@@ -27,6 +27,7 @@ import loginToken from "./controller/login-token";
 import getSchedule from "./controller/get-schedule";
 import sendPermissions from "./lib/sendPermissions";
 import userMod from "./controller/user-mod";
+import version from "./controller/version";
 
 import playlist from "./server/playlist";
 
@@ -52,6 +53,7 @@ const ioEvents = {
   "login-token": loginToken,
   "get-schedule": getSchedule,
   "user-mod": userMod,
+  version: version,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -61,6 +63,7 @@ io.on("connection", async (socket: socketInterface) => {
     socket.handshake
   );
   if (!socket.request.headers["user-agent"]) socket.disconnect();
+  console.log(64, await userModeration.getUser(socket.handshake["x-real-ip"]));
   if ((await userModeration.getUser(socket.handshake["x-real-ip"])).length) {
     socket.emit("alert", {
       type: "IP banned",

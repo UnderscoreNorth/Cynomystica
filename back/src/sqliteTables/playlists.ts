@@ -31,7 +31,7 @@ export default class {
         );
       }
     });
-    return "DELETE FROM playlists";
+    return "";
   };
   static getPlaylist = (playlist: string) => {
     const results = db
