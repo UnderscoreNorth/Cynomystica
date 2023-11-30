@@ -28,7 +28,7 @@ export default async function userMod(socket: socketInterface, obj: any) {
           }
           break;
         case "IP Ban":
-          if (obj.username == socket.handshake.headers["x-real-ip"]) {
+          if (obj.username == subSocket.handshake.headers["x-real-ip"]) {
             subSocket.emit("alert", {
               type: "banned",
               message: "You have been banned",
