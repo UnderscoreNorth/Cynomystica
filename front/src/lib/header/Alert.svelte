@@ -11,7 +11,11 @@
 			console.log(messageObj)
 			localStorage.clear();
 			return;
-		} 
+		} else if (messageObj.type == 'banned'){
+			localStorage.clear();
+			io.disconnect();
+			return;
+		}
 		messages.push(messageObj);
 		messages = messages;
 		//@ts-ignore

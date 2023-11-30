@@ -22,11 +22,13 @@ export default async function loginGuest(
     });
     return;
   }
-  if (!(await socketLogin(socket, message.username))) {
+  let loginResult = await socketLogin(socket, message.username);
+  console.log(26, loginResult);
+  if (loginResult !== "success") {
     setTimeout(() => {
       socket.emit("alert", {
         type: "login",
-        message: "Username already taken",
+        message: loginResult,
       });
     }, 1000);
     return;

@@ -6,6 +6,14 @@
 	export let closeModal: any;
     export let otherUser:otherUserType;
      
+     const userMod = (action:string)=>{
+        io.emit('user-mod',{action,username:otherUser.username});
+     };
+     const actions = [
+        {action:'Ignore',access:'ignore'},
+        {action:'Ban',access:'userMod'},
+        {action:'IP Ban',access:'userMod'}
+     ]
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -20,14 +28,11 @@
 		>
             {otherUser.username}
             <hr>
-            {#if $permissions.ignore <= $user.accessLevel}
-                <div>Ignore</div>
+            {#each actions as action}
+            {#if $permissions[action.access] <= $user.accessLevel}
+                <div class='userModActionBtn' on:click={()=>userMod(action.action)}>{action.action}</div>
             {/if}
-            {#if $permissions.userMod <= $user.accessLevel}
-                <div>Mute</div>
-                <div>Kick</div>
-                <div>Ban</div>
-            {/if}
+            {/each}
 		</span>
 	</div>
 </div>
@@ -38,4 +43,8 @@
 		margin-top: 4rem;
         margin-left:calc(24rem - 100vw);
 	}
+    .userModActionBtn:hover{
+        cursor: pointer;
+        background:var(--color-bg-dark-1)
+    }
 </style>

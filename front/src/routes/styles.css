@@ -5,8 +5,8 @@
 		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	--font-mono: 'Fira Mono', monospace;
 	--color-bg-dark-1: #2e51a2;
-	--color-bg-dark-2: #06212c;
-	--color-bg-dark-3: #4d4d4d;
+	--color-bg-dark-2: #03141b;
+	--color-bg-dark-3: #2c2c2c;
 	--color-bg-light: #eee;
 	--color-bg-light-2: #a4abbb;
 	--color-text-dark: #ddd;
@@ -125,6 +125,8 @@ button:focus:not(:focus-visible) {
 	z-index: 1;
 	display: flex;
 	justify-content: center;
+	top: 0;
+	left: 0;
 }
 .svgIcon {
 	height: 1.5rem;

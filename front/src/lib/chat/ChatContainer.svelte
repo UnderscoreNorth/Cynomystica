@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { userSettings } from '$lib/stores/userSettings';
-	import { io } from '$lib/realtime';
 	import { onMount } from 'svelte';
 	import { users } from '$lib/stores/users';
+	import { user } from '$lib/stores/user';
 	import { chat } from '$lib/stores/chat';
 	import type { usersType,otherUser } from '$lib/stores/users';
 	import ChatBar from './ChatBar.svelte';
 	import ChatMessage from './ChatMessage.svelte';
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
-	import { user } from '$lib/stores/user';
 	import OtherUserModal from './OtherUserModal.svelte';
 	import { bulletMode } from '$lib/stores/bulletmode';
 	import { browser } from '$app/environment';
-	
+	import { permissions } from '$lib/stores/permissions';
 	let settingsObj: any;
 	let usersObj: usersType;
-	let selectedOtherUser:otherUser;	
+	let selectedOtherUser:otherUser|null;	
 	$: userListOpen = false;
 	userSettings.subscribe((value) => {
 		settingsObj = value;
@@ -23,11 +22,10 @@
 	users.subscribe((value) => {
 		usersObj = value;
 	});
-	let width: string;
 	
 	let messages: any[] = [];
-	let bulletMessages: Record<string,any> = {};
 	const selectOtherUser = (user:otherUser|null)=>{
+		if($user.accessLevel >= $permissions.userMod)
 		selectedOtherUser = user;
 	}
 	let bulletHeight = 0;
@@ -85,7 +83,8 @@
 						<hr />
 						{#each $users.users as userItem}
 							{#if userItem.accessLevel >= 0}
-								<div class='userListItem' accessLevel={userItem.accessLevel}>
+								<!-- svelte-ignore a11y-click-events-have-key-events -->
+								<div class='userListItem' accessLevel={userItem.accessLevel} on:click={()=>{selectOtherUser(userItem)}}>
 									{userItem.username}
 								</div>
 							{/if}
@@ -134,6 +133,7 @@
 		height: 100%;
 		display: inline-block;
 		vertical-align: top;
+		color:#a6b7d1		
 	}	
 	#grid {
 		display: grid;
@@ -188,7 +188,8 @@
         font-size:1.2rem;
         font-weight: bold;
         position:fixed;
-        z-index: 10;        
+        z-index: 10;       
+		color:black; 
         text-shadow:
 	-1px -1px 0 white,
 	1px -1px 0 white,

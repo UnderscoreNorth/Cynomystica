@@ -46,7 +46,7 @@ const init = () => {
 			const pushMsg = (msg) => {
 				msg.played = false;
 				oldChat.push(msg);
-				if (oldChat.length > 10) oldChat.splice(0, oldChat.length - 10);
+				if (oldChat.length > 500) oldChat.splice(0, oldChat.length - 500);
 			};
 			if (e?.length > 0) {
 				for (let msg of e) {

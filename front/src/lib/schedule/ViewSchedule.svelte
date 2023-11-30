@@ -3,6 +3,7 @@
     import moment from 'moment'
     import type { Moment } from "moment";
     import { io } from "$lib/realtime";
+    export let changeSelectedID:Function;
     let date = moment().startOf('day');
     let week = [] as Array<Moment>;
     let scheduleArray = [];
@@ -34,7 +35,8 @@
                 let gridArea = `${startingSplit}/${diff+2}/${endingSplit}/${diff+3}`;
                 scheduleArray.push({
                     title:item.title,
-                    gridArea
+                    gridArea,
+                    id:item.id
                 })
                 if(startingSplit < minSplit)
                     minSplit = startingSplit;   
@@ -66,7 +68,8 @@
         >{day.format('ddd DD')}</div>
     {/each}
     {#each scheduleArray as item}
-    <div class='scheduleItem' style={`grid-area:${item.gridArea}`}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class='scheduleItem' style={`grid-area:${item.gridArea}`} on:click={()=>changeSelectedID(item.id)}>
         {item.title}
     </div>
     {/each}

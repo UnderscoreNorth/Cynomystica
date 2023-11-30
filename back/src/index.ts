@@ -25,6 +25,7 @@ import upsertSchedule from "./controller/upsert-schedule";
 import loginToken from "./controller/login-token";
 import getSchedule from "./controller/get-schedule";
 import sendPermissions from "./lib/sendPermissions";
+import userMod from "./controller/user-mod";
 
 import playlist from "./server/playlist";
 
@@ -49,6 +50,7 @@ const ioEvents = {
   "upsert-schedule": upsertSchedule,
   "login-token": loginToken,
   "get-schedule": getSchedule,
+  "user-mod": userMod,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();

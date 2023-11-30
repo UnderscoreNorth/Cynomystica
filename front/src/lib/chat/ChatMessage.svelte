@@ -36,7 +36,7 @@
 		width: 100%;
 	}
 	.chatIcon{
-		padding-left:0.5rem;
+		padding-left:2px;
 	}
 	.chatRow{
 		font-size:0.9em;
@@ -48,8 +48,8 @@
 	.chatTime {
 		font-size: 0.6em;
 		padding-left: 5px;
-		
-		border-right: 1px solid black;
+		padding-right:5px;
+		border-right: 1px solid var(--color-bg-dark-1);
 	}
     .chatRow td {
 		line-height: 1rem;

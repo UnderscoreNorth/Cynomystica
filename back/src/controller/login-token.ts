@@ -6,11 +6,12 @@ export default async function loginToken(socket: socketInterface, data: any) {
   const username = data.username;
   const result = await jwt.verify(data.refreshToken, username, "refresh");
   if (result) {
-    if (!(await socketLogin(socket, username))) {
+    let loginResult = await socketLogin(socket, username);
+    if (loginResult !== "success") {
       setTimeout(() => {
         socket.emit("alert", {
-          type: "login-token",
-          message: "User already logged in",
+          type: "login",
+          message: loginResult,
         });
       }, 5000);
       return;

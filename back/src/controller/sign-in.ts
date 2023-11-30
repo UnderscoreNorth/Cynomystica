@@ -5,11 +5,12 @@ import socketLogin from "../lib/socketLogin";
 export default async function signIn(socket: socketInterface, signIn: any) {
   const result = await users.authenticateUser(signIn.username, signIn.password);
   if (result.pass) {
-    if (!(await socketLogin(socket, signIn.username))) {
+    let loginResult = await socketLogin(socket, signIn.username);
+    if (loginResult !== "success") {
       setTimeout(() => {
         socket.emit("alert", {
           type: "login",
-          message: "User already logged in",
+          message: loginResult,
         });
       }, 5000);
       return;

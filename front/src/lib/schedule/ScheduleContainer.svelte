@@ -1,9 +1,13 @@
 <script lang="ts">
 	export let closeModal: any;
-    import Manage from "./Manage.svelte";
 	import ViewSchedule from "./ViewSchedule.svelte";
 	import { permissions } from "$lib/stores/permissions";
 	import { user } from "$lib/stores/user";
+	import ScheduleModal from "./ScheduleModal.svelte";
+	let selectedID:string|null = null;
+	const changeSelectedID = (newID:string|null)=>{
+		selectedID = newID;
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -16,11 +20,15 @@
 				e.stopPropagation();
 			}}
 		>
-			<h3>Schedule</h3>
+			<h3>Schedule 
+				{#if $user.accessLevel >= $permissions.schedule}
+					<button on:click={()=>changeSelectedID("0")} >Add item</button>
+				{/if}
+			</h3>
 			<hr />
-			<ViewSchedule />
-			{#if $user.accessLevel >= $permissions.schedule}
-				<Manage />
+			<ViewSchedule {changeSelectedID}/>
+			{#if $user.accessLevel >= $permissions.schedule && selectedID !== null}
+				<ScheduleModal {changeSelectedID} {selectedID} />
 			{/if}
 		</span>
 	</div>

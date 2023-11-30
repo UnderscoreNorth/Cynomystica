@@ -91,6 +91,7 @@
 		overflow-y: scroll;
 		background:white;
 		z-index:2;
+		color:black;
 	}
 	.iconListItem{
 		display:flex;

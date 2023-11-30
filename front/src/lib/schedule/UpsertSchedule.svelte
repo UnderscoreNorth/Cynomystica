@@ -1,6 +1,8 @@
 <script lang='ts'>
     import { io } from '$lib/realtime';
     import ScheduleModal from './ScheduleModal.svelte';
+    export let changeSelectedID:Function;
+    export let selectedID:string|null;
     let modalOpen: boolean = false;
 	const toggleModal = () => {
 		modalOpen = !modalOpen;
