@@ -8,7 +8,7 @@ export default async function userMod(socket: socketInterface, obj: any) {
         await IO().sockets.fetchSockets()
       ) as unknown as socketInterface[]) {
         if (subSocket.username == obj.username) {
-          obj.username = socket.handshake.headers["x-real-ip"];
+          obj.username = subSocket.handshake.headers["x-real-ip"];
           break;
         }
       }
