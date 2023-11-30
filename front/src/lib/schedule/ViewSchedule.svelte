@@ -35,7 +35,7 @@
                 if(endingSplit < startingSplit ){
                     endingSplit += 1440;
                 }
-                let gridArea = `${startingSplit}/${diff+2}/${endingSplit}/${diff+3}`;
+                let gridArea = `${startingSplit+2}/${diff+2}/${endingSplit+2}/${diff+3}`;
                 scheduleArray.push({
                     title:item.title,
                     gridArea,
@@ -80,7 +80,7 @@
     </div>
     {/each}
     {#each Array.from(timeSet) as item}
-    <div class='scheduleTime' style={`grid-area:${item}/1/${item+1}/2`}>
+    <div class='scheduleTime' style={`grid-area:${item+2}/1/${item+3}/2`}>
         {#if item % 5 == 0} 
             {splitToTime(item)}
         {/if}
