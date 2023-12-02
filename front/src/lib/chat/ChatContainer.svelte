@@ -32,13 +32,15 @@
 	let chatMessageElem:HTMLElement|null;
 	if(browser)
 		chatMessageElem = document.getElementById('chatMessages');
+	let initScroll = true;
 	onMount(() => {
+		initScroll = true;
 		chat.subscribe((value) => {
 			messages = value;
-			if($bulletMode){
-				for(let message of messages){
-					if(!message.played){
-						message.played = true;
+			for(let message of messages){
+				if(!message.played){
+					message.played = true;
+					if($bulletMode){
 						let bulletMessage = document.createElement('div');
 						bulletMessage.innerText = message.message;
 						bulletMessage.classList.add('bulletText');
@@ -52,12 +54,16 @@
 						},15000)
 					}
 				}
-			} else {
+			}
+			if(!$bulletMode){
 				setTimeout(()=>{
 					let chatMessages = document.getElementById('chatScroller');
 					let parent = document.getElementById('chatMessages');
-					if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight)	
+					if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight || initScroll)	{
 						chatMessages.scrollTop = chatMessages?.scrollHeight;
+						initScroll = false;
+					}
+						
 				},50);
 			}
 		});
@@ -183,9 +189,9 @@
 	}
 
 	:global(.bulletText){
-        animation:textScrollAnim 15s linear 1;
+        animation:textScrollAnim 10s linear 1;
         animation-fill-mode: forwards;
-        font-size:1.2rem;
+        font-size:2rem;
         font-weight: bold;
         position:fixed;
         z-index: 10;       

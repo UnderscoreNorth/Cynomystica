@@ -2,14 +2,16 @@
 	import { video } from '$lib/stores/video';
 	import { userSettings } from '$lib/stores/userSettings';
 	import youTubePlayer from 'youtube-player';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { YouTubePlayer } from 'youtube-player/dist/types';
 	import {user} from '$lib/stores/user';
 	import { io } from '$lib/realtime';
-	let player: YouTubePlayer;
+	let player: YouTubePlayer|null;
 	const debounceDuration = 100;
 	let debounced = false;
 	let lastSeek = 0;
+	let videoURL = '';
+	let syncInterval;
 	onMount(() => {
 		player = youTubePlayer('player', {
 			videoId: $video.url
@@ -29,7 +31,7 @@
 				};
 				const initSyncTime = () => {
 					syncTime();
-					setInterval(function () {
+					syncInterval = setInterval(function () {
 						syncTime();
 					}, $userSettings.sync.threshold);
 				};
@@ -47,7 +49,25 @@
 					}
 				}))
 			});
+		video.subscribe((newVideo)=>{
+			if(newVideo.url !== videoURL){
+				player.loadVideoById(newVideo.url);
+				videoURL = newVideo.url;
+			}
+		})
 	});
+	onDestroy(()=>{
+		player = null;
+		try{
+			clearInterval(syncInterval)
+		} finally{
+			
+		}
+		let playerEl = document.getElementById('player');
+		while(playerEl?.firstChild){
+			playerEl.removeChild(playerEl.firstChild);
+		}
+	})
 </script>
 
 <div>

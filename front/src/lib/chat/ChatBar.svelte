@@ -7,22 +7,67 @@
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { login } from '$lib/utilities/login';
+	import { users } from '$lib/stores/users';
 	let inputValue: string;
+	let lastInput = '';
 	let iconListOpen = false;
 	let selectedIcon = '';
-	const handleKeyPress = (e: KeyboardEvent) => {
+	let lastKey = '';
+	let tabIndex = 0;
+	let tabRegex = /([^ ]+)$/g;
+	let sent:Array<string> = [];
+	let sentIndex = -1;
+	const handleKeyDown = (e: KeyboardEvent) => {
 		if(e.key == 'Tab'){
 			e.preventDefault();
+			let tabWord = lastInput.match(tabRegex)?.[0] ?? '';
+			if(tabWord?.length){
+				let matched = $users.users.filter((otherUser)=>{
+					console.log(otherUser.username.indexOf(tabWord));
+					return otherUser.username.indexOf(tabWord) == 0
+				}).map((otherUser)=>otherUser.username);
+				if(matched.length){
+					inputValue = lastInput.replace(tabRegex,matched[tabIndex])
+					tabIndex++;
+					if(tabIndex >= matched.length)
+						tabIndex = 0;
+				}
+			}
+		} else {
+			tabIndex = 0;
 		}
 		if (e.key == 'Enter' && inputValue.trim().length > 0) {
 			if (!$user.username.length) {
 				login(inputValue.trim(),'','guest');
 			} else {
+				sent.unshift(inputValue)
 				io.emit('message', {icon:selectedIcon ?? '', msg:inputValue.trim()});
 			}
 			inputValue = '';
 		}
+		lastKey = e.key;
 	};
+	const handleKeyUp = (e:KeyboardEvent)=>{
+		if(e.key !== 'Tab')
+			lastInput = inputValue;
+		if(['ArrowUp','ArrowDown'].includes(e.key)){
+			if(sent.length){
+				if(e.key == 'ArrowUp'){
+					sentIndex++;
+				} else {
+					sentIndex--;
+				}
+				if(sentIndex >= sent.length){
+					sentIndex = 0;
+				} else if (sentIndex < 0){
+					sentIndex = sent.length -1;
+				}
+				inputValue = sent[sentIndex]
+			}	
+		} else {
+			sentIndex = -1;
+		}
+	}
 	const toggleIconList = (e:MouseEvent)=>{
 		iconListOpen = !iconListOpen;
 		e.stopPropagation();
@@ -66,7 +111,9 @@
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
 	bind:value={inputValue}
-	on:keydown={handleKeyPress}
+	on:keydown={handleKeyDown}
+	on:keyup={handleKeyUp}
+	autocomplete="off"
 />
 </div>
 <style>
@@ -105,6 +152,9 @@
 		height:1.8rem;
 		width:1.8rem;
 		margin-right:0.2rem;
+	}
+	#iconSelect img{
+		margin-bottom:-1rem;
 	}
 	#iconSelect:hover{
 		background-color:#1E90FF;

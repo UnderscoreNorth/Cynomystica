@@ -59,8 +59,8 @@ export default class {
       .prepare(
         `
               INSERT INTO playlists
-              (id,username,title,url,duration, playlist) 
-              VALUES (@id,@username,@title,@url,@duration, @playlist)`
+              (id,username,title,url,duration, playlist,playcount) 
+              VALUES (@id,@username,@title,@url,@duration, @playlist,0)`
       )
       .run(obj);
   };

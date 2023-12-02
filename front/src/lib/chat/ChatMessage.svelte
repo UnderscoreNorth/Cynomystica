@@ -2,9 +2,23 @@
     export let message:any;
     import {icons} from '$lib/stores/icons';
     import { bulletMode } from '$lib/stores/bulletmode';
+    import { user } from '$lib/stores/user';
+    const getMessageClasses = (message:string)=>{
+        let array = [];
+        if(message?.[0] == '>' )
+        array.push('greentext');
+        return array.join(' ');
+    }
+    const getRowClasses = (message:string)=>{
+        let array = [];
+        array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
+        if(message.includes($user.username) && $user.username)
+            array.push('userHighlighted');
+            return array.join(' ');
+    }
 </script>
 {#if message?.username}
-<tr class={$bulletMode ? 'chatRow bulletMode' : 'chatRow'}>						
+<tr class={getRowClasses(message.message)}>						
     <td class="chatTime">
         [{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
     </td>
@@ -18,11 +32,7 @@
             {message.username}: 
         </span>
         <span class="chatMsg">
-            {#if message.message?.[0] == '>'}
-            <span class='greentext'>{message.message}</span>
-            {:else}
-            {message.message}
-            {/if}
+            <span class={getMessageClasses(message.message)}>{message.message}</span>
         </span>
     </td>
 </tr>
@@ -56,5 +66,8 @@
 	}
     .chatMsg{
         overflow-wrap: anywhere;
+    }
+    .userHighlighted{
+        color:white;
     }
 </style>

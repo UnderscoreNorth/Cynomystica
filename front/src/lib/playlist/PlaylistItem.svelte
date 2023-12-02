@@ -14,16 +14,16 @@
 	{#if innerWidth < 768}
 		<td>
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}				
 			<div class="svgIcon" on:click={deleteItem(item)}>
 				<MdDelete />
 			</div>
+			{/if}
 		</td>
 		<td colspan=4>
-			{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}				
 				<a href={(item.type == 'yt' ? `https://youtube.com/watch?v=` : ``) + item.url} target="_blank" rel="noreferrer">{item.name}</a>
 				<br>
 				{secondsToTime(item.duration)} - {item.username}				
-			{/if}
 		</td>
 	{:else}
 		<td>
