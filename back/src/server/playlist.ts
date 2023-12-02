@@ -156,8 +156,13 @@ class PlayList {
   };
   deleteVideo(id: number) {
     for (let index in this.playlist) {
-      if (this.playlist[index].id == id)
+      if (this.playlist[index].id == id) {
         this.playlist.splice(parseInt(index), 1);
+        if (parseInt(index) == 0) {
+          this.currentSeekTime = 0;
+          this.playing = false;
+        }
+      }
     }
     cycle();
   }
