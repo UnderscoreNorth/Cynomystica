@@ -70,4 +70,11 @@
             display:none!important;
         }
     }
+	@media only screen and (max-width: 768px) {
+		:global(.bulletText){
+			animation-duration: 5s;
+			font-size:1.5rem;
+		}
+	}
+	
 </style>

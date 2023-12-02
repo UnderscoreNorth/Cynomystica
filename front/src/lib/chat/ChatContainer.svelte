@@ -132,6 +132,8 @@
 	#chatMessages {
 		position: relative;
 		overflow-y: hidden;
+		background-image: url(/CynoChatBG.png);
+    background-position: bottom;
 	}
 	#chatScroller{
 		height:calc(100% - 0.5rem);

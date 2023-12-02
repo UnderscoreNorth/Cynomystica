@@ -23,7 +23,6 @@
 			<h3>User Settings</h3>
 			<hr />
 			<table>
-
 				<tr>
 					<th rowspan=3>Display</th>
 					<th>Chat</th>
@@ -39,20 +38,21 @@
 				</tr>
 				<tr>
 					<th>Sync</th>
-					<th>Video Sync Threshold (ms)</th>
+					<th>Threshold (ms)</th>
 					<td><input type="number" step=1 bind:value={settingsJson.sync.threshold} /></td>
 				</tr>
-				<button on:click={saveChanges}>Save Changes</button>
 			</table>
+			<button on:click={saveChanges}>Save Changes</button>
 		</span>
 	</div>
 </div>
 
 <style>
 	#userSettingsContainer {
-		width: 80vw;
-		max-width: 80em;
 		margin-top: 2rem;
 		color:white;
+	}
+	#userSettingsContainer input{
+		max-width:4rem;
 	}
 </style>
