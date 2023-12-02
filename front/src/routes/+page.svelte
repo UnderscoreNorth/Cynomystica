@@ -55,16 +55,19 @@
 	}
 	@media only screen and (max-width: 768px) {
 		main{
-			display:block
+			flex-direction: column;
 		}
 		#cChat {
 			display:block;
-			height:calc(100vh - 2rem - 100vw * 9 / 16)}
+			height:calc(100vh - 2rem - 100vw * 9 / 16);
+			flex-grow:1;
+		}
 		#cVideo{
 			order:1;
 			display:block;
 			aspect-ratio: 16/9;
 			height:auto;
+			flex-grow:0;
 		}
 		#cChat,#cVideo{
 			width:100vw;
