@@ -40,4 +40,12 @@
 		max-width: 80em;
 		margin-top: 2rem;
 	}
+	@media only screen and (max-width: 768px) {
+		#scheduleContainer {
+			width: 100vw;
+		}
+		#scheduleContainer .modal{
+			width:calc(100% - 2em);
+		}
+	}
 </style>

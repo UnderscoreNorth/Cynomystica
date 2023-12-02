@@ -4,7 +4,7 @@
 	import VideoContainer from '$lib/video/VideoContainer.svelte';
 	import init from '$lib/stores/socket';
 	import { onMount } from 'svelte';
-	import { bulletMode } from '$lib/stores/bulletmode';
+	import { userSettings } from '$lib/stores/userSettings';
 	import './styles.css';
 
 	onMount(() => {
@@ -19,9 +19,9 @@
 
 <section id='app'>
 	<c id='cHeader'><Header /></c>
-	<main class={$bulletMode ? 'bulletMode' : ''}>
-		<c id={'cVideo' + ($bulletMode ? 'b' : '')}><VideoContainer /></c>
-		<c id={'cChat' + ($bulletMode ? 'b' : '')}><ChatContainer /></c>
+	<main>
+		{#if $userSettings.display.video}<c id='cVideo'><VideoContainer /></c>{/if}
+		{#if $userSettings.display.chat}<c id='cChat'><ChatContainer /></c>{/if}
 	</main>
 </section>
 
@@ -42,29 +42,20 @@
 	}
 	#cChat{
 		width:23rem;
+		flex-grow:1;
 		order:1;
 	}
 	#cVideo{
 		width:calc(100vw - 5rem);
 		flex-shrink: 1;
 		flex-grow: 1;
-		order:2;
-	}
-	#cChatb{
-		width:100vw;
-		height:calc(100vh - 2.1rem);
-		position:absolute;
-	}
-	#cVideob{
-		width:100vw;
-		height:calc(100vh - 4rem);
+		order:2;		
+		overflow:hidden;
+		position:relative;
 	}
 	@media only screen and (max-width: 768px) {
 		main{
 			display:block
-		}
-		main.bulletMode{
-			display:flex;
 		}
 		#cChat {
 			display:block;

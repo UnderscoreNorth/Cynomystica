@@ -37,35 +37,15 @@
 		initScroll = true;
 		chat.subscribe((value) => {
 			messages = value;
-			for(let message of messages){
-				if(!message.played){
-					message.played = true;
-					if($bulletMode){
-						let bulletMessage = document.createElement('div');
-						bulletMessage.innerText = message.message;
-						bulletMessage.classList.add('bulletText');
-						bulletMessage.style.top = `calc(2rem + ${bulletHeight}vh)`;
-						chatMessageElem?.appendChild(bulletMessage);
-						bulletHeight += 2;
-						if(bulletHeight > 80)
-						bulletHeight = 0;
-						setTimeout(()=>{
-							bulletMessage.remove();
-						},15000)
-					}
+			setTimeout(()=>{
+				let chatMessages = document.getElementById('chatScroller');
+				let parent = document.getElementById('chatMessages');
+				if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight || initScroll)	{
+					chatMessages.scrollTop = chatMessages?.scrollHeight;
+					initScroll = false;
 				}
-			}
-			if(!$bulletMode){
-				setTimeout(()=>{
-					let chatMessages = document.getElementById('chatScroller');
-					let parent = document.getElementById('chatMessages');
-					if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight || initScroll)	{
-						chatMessages.scrollTop = chatMessages?.scrollHeight;
-						initScroll = false;
-					}
-						
-				},50);
-			}
+					
+			},50);
 		});
 	});
 	
@@ -186,33 +166,5 @@
 	#chatContainerb #chatScroller {
 		-ms-overflow-style: none;  /* IE and Edge */
 		scrollbar-width: none;  /* Firefox */
-	}
-
-	:global(.bulletText){
-        animation:textScrollAnim 10s linear 1;
-        animation-fill-mode: forwards;
-        font-size:2rem;
-        font-weight: bold;
-        position:fixed;
-        z-index: 10;       
-		color:black; 
-        text-shadow:
-	-1px -1px 0 white,
-	1px -1px 0 white,
-	-1px 1px 0 white,
-	1px 1px 0 white;
-    text-wrap: nowrap;
-    }
-    @keyframes textScrollAnim {
-        0% {
-            left:100vw;
-        }
-        99% {
-            left:-10vw;
-        }
-        100%{
-            left:-10vw;
-            display:none!important;
-        }
-    }
+	}	
 </style>

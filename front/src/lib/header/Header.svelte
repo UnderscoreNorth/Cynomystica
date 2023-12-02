@@ -43,6 +43,7 @@
 			onClick={toggleModeration}
 			tooltip={'User Management'}
 		/>
+		<IconButton Icon={MdClearAll} onClick={toggleBulletMode} tooltip={'Fullscreen Bullet Mode'} />
 	*/
 </script>
 
@@ -53,8 +54,7 @@
 		
 		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
 		
-		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
-		<IconButton Icon={MdClearAll} onClick={toggleBulletMode} tooltip={'Fullscreen Bullet Mode'} />
+		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />		
 		<div id="loginLi"><Login /></div>
 		<Alert />
 	</nav>

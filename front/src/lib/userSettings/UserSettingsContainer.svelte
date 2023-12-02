@@ -6,6 +6,7 @@
 	
 	const saveChanges = () => {
 		userSettings.set(settingsJson);
+		closeModal();
 	};
 </script>
 
@@ -22,7 +23,22 @@
 			<h3>User Settings</h3>
 			<hr />
 			<table>
+
 				<tr>
+					<th rowspan=3>Display</th>
+					<th>Chat</th>
+					<td><input type="checkbox" bind:checked={settingsJson.display.chat} /></td>
+				</tr>
+				<tr>
+					<th>Video</th>
+					<td><input type="checkbox" bind:checked={settingsJson.display.video} /></td>
+				</tr>
+				<tr>
+					<th>Danmaku</th>
+					<td><input type="checkbox" bind:checked={settingsJson.display.danmaku} /></td>
+				</tr>
+				<tr>
+					<th>Sync</th>
 					<th>Video Sync Threshold (ms)</th>
 					<td><input type="number" step=1 bind:value={settingsJson.sync.threshold} /></td>
 				</tr>
@@ -37,5 +53,6 @@
 		width: 80vw;
 		max-width: 80em;
 		margin-top: 2rem;
+		color:white;
 	}
 </style>
