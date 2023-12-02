@@ -77,6 +77,7 @@
 			left:0;
 			right:0;
 			padding:1rem;
+			z-index: 1;
 		}
 		#loginDiv form{
 			display:flex;
