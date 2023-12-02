@@ -16,26 +16,35 @@
             array.push('userHighlighted');
             return array.join(' ');
     }
+    const getUserStyle = ()=>{
+        let style = '';
+        if($icons[message.icon]?.url){
+            style=`color:${$icons[message.icon]?.color}`
+        }
+        return style;
+    }
 </script>
 {#if message?.username}
-<tr class={getRowClasses(message.message)}>						
-    <td class="chatTime">
-        [{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
-    </td>
-    <td style='width:99%'>
-        <span class='chatIcon'>
-            {#if message.icon && $icons[message.icon]?.url}
-                <img src={$icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
-            {/if}
-        </span>
-        <span class="chatUser">
-            {message.username}: 
-        </span>
-        <span class="chatMsg">
-            <span class={getMessageClasses(message.message)}>{message.message}</span>
-        </span>
-    </td>
-</tr>
+{#key $icons}
+    <tr class={getRowClasses(message.message)}>						
+        <td class="chatTime">
+            [{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
+        </td>
+        <td style='width:99%'>
+            <span class='chatIcon'>
+                {#if message.icon && $icons[message.icon]?.url}
+                    <img src={$icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
+                {/if}
+            </span>
+            <span class="chatUser" style={getUserStyle()}>
+                {message.username}: 
+            </span>
+            <span class="chatMsg">
+                <span class={getMessageClasses(message.message)}>{message.message}</span>
+            </span>
+        </td>
+    </tr>
+{/key}
 {/if}
 <style>
     .chatUser {
@@ -49,11 +58,12 @@
 		padding-left:2px;
 	}
 	.chatRow{
-		font-size:0.9em;
+		font-size:1rem;
 	}
 	.chatIcon img{
-		height:0.9em;
-		width:0.9em;
+		height:1.25rem;
+		width:1.25rem;
+        margin-bottom:-0.125rem;
 	}
 	.chatTime {
 		font-size: 0.6em;

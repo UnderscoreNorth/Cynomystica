@@ -88,7 +88,7 @@ io.on("connection", async (socket: socketInterface) => {
   sendUserList();
   sendPermissions(socket);
   chat().getRecent(socket);
-  socket.emit("icons", await Icons.get("Toradora"));
+  socket.emit("icons", await Icons.get());
   await getSchedule(socket);
 });
 

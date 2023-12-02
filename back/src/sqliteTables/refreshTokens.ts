@@ -21,12 +21,16 @@ export default class {
       .get({ token })?.token;
   };
   static insert = async (username: string, token: string, expires: string) => {
-    await db
-      .prepare(
-        `INSERT INTO refreshTokens (token,username,dateExpires) 
+    try {
+      await db
+        .prepare(
+          `INSERT INTO refreshTokens (token,username,dateExpires) 
             VALUES (@token,@username,@expires)`
-      )
-      .run({ username, token, expires });
+        )
+        .run({ username, token, expires });
+    } catch (err) {
+      console.log(err);
+    }
   };
   static revoke = async (username: string, token: string) => {
     await db

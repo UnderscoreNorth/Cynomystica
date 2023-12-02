@@ -93,16 +93,25 @@
 	</div>
 	{#if iconListOpen}	
 	<div id='iconList'>
-		{#each Object.entries($icons) as [id,icon]}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div on:click={()=>{selectIcon(id)}} class='iconListItem'>
-			{#if icon.url}
-				<img src={icon.url} alt='icon' />
-			{/if}
-			<span>
-				{icon.display}
-			</span>
-		</div>
+		{#each Array.from(new Set(Object.values($icons).map(x=>x.preset))) as preset}
+			<div class='presetContainer'>
+				<div>
+					<b>{preset}</b>
+				</div>
+				{#each Object.entries($icons) as [id,icon]}
+					{#if icon.preset == preset}
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<div on:click={()=>{selectIcon(id)}} class='iconListItem'>
+							{#if icon.url}
+								<img src={icon.url} alt='icon' />
+							{/if}
+							<span>
+								{icon.display}
+							</span>
+						</div>
+					{/if}
+				{/each}
+			</div>
 		{/each}
 	</div>
 	{/if}
@@ -140,6 +149,10 @@
 		z-index:2;
 		color:black;
 	}
+	.presetContainer{
+		display:inline-block;
+		vertical-align: top;
+	}
 	.iconListItem{
 		display:flex;
 		align-items: center;
@@ -154,7 +167,8 @@
 		margin-right:0.2rem;
 	}
 	#iconSelect img{
-		margin-bottom:-1rem;
+		margin-bottom:-0.1rem;
+		margin-top:-1px;
 	}
 	#iconSelect:hover{
 		background-color:#1E90FF;

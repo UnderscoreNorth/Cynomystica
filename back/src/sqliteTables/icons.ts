@@ -33,14 +33,24 @@ export default class {
     }
     return insertText + insertRows.join(",");
   };
-  static get = (preset: string) => {
-    const results = db.prepare(`SELECT * FROM icons WHERE preset=@preset`).all({
-      preset,
-    });
+  static get = (preset: string | null = null) => {
+    const results =
+      preset === null
+        ? db.prepare(`SELECT * FROM icons`).all({
+            preset,
+          })
+        : db.prepare(`SELECT * FROM icons WHERE preset=@preset`).all({
+            preset,
+          });
     let obj = {};
-    for (let row of Array.from(results)) {
+    for (let row of Array.from(results) as any) {
       // @ts-ignore
-      obj[row.id] = { display: row.display, color: row.color, url: row.url };
+      obj[row.preset + "-" + row.id] = {
+        display: row.display,
+        color: row.color,
+        url: row.url,
+        preset: row.preset,
+      };
     }
     return obj;
   };

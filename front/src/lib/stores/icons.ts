@@ -4,6 +4,7 @@ export interface Icon {
 	display: string;
 	color: string;
 	url: string;
+	preset: string;
 }
 export type iconList = Record<string, Icon>;
 export const icons = writable(iconsObj);
