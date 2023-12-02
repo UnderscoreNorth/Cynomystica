@@ -36,7 +36,7 @@ export default class {
   static getPlaylist = (playlist: string) => {
     const results = db
       .prepare(
-        `SELECT * FROM playlists WHERE playlist = @playlist ORDER BY playcount, id `
+        `SELECT * FROM playlists WHERE playlist = @playlist ORDER BY playcount, RANDOM() `
       )
       .all({
         playlist,
