@@ -40,7 +40,7 @@ export const checkVersion = async () => {
   for (let socket of Object.values(
     await io.sockets.fetchSockets()
   ) as unknown as socketInterface[]) {
-    if (socket.version !== 1 && socket.version) {
+    if (socket.version !== 1.01 && socket.version) {
       console.log("wrong version", socket.username, socket.version);
       socket.emit("alert", { type: "Reload" });
     }
