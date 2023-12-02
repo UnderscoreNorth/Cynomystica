@@ -10,11 +10,10 @@
 	let innerWidth = 0;
 </script>
 <svelte:window bind:innerWidth />
-<tr>
 	{#if innerWidth < 768}
-		<td>
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<td>			
 			{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}				
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={deleteItem(item)}>
 				<MdDelete />
 			</div>
@@ -40,8 +39,6 @@
 		<td class='t-right'>{secondsToTime(item.duration)}</td>
 		<td class='t-right'>{item.username}</td>
 	{/if}
-	
-</tr>
 
 <style>
 	td {

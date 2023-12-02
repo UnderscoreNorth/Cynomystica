@@ -30,6 +30,7 @@ import userMod from "./controller/user-mod";
 import version from "./controller/version";
 
 import playlist from "./server/playlist";
+import updatePlaylist from "./controller/update-playlist";
 
 dbInit();
 const app = express();
@@ -54,6 +55,7 @@ const ioEvents = {
   "get-schedule": getSchedule,
   "user-mod": userMod,
   version: version,
+  "update-playlist": updatePlaylist,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();

@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { permissions } from '$lib/stores/permissions';
 	import PlaylistItem from './PlaylistItem.svelte';
 	import { playlist } from '$lib/stores/playlist';
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
+	import SortableItems from '$lib/utilities/SortableItems.svelte';
 	export let closeModal: Function;
-	let items: Array<object> = [];
-	let currentIndex: number = 0;
 	let mediaURL: string;
 	let queueNextDisabled = false;
-
+	let hoverIndex:number;
 	const queueNext = async () => {
 		if(mediaURL){
 			let duration: number = 0;
@@ -22,12 +20,12 @@
 	const deleteItem = async (playlistItem: PlaylistItem) => {
 		io.emit('delete-item', playlistItem);
 	};
-	onMount(async () => {
-		playlist.subscribe((value) => {
-			items = value;
-		});
-	});
-	let innerWidth = 0;
+	let innerWidth = 0;	
+	const updatePlaylist = ()=>{
+		console.log(25);
+	if( $user.accessLevel >= 3)
+		io.emit('update-playlist',$playlist);
+	}
 </script>
 <svelte:window bind:innerWidth />
 
@@ -48,7 +46,7 @@
 					$user.accessLevel == -1 && $permissions.queuePlaylist > -1 ? 'Login required' : (
 					$user.accessLevel < $permissions.queuePlaylist ? 'Insufficient Permission': '')}
 				/>
-				<button on:click={queueNext} disabled={queueNextDisabled || $user.accessLevel < $permissions.queuePlaylist}>Queue Next</button>
+				<button on:click={queueNext} disabled={queueNextDisabled || $user.accessLevel < $permissions.queuePlaylist} >Queue Next</button>
 			</h3>
 			<hr />
 			<div id='tableContainer'>
@@ -63,8 +61,19 @@
 						<th style='width:5rem'>Added By</th>
 					</tr>
 					{/if}
-					{#each items as item}
-						<PlaylistItem {item} {deleteItem} />
+					{#each $playlist as item,i}
+						{#if $user.accessLevel >= 3}
+							<SortableItems class={`dragRows ${hoverIndex === i ? 'classHovered' : ''}`}
+								propItemNumber={i}
+								bind:propData={$playlist}
+								bind:propHoveredItemNumber={hoverIndex}
+								dropCallback={()=>{updatePlaylist()}}
+							>
+							<PlaylistItem {item} {deleteItem} />
+							</SortableItems>
+						{:else}
+							<tr><PlaylistItem {item} {deleteItem} /></tr>
+						{/if}
 					{/each}
 				</table>
 			</div>
@@ -77,6 +86,12 @@
 		width: 80vw;
 		max-width: 80em;
 		margin-top: 2em;
+	}
+	:global(.dragRows){
+		display:table-row;
+	}
+	:global(.classHovered){
+		background:var(--color-bg-dark-1);
 	}
 	table th {
 		color: var(--color-text-dark);
