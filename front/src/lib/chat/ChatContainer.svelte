@@ -6,7 +6,7 @@
 	import { chat } from '$lib/stores/chat';
 	import type { usersType,otherUser } from '$lib/stores/users';
 	import ChatBar from './ChatBar.svelte';
-	import ChatMessage from './ChatMessage.svelte';
+	import ChatRow from './ChatRow.svelte';
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	import OtherUserModal from './OtherUserModal.svelte';
 	import { bulletMode } from '$lib/stores/bulletmode';
@@ -81,7 +81,7 @@
 				<div id='chatScroller' bind:this={chatScroller}>
 					<table id="chatTable">
 						{#each messages as message}
-							<ChatMessage {message} />
+							<ChatRow {message} />
 						{/each}
 					</table>
 				</div>

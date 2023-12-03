@@ -41,6 +41,9 @@
 				login(inputValue.trim(),'','guest');
 			} else {
 				sent.unshift(inputValue)
+				if($user.accessLevel < 4){
+					inputValue = inputValue.replace(/(http[^\s]+):pic/gmi,'$1');
+				}
 				io.emit('message', {icon:selectedIcon ?? '', msg:inputValue.trim()});
 			}
 			inputValue = '';
