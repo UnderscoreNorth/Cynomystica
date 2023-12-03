@@ -28,13 +28,16 @@
 		if($user.accessLevel >= $permissions.userMod)
 		selectedOtherUser = user;
 	}
-	let bulletHeight = 0;
 	let chatMessageElem:HTMLElement|null;
+	let chatScroller;
 	if(browser)
 		chatMessageElem = document.getElementById('chatMessages');
 	let initScroll = true;
 	onMount(() => {
 		initScroll = true;
+		chatScroller.addEventListener('scroll',function(e){
+			initScroll = false;
+		});
 		chat.subscribe((value) => {
 			messages = value;
 			setTimeout(()=>{
@@ -42,9 +45,7 @@
 				let parent = document.getElementById('chatMessages');
 				if(chatMessages?.scrollTop + parent?.offsetHeight  + 100> chatMessages?.scrollHeight || initScroll)	{
 					chatMessages.scrollTop = chatMessages?.scrollHeight;
-					initScroll = false;
-				}
-					
+				}	
 			},50);
 		});
 	});
@@ -77,7 +78,7 @@
 						{/each}
 					</div>
 				{/if}
-				<div id='chatScroller'>
+				<div id='chatScroller' bind:this={chatScroller}>
 					<table id="chatTable">
 						{#each messages as message}
 							<ChatMessage {message} />
