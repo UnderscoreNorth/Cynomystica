@@ -26,6 +26,7 @@
 </script>
 {#if message?.username}
 {#key $icons}
+    {#key message?.icon}
     <tr class={getRowClasses(message.message)}>						
         <td class="chatTime">
             [{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
@@ -44,6 +45,7 @@
             </span>
         </td>
     </tr>
+    {/key}
 {/key}
 {/if}
 <style>
