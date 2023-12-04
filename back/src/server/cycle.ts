@@ -41,6 +41,9 @@ export const cycle = async () => {
         checkVersion();
         beat = 0;
       }
+      if (beat == 3) {
+        playlist.send(IO());
+      }
     }
   }
 };

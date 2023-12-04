@@ -60,7 +60,7 @@
 		<div id="chatHeader">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
-			{$users.connectedUsers} connected user{$users.connectedUsers > 1 ? 's' : ''}
+			{$users.connectedUsers} connected user{$users.connectedUsers == 1 ? '' : 's'}
 		</div>
 		<div id="chatMessages" >
 			{#if !$bulletMode}

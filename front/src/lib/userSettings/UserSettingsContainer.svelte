@@ -24,25 +24,29 @@
 			<hr />
 			<table>
 				<tr>
-					<th rowspan=3>Display</th>
+					<th rowspan=4>Display</th>
 					<th>Chat</th>
-					<td><input type="checkbox" bind:checked={settingsJson.display.chat} /></td>
+					<td><input type="checkbox" bind:checked={$userSettings.display.chat} /></td>
 				</tr>
 				<tr>
 					<th>Video</th>
-					<td><input type="checkbox" bind:checked={settingsJson.display.video} /></td>
+					<td><input type="checkbox" bind:checked={$userSettings.display.video} /></td>
 				</tr>
 				<tr>
 					<th>Danmaku</th>
-					<td><input type="checkbox" bind:checked={settingsJson.display.danmaku} /></td>
+					<td><input type="checkbox" bind:checked={$userSettings.display.danmaku} /></td>
+				</tr>
+				<tr>
+					<th>Chat Width</th>
+					<td><input type="number" step=1 bind:value={$userSettings.display.chatWidth} /></td>
 				</tr>
 				<tr>
 					<th>Sync</th>
 					<th>Threshold (ms)</th>
-					<td><input type="number" step=1 bind:value={settingsJson.sync.threshold} /></td>
+					<td><input type="number" step=1 bind:value={$userSettings.sync.threshold} /></td>
 				</tr>
 			</table>
-			<button on:click={saveChanges}>Save Changes</button>
+			<!--<button on:click={saveChanges}>Save Changes</button>-->
 		</span>
 	</div>
 </div>

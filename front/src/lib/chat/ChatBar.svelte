@@ -8,10 +8,10 @@
 	import { onMount } from 'svelte';
 	import { login } from '$lib/utilities/login';
 	import { users } from '$lib/stores/users';
+	import { userSettings } from '$lib/stores/userSettings';
 	let inputValue: string;
 	let lastInput = '';
 	let iconListOpen = false;
-	let selectedIcon = '';
 	let lastKey = '';
 	let tabIndex = 0;
 	let tabRegex = /([^ ]+)$/g;
@@ -43,7 +43,7 @@
 				if($user.accessLevel < 4){
 					inputValue = inputValue.replace(/(http[^\s]+):pic/gmi,'$1');
 				}
-				io.emit('message', {icon:selectedIcon ?? '', msg:inputValue.trim()});
+				io.emit('message', {icon:$userSettings.icon ?? '', msg:inputValue.trim()});
 			}
 			inputValue = '';
 		}
@@ -75,7 +75,7 @@
 		e.stopPropagation();
 	}
 	const selectIcon = (icon:any)=>{
-		selectedIcon = icon;
+		$userSettings.icon = icon;
 	}
 	onMount(() => {
 	if(browser){
@@ -89,8 +89,8 @@
 <div id='chatBarContainer'>	
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id='iconSelect' on:click={toggleIconList} >
-		{#if selectedIcon && $icons[selectedIcon]?.url}
-		<img src={$icons[selectedIcon].url} alt='icon' />
+		{#if $userSettings.icon && $icons[$userSettings.icon]?.url}
+		<img src={$icons[$userSettings.icon].url} alt='icon' />
 		{/if}
 	</div>
 	{#if iconListOpen}	

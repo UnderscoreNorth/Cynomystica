@@ -20,8 +20,8 @@
 <section id='app'>
 	<c id='cHeader'><Header /></c>
 	<main>
-		{#if $userSettings.display.video}<c id='cVideo'><VideoContainer /></c>{/if}
-		{#if $userSettings.display.chat}<c id='cChat'><ChatContainer /></c>{/if}
+		{#if $userSettings.display.video}<c id='cVideo' style:width={`calc(100% - ${$userSettings.display.chatWidth}rem)`}><VideoContainer /></c>{/if}
+		{#if $userSettings.display.chat}<c id='cChat' style:width={`${$userSettings.display.chatWidth}rem`}><ChatContainer /></c>{/if}
 	</main>
 </section>
 
@@ -41,12 +41,10 @@
 		height:calc(100vh - 2rem);
 	}
 	#cChat{
-		width:23rem;
 		flex-grow:1;
 		order:1;
 	}
 	#cVideo{
-		width:calc(100vw - 5rem);
 		flex-shrink: 1;
 		flex-grow: 1;
 		order:2;		
@@ -70,7 +68,7 @@
 			flex-grow:0;
 		}
 		#cChat,#cVideo{
-			width:100vw;
+			width:100vw!important;
 		}
 	}
 
