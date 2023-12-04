@@ -14,7 +14,6 @@ export default async function socketLogin(
     }
   }
   let actions = await userModeration.getUser(username);
-  console.log(17, actions);
   for (let action of actions) {
     switch (action.action) {
       case "Ban":
@@ -23,6 +22,7 @@ export default async function socketLogin(
         break;
     }
   }
+  console.log("signin", username, socket.handshake.headers["x-real-ip"]);
   const accessLevel = (await users.getAccessLevel(username)) ?? 0;
   socket.username = username;
   socket.accessLevel = accessLevel;

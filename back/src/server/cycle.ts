@@ -10,6 +10,12 @@ function getCurrentPlayList() {
   return JSON.stringify(playlist.playlist);
 }
 function consoleVitals() {
+  if (
+    playlist.currentSeekTime == 0 &&
+    playlist.playing == false &&
+    playlist.playlist[0] == undefined
+  )
+    return;
   console.log({
     seek: playlist.currentSeekTime,
     playing: playlist.playing,
