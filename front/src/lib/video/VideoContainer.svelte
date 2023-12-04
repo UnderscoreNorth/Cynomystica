@@ -48,25 +48,25 @@
         font-weight: bold;
         position:absolute;
         z-index: 1;       
-		color:black; 
+		color:white; 
         text-shadow:
-		-1px -1px 0 white,
-		1px -1px 0 white,
-		-1px 1px 0 white,
-		1px 1px 0 white;
+		-1px -1px 0 black,
+		1px -1px 0 black,
+		-1px 1px 0 black,
+		1px 1px 0 black;
 		height:2rem;
 		width:100%;
 		text-align: left;
     }
     @keyframes textScrollAnim {
         0% {
-            right:-100%;
+            transform:translateX(100%);
         }
         99% {
-            right:100%;
+            transform:translateX(-100%);
         }
         100%{
-            right:100%;
+            transform:translateX(-100%);
             display:none!important;
         }
     }

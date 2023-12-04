@@ -20,11 +20,10 @@
 	const handleKeyDown = (e: KeyboardEvent) => {
 		if(e.key == 'Tab'){
 			e.preventDefault();
-			let tabWord = lastInput.match(tabRegex)?.[0] ?? '';
+			let tabWord = lastInput.match(tabRegex)?.[0].toLowerCase() ?? '';
 			if(tabWord?.length){
 				let matched = $users.users.filter((otherUser)=>{
-					console.log(otherUser.username.indexOf(tabWord));
-					return otherUser.username.indexOf(tabWord) == 0
+					return otherUser.username.toLowerCase().indexOf(tabWord) == 0
 				}).map((otherUser)=>otherUser.username);
 				if(matched.length){
 					inputValue = lastInput.replace(tabRegex,matched[tabIndex])
