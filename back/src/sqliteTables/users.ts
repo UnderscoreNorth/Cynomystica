@@ -155,7 +155,6 @@ export default class {
     const sqlResult = db
       .prepare(`SELECT * from users WHERE username=@username`)
       .get({ username });
-    console.log(username, sqlResult);
     return sqlResult?.accessLevel;
   };
 }

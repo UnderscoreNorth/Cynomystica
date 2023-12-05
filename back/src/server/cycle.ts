@@ -19,7 +19,8 @@ function consoleVitals() {
   console.log({
     seek: playlist.currentSeekTime,
     playing: playlist.playing,
-    current: playlist.playlist[0],
+    currentTitle: playlist.playlist?.[0]?.name,
+    currentURL: playlist.playlist?.[0]?.url,
   });
 }
 export const cycle = async () => {

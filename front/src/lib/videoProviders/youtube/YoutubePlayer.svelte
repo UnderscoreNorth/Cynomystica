@@ -50,7 +50,7 @@
 				}))
 			});
 		video.subscribe((newVideo)=>{
-			if(newVideo.url !== videoURL){
+			if(newVideo.url !== videoURL && newVideo.type == 'yt'){
 				player.loadVideoById(newVideo.url);
 				videoURL = newVideo.url;
 			}
