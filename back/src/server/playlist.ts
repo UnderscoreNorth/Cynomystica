@@ -69,7 +69,8 @@ class PlayList {
       this.playlist[0].startDate = new Date();
       writeToLog("playlist", [
         {
-          item: this.playlist[0].url,
+          url: this.playlist[0].url,
+          title: this.playlist[0].name,
           username: this.playlist[0].username,
           time: new Date(),
         },
