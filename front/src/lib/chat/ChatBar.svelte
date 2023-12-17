@@ -10,15 +10,42 @@
 	import { users } from '$lib/stores/users';
 	import { userSettings } from '$lib/stores/userSettings';
 	import { tabText } from '$lib/stores/tabText';
-	let inputValue: string;
+	import { afterUpdate, beforeUpdate } from 'svelte';
+	let inputValue: string = '';
 	let lastInput = '';
 	let iconListOpen = false;
+	let input: HTMLInputElement;
 	let lastKey = '';
 	let tabIndex = 0;
 	let tabRegex = /([^ ]+)$/g;
 	let sent:Array<string> = [];
 	let sentIndex = -1;
+	let selectionStart = 0;
+	let selectionEnd = 0;
+	let spoilerMode = false;
+	
+	beforeUpdate(() => {
+		if (input) {
+			({ selectionStart, selectionEnd } = input);
+		}
+	});
+	
+	afterUpdate(() => {
+		if(spoilerMode){
+			if(selectionStart == selectionEnd){
+				selectionStart += 3
+			} else {
+				selectionStart = selectionEnd;
+				selectionStart += 7;
+			}
+			input.setSelectionRange(selectionStart, selectionStart);
+			input.focus();
+		}
+	});
 	const handleKeyDown = (e: KeyboardEvent) => {
+		if(e.key == 's' && e.ctrlKey == true){
+			e.preventDefault();
+		}		
 		if(e.key == 'Tab'){
 			e.preventDefault();
 			let tabWord = lastInput.match(tabRegex)?.[0].toLowerCase() ?? '';
@@ -51,6 +78,16 @@
 		lastKey = e.key;
 	};
 	const handleKeyUp = (e:KeyboardEvent)=>{
+		//console.log(e);
+		if(e.key == 's' && e.ctrlKey == true){
+			spoilerMode = true;
+			const { selectionStart: start, selectionEnd: end } = input;
+			console.log(start);
+			let spoileredText = `[s]${inputValue.slice(start, end)}[/s]`; 
+			inputValue = `${inputValue.slice(0, start)}${spoileredText}${inputValue.slice(end)}`;
+		} else {
+			spoilerMode = false;
+		}
 		if(e.key !== 'Tab')
 			lastInput = inputValue;
 		if(['ArrowUp','ArrowDown'].includes(e.key)){
@@ -125,6 +162,7 @@
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
 	bind:value={inputValue}
+	bind:this={input}
 	on:keydown={handleKeyDown}
 	on:keyup={handleKeyUp}
 	on:focus={handleFocus}

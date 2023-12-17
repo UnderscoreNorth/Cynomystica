@@ -23,7 +23,6 @@
 		},
 		1000);
 		userSettings.subscribe((e)=>{
-			console.log(15,$userSettings)
 			if(!$userSettings.blockSave && $user.username)
 				io.emit('upsert-usersettings',$userSettings)
 		})

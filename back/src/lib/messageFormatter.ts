@@ -6,6 +6,7 @@ export default function messageFormatter(msg: string) {
   ];
   let classes = [];
   let formatters = [
+    { type: "link", matchRegex: /(http[^\s]+)/, replaceRegex: /(http[^\s]+)/ },
     {
       type: "strong",
       matchRegex: /(\*[^\*]+\*)/,
@@ -13,11 +14,15 @@ export default function messageFormatter(msg: string) {
     },
     { type: "italic", matchRegex: /(_[^_]+_)/, replaceRegex: /_([^_]+)_/ },
     {
+      type: "spoiler",
+      matchRegex: /(\[s\][^`]+\[\/s\])/,
+      replaceRegex: /\[s\]([^`]+)\[\/s\]/,
+    },
+    {
       type: "pic",
       matchRegex: /(http[^\s]+:pic)/,
       replaceRegex: /(http[^\s]+):pic/,
     },
-    { type: "link", matchRegex: /(http[^\s]+)/, replaceRegex: /(http[^\s]+)/ },
   ];
   msg = msg.trim();
   for (let classStyle of classStylers) {
@@ -58,10 +63,12 @@ export default function messageFormatter(msg: string) {
       formattedMsg += `<strong>${msgPart.content}</strong>`;
     } else if (msgPart.type == "italic") {
       formattedMsg += `<em>${msgPart.content}</em>`;
+    } else if (msgPart.type == "spoiler") {
+      formattedMsg += `<span class='spoilertext'>${msgPart.content}</span>`;
     } else if (msgPart.type == "pic") {
       formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer"><img src=${msgPart.content} /></a>`;
     } else if (msgPart.type == "link") {
-      formattedMsg += `<a href={msgPart.content} target='_blank' rel="noreferrer">{msgPart.content}</a>`;
+      formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer">${msgPart.content}</a>`;
     } else {
       formattedMsg += `${msgPart.content}`;
     }

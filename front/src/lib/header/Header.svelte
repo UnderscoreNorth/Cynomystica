@@ -14,12 +14,15 @@
 	import MdViewList from 'svelte-icons/md/MdViewList.svelte';
 	import MdSentimentVeryDissatisfied from 'svelte-icons/md/MdSentimentVeryDissatisfied.svelte';
 	import MdDateRange from 'svelte-icons/md/MdDateRange.svelte';
-	import MdClearAll from 'svelte-icons/md/MdClearAll.svelte'
+	import MdClearAll from 'svelte-icons/md/MdClearAll.svelte';
+	import MdInfoOutline from 'svelte-icons/md/MdInfoOutline.svelte';
+	import InfoContainer from '$lib/information/infoContainer.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
 	let moderationModalOpen: boolean = false;
 	let scheduleModalOpen: boolean = false;
+	let infoModalOpen: boolean = false;
 	const toggleSettings = () => {
 		userSettingsModalOpen = !userSettingsModalOpen;
 	};
@@ -34,6 +37,9 @@
 	}
 	const toggleBulletMode = ()=>{
 		bulletMode.set(!$bulletMode);
+	}
+	const toggleInfo = ()=>{
+		infoModalOpen = !infoModalOpen;
 	}
 	const dummy = () => {};
 	/*
@@ -55,6 +61,7 @@
 		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
 		
 		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />		
+		<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />		
 		<div id="loginLi"><Login /></div>
 		<Alert />
 	</nav>
@@ -69,6 +76,9 @@
 	{/if}
 	{#if scheduleModalOpen}
 		<ScheduleContainer closeModal={toggleSchedule} />
+	{/if}
+	{#if infoModalOpen}
+		<InfoContainer closeModal={toggleInfo} />
 	{/if}
 </header>
 

@@ -22,7 +22,6 @@
 	};
 	let innerWidth = 0;	
 	const updatePlaylist = ()=>{
-		console.log(25);
 	if( $user.accessLevel >= 3)
 		io.emit('update-playlist',$playlist);
 	}

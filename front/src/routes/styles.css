@@ -149,3 +149,10 @@ button:focus:not(:focus-visible) {
 .redtext {
 	color: #ff0000;
 }
+.spoilertext {
+	background: black;
+	color: black;
+}
+.spoilertext:hover {
+	color: var(--color-text-dark);
+}

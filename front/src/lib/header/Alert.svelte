@@ -7,9 +7,7 @@
 	import type { blockerType } from '$lib/stores/blocker';
 	import { io } from '$lib/realtime';
 	io.on('alert', (messageObj) => {
-		console.log(messageObj);
 		if(messageObj.type == 'login-token'){
-			console.log(messageObj)
 			localStorage.clear();
 			return;
 		} else if (messageObj.type == 'banned'){
