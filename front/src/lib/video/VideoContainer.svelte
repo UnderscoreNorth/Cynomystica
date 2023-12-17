@@ -14,10 +14,15 @@
 				message.played = true;
 				if($userSettings.display.danmaku !== 'none'){
 					let bulletMessage = document.createElement('div');
-					bulletMessage.innerHTML = message.message;
 					bulletMessage.classList.add('bulletText');
 					if($userSettings.display.danmaku == 'half')
 					bulletMessage.classList.add('transparent');
+					let bulletText = message.message;
+					if(message.message.indexOf('/me ') == 0){
+						bulletMessage.classList.add('actiontext');
+						bulletText = message.username + ' ' + message.message.substring(4);
+					}
+					bulletMessage.innerHTML = bulletText;
 					chatMessageElem?.appendChild(bulletMessage);
 					bulletMessage.style.top = `${bulletHeight}px`;
 					bulletHeight += 20;	

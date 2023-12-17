@@ -27,7 +27,7 @@
                 <tr><td>red: text</td><td><span class='redtext'>text</span></td></tr>
                 <tr><td>blue: text</td><td><span class='bluetext'>text</span></td></tr>
                 <tr><td>>text</td><td><span class='greentext'>>text</span></td></tr>
-                <tr><td>/me text</td><td>/me text</td></tr>
+                <tr><td>/me text</td><td><span class='actiontext'>Username text</span></td></tr>
                 <tr><td>TAB</td><td>autocompletes username<br>tab again to cycle</td></tr>
                 <tr><td>↑/↓</td><td>Cycles through previous<br>sent messages</td></tr>
             </table>
@@ -40,7 +40,7 @@
                 <li>Danmaku text shouldn't wrap anymore</li>
                 <li>Danmaku transparency option</li>
                 <li>Text formatting on danmaku</li>
-                <li>Red,blue, and spoiler text filters</li>
+                <li>Red,blue, /me, and spoiler text filters</li>
                 <li>Chat bar moved to top of chat window in vertical mode</li>
             </ul>
 		</span>

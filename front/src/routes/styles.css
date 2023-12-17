@@ -159,3 +159,7 @@ button:focus:not(:focus-visible) {
 .transparent {
 	opacity: 0.5;
 }
+.actiontext {
+	font-style: italic;
+	color: grey;
+}

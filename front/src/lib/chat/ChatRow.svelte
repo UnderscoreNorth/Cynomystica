@@ -35,12 +35,19 @@
                     <img src={$icons[message.icon].url} alt='icon' title={$icons[message.icon].display}/>
                 {/if}
             </span>
-            <span class="chatUser" style={getUserStyle()}>
-                {message.username}: 
+            {#if message.message.indexOf('/me ') == 0}
+            <span class="actiontext">
+                {message.username} {@html message.message.substring(4)}
             </span>
-            <span class="chatMsg">
-                    {@html message.message}
-            </span>
+            {:else}
+                <span class="chatUser" style={getUserStyle()}>
+                    {message.username}: 
+                </span>
+                <span class="chatMsg">
+                        {@html message.message}
+                </span>
+            {/if}
+            
         </td>
     </tr>
     {/key}
@@ -53,7 +60,7 @@
 	}
 	.chatMsg {
 		width: 100%;
-	}
+	}    
 	.chatIcon{
 		padding-left:2px;
 	}
