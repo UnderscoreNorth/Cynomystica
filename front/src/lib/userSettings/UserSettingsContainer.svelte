@@ -37,7 +37,11 @@
 				</tr>
 				<tr>
 					<th>Danmaku</th>
-					<td><input type="checkbox" bind:checked={$userSettings.display.danmaku} /></td>
+					<td>
+					Full<input type="radio" name='chatDanmaku' value='full' bind:group={$userSettings.display.danmaku} />
+					Transparent<input type="radio" name='chatDanmaku' value='half' bind:group={$userSettings.display.danmaku} />
+					None<input type="radio" name='chatDanmaku' value='none' bind:group={$userSettings.display.danmaku} />
+					</td>
 				</tr>
 				<tr>
 					<th>Chat Width</th>

@@ -38,6 +38,7 @@
                 <li>Can move chat window to the right side</li>
                 <li>Vertical mode applies if height is greater than width of screen</li>
                 <li>Danmaku text shouldn't wrap anymore</li>
+                <li>Danmaku transparency option</li>
                 <li>Text formatting on danmaku</li>
                 <li>Red,blue, and spoiler text filters</li>
                 <li>Chat bar moved to top of chat window in vertical mode</li>

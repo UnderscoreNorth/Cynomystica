@@ -12,10 +12,12 @@
 		for(let message of value){
 			if(!message.played){
 				message.played = true;
-				if($userSettings.display.danmaku){
+				if($userSettings.display.danmaku !== 'none'){
 					let bulletMessage = document.createElement('div');
 					bulletMessage.innerHTML = message.message;
 					bulletMessage.classList.add('bulletText');
+					if($userSettings.display.danmaku == 'half')
+					bulletMessage.classList.add('transparent');
 					chatMessageElem?.appendChild(bulletMessage);
 					bulletMessage.style.top = `${bulletHeight}px`;
 					bulletHeight += 20;	
@@ -47,7 +49,7 @@
         font-size:2rem;
         font-weight: bold;
         position:absolute;
-        z-index: 1;       
+        z-index: 0;       
 		color:white; 
         text-shadow:
 		-1px -1px 0 black,

@@ -41,7 +41,7 @@
 	#otherUserModal {
 		width: 8rem;
 		margin-top: 4rem;
-        margin-left:calc(24rem - 100vw);
+        margin-left:calc(26rem - 100vw);
 	}
     .userModActionBtn:hover{
         cursor: pointer;

@@ -176,7 +176,7 @@
 		width:1.8rem;
 		height:1.8rem;
 		top:0.1rem;
-		z-index: 1;
+		z-index: 0;
 		border-right:solid 1px;
 	}
 	#iconList{

@@ -6,7 +6,7 @@ export default class {
     'useragent' VARCHAR(500) NOT NULL,
     'chatPosition' VARCHAR(10),
     'videoDisplay' INT,
-    'danmakuDisplay' INT,
+    'danmakuDisplay' VARCHAR(10),
     'chatWidth' INT,
     'syncThreshold' INT,    
     'selectedIcon' VARCHAR(200),
@@ -46,7 +46,7 @@ export default class {
     send.useragent = useragent;
     send.chatPosition = obj.display.chat;
     send.videoDisplay = obj.display.video ? 1 : 0;
-    send.danmakuDisplay = obj.display.danmaku ? 1 : 0;
+    send.danmakuDisplay = obj.display.danmaku;
     send.chatWidth = obj.display.chatWidth;
     send.syncThreshold = obj.sync.threshold;
     send.selectedIcon = obj.icon;

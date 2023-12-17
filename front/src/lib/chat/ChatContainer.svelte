@@ -140,7 +140,7 @@
 	#grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-template-rows: 2em 1fr 2em;
+		grid-template-rows: 2em 1fr 2em 5px;
 		gap: 0px 0px;
 		height: 100%;
 		width: 100%;

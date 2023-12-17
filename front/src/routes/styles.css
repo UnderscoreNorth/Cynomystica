@@ -156,3 +156,6 @@ button:focus:not(:focus-visible) {
 .spoilertext:hover {
 	color: var(--color-text-dark);
 }
+.transparent {
+	opacity: 0.5;
+}
