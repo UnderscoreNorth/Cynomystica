@@ -2,20 +2,17 @@
     export let message:any;
     import {icons} from '$lib/stores/icons';
     import { bulletMode } from '$lib/stores/bulletmode';
-    import { user } from '$lib/stores/user';
-	import ChatMessage from './ChatMessage.svelte';
-    const getMessageClasses = (message:string)=>{
-        let array = [];
-        if(message?.[0] == '>' )
-        array.push('greentext');
-        return array.join(' ');
-    }
-    const getRowClasses = (message:string)=>{
+    import { user } from '$lib/stores/user';    
+    import { tabText } from '$lib/stores/tabText';
+    const getRowClasses = (msg:string)=>{
         let array = [];
         array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
-        if(message.includes($user.username) && $user.username)
+        if(msg.includes($user.username) && $user.username){
             array.push('userHighlighted');
-            return array.join(' ');
+            if(document.hidden == true)
+                $tabText = `*Pinged by ${message.username}*`;
+        }
+        return array.join(' ');
     }
     const getUserStyle = ()=>{
         let style = '';
@@ -42,9 +39,7 @@
                 {message.username}: 
             </span>
             <span class="chatMsg">
-                <span class={getMessageClasses(message.message)}>
-                    <ChatMessage message={message.message} />
-                </span>
+                    {@html message.message}
             </span>
         </td>
     </tr>

@@ -9,6 +9,7 @@
 	import { login } from '$lib/utilities/login';
 	import { users } from '$lib/stores/users';
 	import { userSettings } from '$lib/stores/userSettings';
+	import { tabText } from '$lib/stores/tabText';
 	let inputValue: string;
 	let lastInput = '';
 	let iconListOpen = false;
@@ -77,6 +78,9 @@
 	const selectIcon = (icon:any)=>{
 		$userSettings.icon = icon;
 	}
+	const handleFocus = ()=>{
+		$tabText = '';
+	}
 	onMount(() => {
 	if(browser){
 		window.addEventListener("click", function(event) {
@@ -86,7 +90,6 @@
 });
 	
 </script>
-<div id='chatBarContainer'>	
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id='iconSelect' on:click={toggleIconList} >
 		{#if $userSettings.icon && $icons[$userSettings.icon]?.url}
@@ -124,13 +127,10 @@
 	bind:value={inputValue}
 	on:keydown={handleKeyDown}
 	on:keyup={handleKeyUp}
+	on:focus={handleFocus}
 	autocomplete="off"
 />
-</div>
 <style>
-	#chatBarContainer{
-		position:relative
-	}
 	#iconSelect{
 		position:absolute;
 		float:left;

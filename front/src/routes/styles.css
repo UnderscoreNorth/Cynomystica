@@ -143,3 +143,9 @@ button:focus:not(:focus-visible) {
 .greentext {
 	color: #789922;
 }
+.bluetext {
+	color: #1b60ff;
+}
+.redtext {
+	color: #ff0000;
+}

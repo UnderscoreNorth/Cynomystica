@@ -6,14 +6,32 @@
 	import { onMount } from 'svelte';
 	import { userSettings } from '$lib/stores/userSettings';
 	import './styles.css';
-
+	import { io } from '$lib/realtime';
+	import { user } from '$lib/stores/user';
+	import { tabText } from '$lib/stores/tabText';
+	let defaultTabtext = 'Cynomystica';
+	let tabName = defaultTabtext;
+	
 	onMount(() => {
 		init();
+		setInterval(()=>{
+			if($tabText && tabName !== $tabText){
+				tabName = $tabText
+			} else {
+				tabName = defaultTabtext;
+			}
+		},
+		1000);
+		userSettings.subscribe((e)=>{
+			console.log(15,$userSettings)
+			if(!$userSettings.blockSave && $user.username)
+				io.emit('upsert-usersettings',$userSettings)
+		})
 	});
 </script>
 
 <svelte:head>
-	<title>Cynomystica</title>
+	<title>{tabName}</title>
 	<meta name="description" content="Prairie Dog Streaming" />
 </svelte:head>
 
@@ -21,7 +39,12 @@
 	<c id='cHeader'><Header /></c>
 	<main>
 		{#if $userSettings.display.video}<c id='cVideo' style:width={`calc(100% - ${$userSettings.display.chatWidth}rem)`}><VideoContainer /></c>{/if}
-		{#if $userSettings.display.chat}<c id='cChat' style:width={`${$userSettings.display.chatWidth}rem`}><ChatContainer /></c>{/if}
+		{#if $userSettings.display.chat !== 'none'}
+		<c id='cChat' 
+			style:width={`${$userSettings.display.chatWidth}rem`}
+			style:order={$userSettings.display.chat == 'left' ? 1 : 3}
+		><ChatContainer /></c>
+		{/if}
 	</main>
 </section>
 
@@ -51,7 +74,7 @@
 		overflow:hidden;
 		position:relative;
 	}
-	@media only screen and (max-width: 768px) {
+	@media (max-width: 768px) or (orientation:portrait) {
 		main{
 			flex-direction: column;
 		}

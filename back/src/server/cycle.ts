@@ -1,6 +1,7 @@
 import { default as playlist } from "./playlist";
-import { default as IO, checkVersion } from "./socket";
+import { default as IO, activityCheck, checkVersion } from "./socket";
 import chat from "./chat";
+import { writeToLog } from "../lib/logger";
 
 let inCycle = false;
 let lastPlaylist = "";
@@ -23,6 +24,10 @@ function consoleVitals() {
     currentURL: playlist.playlist?.[0]?.url,
   });
 }
+async function logActivity() {
+  let { active, total } = await activityCheck();
+  writeToLog("userActivity", [{ total, active, time: new Date() }]);
+}
 export const cycle = async () => {
   if (!inCycle) {
     inCycle = true;
@@ -44,11 +49,12 @@ export const cycle = async () => {
       console.log("cycle", err);
     } finally {
       inCycle = false;
-      if (beat == 10) {
+      if (beat == 60) {
         checkVersion();
+        logActivity();
         beat = 0;
       }
-      if (beat == 3) {
+      if (beat % 5 == 0) {
         playlist.send(IO());
       }
     }

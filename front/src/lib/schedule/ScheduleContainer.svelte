@@ -40,7 +40,7 @@
 		max-width: 80em;
 		margin-top: 2rem;
 	}
-	@media only screen and (max-width: 768px) {
+	@media (max-width: 768px) or (orientation:portrait) {
 		#scheduleContainer {
 			width: 100vw;
 		}

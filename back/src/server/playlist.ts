@@ -5,6 +5,7 @@ import { cycle } from "./cycle";
 import schedule from "../sqliteTables/schedule";
 import moment from "moment";
 import playlists from "../sqliteTables/playlists";
+import { writeToLog } from "../lib/logger";
 
 export type PlaylistOrder = Array<number>;
 export type PlaylistObj = Array<PlaylistItem>;
@@ -38,7 +39,6 @@ class PlayList {
     for (const id in this.order) {
       clientPlaylist[id] = this.playlist[this.order[id]];
     }*/
-    console.log("playlist.send");
     socket.emit("playlist", {
       status: "success",
       playlist: this.playlist,
@@ -67,6 +67,13 @@ class PlayList {
       this.playing = true;
       this.currentSeekTime = 0;
       this.playlist[0].startDate = new Date();
+      writeToLog("playlist", [
+        {
+          item: this.playlist[0].url,
+          username: this.playlist[0].username,
+          time: new Date(),
+        },
+      ]);
       change = true;
     }
     let lastEndDate = null;

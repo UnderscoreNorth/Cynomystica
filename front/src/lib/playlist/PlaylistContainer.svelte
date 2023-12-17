@@ -106,7 +106,7 @@
 		width:100%;
 		overflow-y: scroll;
 	}
-	@media only screen and (max-width: 768px) {
+	@media (max-width: 768px) or (orientation:portrait) {
 		#playlistContainer{
 			font-size: 0.7rem;
 			width:calc(100vw - 6em);

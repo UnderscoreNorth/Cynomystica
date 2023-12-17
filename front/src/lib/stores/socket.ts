@@ -117,5 +117,15 @@ const init = () => {
 	io.on('permissions', (e) => {
 		permissions.set(e);
 	});
+	io.on('usersettings', (e) => {
+		if (e) {
+			e.blockSave = true;
+			userSettings.set(e);
+			setTimeout(() => {
+				e.blockSave = false;
+				userSettings.set(e);
+			}, 500);
+		}
+	});
 };
 export default init;

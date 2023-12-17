@@ -87,7 +87,9 @@
 				</div>
 			{/if}
 		</div>
-		<ChatBar />
+		<div id='chatBarContainer'>	
+			<ChatBar />
+		</div>
 		{#if selectedOtherUser}
 		<OtherUserModal otherUser={selectedOtherUser} closeModal={selectOtherUser} />
 		{/if}
@@ -103,8 +105,21 @@
 		display: flex;
 		line-height: 2em;
 		border-bottom: solid 1px black;
+		order:1;
 	}
-	
+
+	#chatBarContainer{
+		position:relative;
+		order:3;
+	}
+	@media (max-width: 768px) or (orientation:portrait) {
+		#chatHeader{
+			order:3;
+		}
+		#chatBarContainer{
+			order:1;
+		}
+	}
 	#chatTable {
 		border-collapse: collapse;
 		width:100%;
@@ -134,7 +149,8 @@
 		position: relative;
 		overflow-y: hidden;
 		background-image: url(/CynoChatBG.png);
-    background-position: bottom;
+    	background-position: bottom;
+		order:2;
 	}
 	#chatScroller{
 		height:calc(100% - 0.5rem);

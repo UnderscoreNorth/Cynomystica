@@ -67,7 +67,7 @@
 			display: block !important;;
 		}
 	}
-	@media only screen and (max-width: 768px) {
+	@media (max-width: 768px) or (orientation:portrait) {
 		#loginToggle{
 			display:unset;
 		}

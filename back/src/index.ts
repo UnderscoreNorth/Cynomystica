@@ -3,6 +3,7 @@ import config from "../config.json";
 import { createServer } from "node:http";
 import dbInit from "./init/dbInit";
 import { v4 as uuidv4 } from "uuid";
+import md5 from "md5";
 
 import {
   socketInterface,
@@ -28,9 +29,11 @@ import getSchedule from "./controller/get-schedule";
 import sendPermissions from "./lib/sendPermissions";
 import userMod from "./controller/user-mod";
 import version from "./controller/version";
+import upsertUserSettings from "./controller/upsert-usersettings";
 
 import playlist from "./server/playlist";
 import updatePlaylist from "./controller/update-playlist";
+import SyncPlay from "./server/syncplay";
 
 dbInit();
 const app = express();
@@ -39,6 +42,7 @@ const server = createServer(app);
 // @ts-ignore
 init(server);
 let io = IO();
+//let syncPlay = SyncPlay();
 //playlist.queuePlaylist({ playlist: "Commercials", duration: 500 });
 
 const ioEvents = {
@@ -56,9 +60,13 @@ const ioEvents = {
   "user-mod": userMod,
   version: version,
   "update-playlist": updatePlaylist,
+  "upsert-usersettings": upsertUserSettings,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
+  socket.handshake.headers["x-real-ip"] = md5(
+    socket.handshake.headers["x-real-ip"] ?? ""
+  );
   console.log("new connection", socket.handshake.headers["x-real-ip"]);
   if (!socket.request.headers["user-agent"]) socket.disconnect();
   console.log(64, await userModeration.getUser(socket.handshake["x-real-ip"]));
@@ -87,7 +95,7 @@ io.on("connection", async (socket: socketInterface) => {
   sendPermissions(socket);
   chat().getRecent(socket);
   socket.emit("icons", await Icons.get());
-  await getSchedule(socket);
+  getSchedule(socket);
 });
 
 server.listen(port, () => {

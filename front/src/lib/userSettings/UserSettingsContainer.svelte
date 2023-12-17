@@ -26,7 +26,10 @@
 				<tr>
 					<th rowspan=4>Display</th>
 					<th>Chat</th>
-					<td><input type="checkbox" bind:checked={$userSettings.display.chat} /></td>
+					<td>
+					Left<input type="radio" name='chatDisplay' value='left' bind:group={$userSettings.display.chat} />
+					Right<input type="radio" name='chatDisplay' value='right' bind:group={$userSettings.display.chat} />
+					None<input type="radio" name='chatDisplay' value='none' bind:group={$userSettings.display.chat} /></td>
 				</tr>
 				<tr>
 					<th>Video</th>
@@ -58,5 +61,11 @@
 	}
 	#userSettingsContainer input{
 		max-width:4rem;
+	}
+	@media (max-width: 768px) or (orientation:portrait) {
+		#userSettingsContainer{
+			font-size: 0.7rem;
+			max-width:calc(100vw - 10px);
+		}
 	}
 </style>

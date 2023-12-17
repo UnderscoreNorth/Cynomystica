@@ -2,6 +2,7 @@ import { default as IO } from "../server/socket";
 import { socketInterface } from "../server/socket";
 import users from "../sqliteTables/users";
 import userModeration from "../sqliteTables/userModeration";
+import userSettings from "../sqliteTables/userSettings";
 export default async function socketLogin(
   socket: socketInterface,
   username: string
@@ -26,5 +27,14 @@ export default async function socketLogin(
   const accessLevel = (await users.getAccessLevel(username)) ?? 0;
   socket.username = username;
   socket.accessLevel = accessLevel;
+  if (accessLevel >= 1) {
+    socket.emit(
+      "usersettings",
+      await userSettings.get(
+        socket.username,
+        socket.handshake.headers["user-agent"]
+      )
+    );
+  }
   return "success";
 }

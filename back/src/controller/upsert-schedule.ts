@@ -23,7 +23,7 @@ export default async function upsertSchedule(
       console.log(err);
       socket.emit("alert", {
         type: "queue",
-        message: "Something is wrong with request",
+        message: "Something went wrong with the request",
       });
     }
   }

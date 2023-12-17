@@ -13,6 +13,6 @@ front/vite.config.ts.timestamp-*
 front/src/lib/server/config.json
 back/sqlite.db*
 front/src/lib/clientconfig.json
-back/chatlogs
+back/logs
 back/node_modules
 back/config.json

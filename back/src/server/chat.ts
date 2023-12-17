@@ -1,4 +1,5 @@
-import { getChatFromLog, writeChatToLog } from "../lib/chatLogging";
+import { getFromLog, writeToLog } from "../lib/logger";
+import messageFormatter from "../lib/messageFormatter";
 import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
 
@@ -19,6 +20,7 @@ export class Chat {
   }
   message(message: Message) {
     if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
+    message.message = messageFormatter(message.message);
     this.recentMsgs.push(message);
     this.unloggedMsgs.push(message);
     IO().emit("message", message);
@@ -27,10 +29,10 @@ export class Chat {
     socket.emit("message", this.recentMsgs);
   }
   logMessages() {
-    writeChatToLog(this.unloggedMsgs);
+    writeToLog("chat", this.unloggedMsgs);
   }
   async getFromLog() {
-    this.recentMsgs = await getChatFromLog();
+    this.recentMsgs = await getFromLog("chat");
   }
 }
 let chat = new Chat();

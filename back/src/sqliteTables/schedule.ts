@@ -71,6 +71,7 @@ export default class {
               (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,finishTimeUTC,duration) 
               VALUES (@id,@username,@title,@url,@startTime,@leewayBefore,@leewayAfter,@visible,@finishTime,@duration)
               ON CONFLICT(id) DO UPDATE SET
+                  url=@url,
                   playTimeUTC = @startTime, 
                   finishTimeUTC=@finishTime, 
                   title=@title,

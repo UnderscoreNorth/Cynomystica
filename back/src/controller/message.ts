@@ -11,5 +11,6 @@ export default function message(socket: socketInterface, obj: incomingMessage) {
     icon: obj.icon,
     time: new Date(),
   };
+  socket.lastMessage = new Date();
   chat().message(messageObj);
 }

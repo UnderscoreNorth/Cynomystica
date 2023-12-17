@@ -7,6 +7,7 @@ export interface socketInterface extends Socket {
   uuid: string;
   accessLevel: number;
   lastQueue: Date;
+  lastMessage: Date;
   version: number;
 }
 
@@ -22,6 +23,21 @@ export const init = (server: Server) => {
 export default function () {
   return io;
 }
+
+export const activityCheck = async () => {
+  const now = new Date();
+  let active = 0;
+  let total = 0;
+  for (let socket of Object.values(
+    await io.sockets.fetchSockets()
+  ) as unknown as socketInterface[]) {
+    total++;
+    if (socket.lastMessage) {
+      if (now.getTime() - socket.lastMessage.getTime() <= 600000) active++;
+    }
+  }
+  return { active, total };
+};
 
 export const sendUserList = async () => {
   const userList: any = {};

@@ -14,7 +14,7 @@
 				message.played = true;
 				if($userSettings.display.danmaku){
 					let bulletMessage = document.createElement('div');
-					bulletMessage.innerText = message.message;
+					bulletMessage.innerHTML = message.message;
 					bulletMessage.classList.add('bulletText');
 					chatMessageElem?.appendChild(bulletMessage);
 					bulletMessage.style.top = `${bulletHeight}px`;
@@ -42,7 +42,7 @@
 	}
 
 	:global(.bulletText){
-        animation:textScrollAnim 10s linear 1;
+        animation:textScrollAnim 30s linear 1;
         animation-fill-mode: forwards;
         font-size:2rem;
         font-weight: bold;
@@ -57,22 +57,23 @@
 		height:2rem;
 		width:100%;
 		text-align: left;
+		white-space: nowrap;
     }
     @keyframes textScrollAnim {
         0% {
             transform:translateX(100%);
         }
         99% {
-            transform:translateX(-100%);
+            transform:translateX(-500%);
         }
         100%{
-            transform:translateX(-100%);
+            transform:translateX(-500%);
             display:none!important;
         }
     }
-	@media only screen and (max-width: 768px) {
+	@media (max-width: 768px) or (orientation:portrait) {
 		:global(.bulletText){
-			animation-duration: 5s;
+			animation-duration: 10s;
 			font-size:1.5rem;
 		}
 	}

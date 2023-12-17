@@ -2,10 +2,10 @@ import * as fs from "fs";
 import type { Messages } from "../server/chat";
 import * as csv from "csv";
 
-export const writeChatToLog = (messages: Messages) => {
+export const writeToLog = (type: string, messages: any) => {
   if (messages.length) {
     const date = messages[0].time;
-    const path = `./chatlogs/${date.getFullYear()}/${date.getMonth() + 1}/`;
+    const path = `./logs/${type}/${date.getFullYear()}/${date.getMonth() + 1}/`;
     const fileName = `${date.getDate()}.csv`;
     createFolder(path);
     csv.stringify(messages, { header: false }, (err, output) => {
@@ -41,20 +41,20 @@ const processFile = async (file: string) => {
   return records;
 };
 
-export const getChatFromLog = async () => {
+export const getFromLog = async (type: string) => {
   let tries = 0;
   const date = new Date();
   let logFile: string;
   try {
     do {
-      logFile = `./chatlogs/${date.getFullYear()}/${
+      logFile = `./logs/${type}/${date.getFullYear()}/${
         date.getMonth() + 1
       }/${date.getDate()}.csv`;
       console.log(logFile);
       tries++;
       date.setDate(date.getDate() - 1);
     } while (tries < 10 && !fs.existsSync(logFile));
-    if (logFile) {
+    if (fs.existsSync(logFile)) {
       return await processFile(logFile);
     } else {
       return [];
