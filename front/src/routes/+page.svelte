@@ -9,6 +9,7 @@
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
 	import { tabText } from '$lib/stores/tabText';
+	import Snow from '$lib/special/snow/Snow.svelte';
 	let defaultTabtext = 'Cynomystica';
 	let tabName = defaultTabtext;
 	
@@ -36,6 +37,9 @@
 
 <section id='app'>
 	<c id='cHeader'><Header /></c>
+	{#if $userSettings.display.snow}
+		<Snow />
+	{/if}
 	<main>
 		{#if $userSettings.display.video}<c id='cVideo' style:width={`calc(100% - ${$userSettings.display.chatWidth}rem)`}><VideoContainer /></c>{/if}
 		{#if $userSettings.display.chat !== 'none'}

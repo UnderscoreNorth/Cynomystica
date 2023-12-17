@@ -163,3 +163,11 @@ button:focus:not(:focus-visible) {
 	font-style: italic;
 	color: grey;
 }
+@keyframes snowfall {
+	from {
+		transform: translate(var(--xStart), calc(0vh - 20px)) scale(var(--scale));
+	}
+	to {
+		transform: translate(var(--xEnd), calc(100vh + 20px)) scale(var(--scale));
+	}
+}

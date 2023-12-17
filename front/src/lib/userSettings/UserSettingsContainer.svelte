@@ -24,7 +24,7 @@
 			<hr />
 			<table>
 				<tr>
-					<th rowspan=4>Display</th>
+					<th rowspan=5>Display</th>
 					<th>Chat</th>
 					<td>
 					Left<input type="radio" name='chatDisplay' value='left' bind:group={$userSettings.display.chat} />
@@ -46,6 +46,10 @@
 				<tr>
 					<th>Chat Width</th>
 					<td><input type="number" step=1 bind:value={$userSettings.display.chatWidth} /></td>
+				</tr>
+				<tr>
+					<th>Snow</th>
+					<td><input type="checkbox" bind:checked={$userSettings.display.snow} /></td>
 				</tr>
 				<tr>
 					<th>Sync</th>

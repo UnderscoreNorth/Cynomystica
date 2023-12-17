@@ -42,6 +42,9 @@
 <style>
 	#videoContainer {
 		background: black;
+		background-image: url('/videobg.jpg');
+		background-position: center;
+		background-size: cover;
 		height:100%;
 		vertical-align: top;
 		float:left;
