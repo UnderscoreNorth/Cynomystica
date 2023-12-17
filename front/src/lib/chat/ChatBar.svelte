@@ -188,6 +188,8 @@
 		background:white;
 		z-index:2;
 		color:black;
+		box-shadow: 1px 1px 5px 0px black;
+		border:solid 1px black;
 	}
 	.presetContainer{
 		display:inline-block;

@@ -163,7 +163,7 @@
 		position:absolute;
 		top: 0;
 		left: 0;
-		z-index: 1;
+		z-index: 0;
 		background: var(--color-bg-dark-3);
 		width:8rem;
 		height: calc(100% - 1em);
