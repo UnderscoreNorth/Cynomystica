@@ -22,6 +22,14 @@ const init = () => {
 	io.on('connected', () => {
 		if (localStorage.getItem('username')) {
 			login(localStorage.getItem('username'), localStorage.getItem('refreshToken'), 'token');
+		} else {
+			user.set({
+				username: '',
+				accessLevel: -1,
+				icon: '',
+				accessToken: undefined,
+				refreshToken: undefined
+			});
 		}
 	});
 
