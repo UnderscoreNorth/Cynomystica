@@ -70,7 +70,7 @@ export default function messageFormatter(msg: string) {
     } else if (msgPart.type == "pic") {
       formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer"><img src=${msgPart.content} /></a>`;
     } else if (msgPart.type == "link") {
-      formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer">{msgPart.content}</a>`;
+      formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer">${msgPart.content}</a>`;
     } else {
       formattedMsg += `${msgPart.content}`;
     }

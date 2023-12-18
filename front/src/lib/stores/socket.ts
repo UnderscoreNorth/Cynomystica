@@ -23,6 +23,8 @@ const init = () => {
 		if (localStorage.getItem('username')) {
 			login(localStorage.getItem('username'), localStorage.getItem('refreshToken'), 'token');
 		} else {
+			let reload = false;
+			if (userObj.username?.length > 0) reload = true;
 			user.set({
 				username: '',
 				accessLevel: -1,
@@ -30,6 +32,7 @@ const init = () => {
 				accessToken: undefined,
 				refreshToken: undefined
 			});
+			if (reload) location.reload();
 		}
 	});
 
