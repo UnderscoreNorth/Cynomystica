@@ -112,7 +112,7 @@
 		position:relative;
 		order:3;
 	}
-	@media (max-width: 768px) or (orientation:portrait) {
+	@media (orientation:portrait) {
 		#chatHeader{
 			order:3;
 		}

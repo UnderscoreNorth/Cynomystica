@@ -7,6 +7,7 @@
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
 	import Alert from './Alert.svelte';
 	import { bulletMode } from '$lib/stores/bulletmode';
+	import Modal from '$lib/ui/modal.svelte';
 
 	import IconButton from '$lib/ui/iconButton.svelte';
 	import MdPoll from 'svelte-icons/md/MdPoll.svelte';
@@ -66,19 +67,28 @@
 		<Alert />
 	</nav>
 	{#if userSettingsModalOpen}
-		<UserSettingsContainer closeModal={toggleSettings} />
+	<Modal closeModal={toggleSettings}>
+		<UserSettingsContainer/>
+	</Modal>
+		
 	{/if}
 	{#if playListModalOpen}
-		<PlaylistContainer closeModal={togglePlaylist} />
+		<Modal closeModal={togglePlaylist}>
+			<PlaylistContainer/>
+		</Modal>
 	{/if}
 	{#if moderationModalOpen}
 		<ModerationContainer closeModal={toggleModeration} />
 	{/if}
 	{#if scheduleModalOpen}
-		<ScheduleContainer closeModal={toggleSchedule} />
+		<Modal closeModal={toggleSchedule}>
+			<ScheduleContainer />
+		</Modal>
 	{/if}
 	{#if infoModalOpen}
-		<InfoContainer closeModal={toggleInfo} />
+		<Modal closeModal={toggleInfo}>
+			<InfoContainer/>
+		</Modal>
 	{/if}
 </header>
 

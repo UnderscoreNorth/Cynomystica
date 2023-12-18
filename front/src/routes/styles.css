@@ -10,7 +10,8 @@
 	--color-bg-light: #eee;
 	--color-bg-light-2: #a4abbb;
 	--color-text-dark: #ddd;
-	--color-text-light: #2e51a2;
+	--color-text-light-1: #2e51a2;
+	--color-text-light-2: #03141b;
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
 
@@ -110,7 +111,6 @@ button:focus:not(:focus-visible) {
 	background: var(--color-bg-dark-3);
 	display: inline-block;
 	padding: 1em;
-	width: 100%;
 	box-shadow: 1px 1px 5px 0px black;
 	border: solid 1px black;
 	opacity: 0.9;
@@ -136,7 +136,7 @@ button:focus:not(:focus-visible) {
 }
 .svgIcon:hover {
 	cursor: pointer;
-	color: var(--color-text-light);
+	color: var(--color-text-light-1);
 	background: var(--color-bg-light);
 	border-radius: 3px;
 }
@@ -157,20 +157,9 @@ button:focus:not(:focus-visible) {
 	color: var(--color-text-dark);
 }
 .transparent {
-	opacity: 0.5;
+	opacity: 0.66;
 }
 .actiontext {
 	font-style: italic;
 	color: grey;
-}
-@keyframes snowfall {
-	from {
-		transform: translate(var(--xStart), calc(0vh - 20px)) scale(var(--scale));
-	}
-	50% {
-		transform: translate(var(--xMid), var(--yMid)) scale(var(--scale));
-	}
-	to {
-		transform: translate(var(--xEnd), calc(100vh + 20px)) scale(var(--scale));
-	}
 }

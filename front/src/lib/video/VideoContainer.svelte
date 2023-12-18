@@ -81,7 +81,7 @@
             display:none!important;
         }
     }
-	@media (max-width: 768px) or (orientation:portrait) {
+	@media (orientation:portrait) {
 		:global(.bulletText){
 			animation-duration: 10s;
 			font-size:1.5rem;

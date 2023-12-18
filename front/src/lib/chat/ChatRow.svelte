@@ -3,7 +3,7 @@
     import {icons} from '$lib/stores/icons';
     import { bulletMode } from '$lib/stores/bulletmode';
     import { user } from '$lib/stores/user';  
-    import { theThreeGuys } from '$lib/stores/theThreeGuys'; 
+    import parseThreeGuys from '$lib/special/theThreeGuys/parseThreeGuys';
     const getRowClasses = (msg:string)=>{
         let array = [];
         array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -21,18 +21,7 @@
     }
     const parseUser = ()=>{
         let username = message.username;
-        let index = $theThreeGuys.indexOf(username);
-        switch(index){
-            case 0:
-            username += ', the first guy'
-            break;
-            case 1:
-            username += ', the second guy'
-            break;
-            case 2:
-            username += ', the third guy'
-            break;
-        }
+        username = parseThreeGuys(username);
         return username;
     }
 </script>

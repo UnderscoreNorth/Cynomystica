@@ -92,11 +92,12 @@
         display: grid;
         width:100%;
         background:var(--color-bg-light-2);
+        color:var(--color-text-light-2);
         grid-template-columns:4rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-template-rows:repeat(1800,1);
         grid-column-gap: 0;
         grid-row-gap: 0;
-        max-height:calc(100vh - 12rem);
+        max-height:calc(100vh - 13rem);
         overflow-y: scroll;
         padding-bottom:1px;
     }

@@ -43,5 +43,17 @@
         background: white;
         border-radius: 50%;
         box-shadow: 0px 0px 5px 5px white;
-    }    
+    }   
+    @keyframes -global-snowfall {
+        from {
+            transform: translate(var(--xStart), calc(0vh - 20px)) scale(var(--scale));
+        }
+        50% {
+            transform: translate(var(--xMid), var(--yMid)) scale(var(--scale));
+        }
+        to {
+            transform: translate(var(--xEnd), calc(100vh + 20px)) scale(var(--scale));
+        }
+    }
+ 
 </style>

@@ -77,7 +77,7 @@
 		overflow:hidden;
 		position:relative;
 	}
-	@media (max-width: 768px) or (orientation:portrait) {
+	@media (orientation:portrait) {
 		main{
 			flex-direction: column;
 		}
