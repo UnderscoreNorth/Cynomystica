@@ -43,6 +43,6 @@
 		"socket.io-client": "^4.5.4",
 		"svelte-icons": "^2.1.0",
 		"svelte-sortable": "^0.1.0",
-		"youtube-player": "^5.5.2"
+		"youtube-player": "^5.6.0"
 	}
 }
