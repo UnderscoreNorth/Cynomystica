@@ -3,7 +3,7 @@ export default function messageFormatter(msg: string) {
   msg = msg.replace(/>/g, "&gt;");
   console.log(msg);
   let classStylers = [
-    { type: "greentext", consume: false, regex: ">" },
+    { type: "greentext", consume: false, regex: "&gt;" },
     { type: "redtext", consume: true, regex: "red:" },
     { type: "bluetext", consume: true, regex: "blue:" },
   ];

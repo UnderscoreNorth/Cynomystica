@@ -23,6 +23,7 @@
 	let selectionStart = 0;
 	let selectionEnd = 0;
 	let spoilerMode = false;
+	let iconListEl;
 	
 	beforeUpdate(() => {
 		if (input) {
@@ -128,13 +129,13 @@
 	
 </script>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<div id='iconSelect' on:click={toggleIconList} >
+	<div id='iconSelect' on:click={toggleIconList} bind:this={iconListEl} >
 		{#if $userSettings.icon && $icons[$userSettings.icon]?.url}
 		<img src={$icons[$userSettings.icon].url} alt='icon' />
 		{/if}
 	</div>
 	{#if iconListOpen}	
-	<div id='iconList'>
+	<div id='iconList' style={iconListEl?.getBoundingClientRect()?.top < 250 ? 'top:2rem;' : 'bottom:2rem'} >
 		{#each Array.from(new Set(Object.values($icons).map(x=>x.preset))) as preset}
 			<div class='presetContainer'>
 				<div>
@@ -181,7 +182,6 @@
 	}
 	#iconList{
 		position:absolute;
-		top: 0rem;
 		left:0.5rem;
 		max-height:70vh;
 		overflow-y: scroll;
