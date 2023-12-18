@@ -1,7 +1,6 @@
 export default function messageFormatter(msg: string) {
   msg = msg.replace(/</g, "&lt;");
   msg = msg.replace(/>/g, "&gt;");
-  console.log(msg);
   let classStylers = [
     { type: "greentext", consume: false, regex: "&gt;" },
     { type: "redtext", consume: true, regex: "red:" },
@@ -9,6 +8,11 @@ export default function messageFormatter(msg: string) {
   ];
   let classes = [];
   let formatters = [
+    {
+      type: "pic",
+      matchRegex: /(http[^\s]+:pic)/,
+      replaceRegex: /(http[^\s]+):pic/,
+    },
     { type: "link", matchRegex: /(http[^\s]+)/, replaceRegex: /(http[^\s]+)/ },
     {
       type: "strong",
@@ -20,11 +24,6 @@ export default function messageFormatter(msg: string) {
       type: "spoiler",
       matchRegex: /(\[s\][^`]+\[\/s\])/,
       replaceRegex: /\[s\]([^`]+)\[\/s\]/,
-    },
-    {
-      type: "pic",
-      matchRegex: /(http[^\s]+:pic)/,
-      replaceRegex: /(http[^\s]+):pic/,
     },
   ];
   msg = msg.trim();

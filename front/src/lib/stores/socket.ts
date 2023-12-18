@@ -13,6 +13,7 @@ import { icons } from './icons';
 import { login } from '$lib/utilities/login';
 import { permissions } from './permissions';
 import { tabText } from './tabText';
+import { theThreeGuys } from './theThreeGuys';
 let userObj: any = {};
 user.subscribe((e) => {
 	userObj = e;
@@ -55,6 +56,7 @@ const init = () => {
 					video.set(e.playlist[e.playlistIndex]);
 				}
 			}
+			theThreeGuys.set(e.theThreeGuys);
 		}
 	});
 	io.on('message', (e) => {

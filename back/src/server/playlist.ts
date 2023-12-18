@@ -21,6 +21,8 @@ export interface PlaylistItem {
   scheduledID: number | null;
 }
 
+let theThreeGuys = [];
+
 class PlayList {
   playlist: PlaylistObj;
   currentSeekTime: number;
@@ -33,17 +35,37 @@ class PlayList {
     this.scheduleCheck = false;
     console.log("Playlist Initialized");
   }
-  send(socket: Server | socketInterface | null) {
+  async send(socket: Server | socketInterface | null) {
     if (socket == null) socket = IO();
     /*const clientPlaylist: Array<object> = [];
     for (const id in this.order) {
       clientPlaylist[id] = this.playlist[this.order[id]];
     }*/
+    if (this.playlist?.[0]?.name.includes("School Days")) {
+      if (theThreeGuys.length == 0) {
+        for (let socket of Object.values(
+          await IO().sockets.fetchSockets()
+        ) as unknown as socketInterface[]) {
+          if (socket.username) {
+            theThreeGuys.push(socket.username);
+          }
+        }
+        theThreeGuys = theThreeGuys
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
+        theThreeGuys = theThreeGuys.slice(0, 2);
+        console.log("TheThreeGuys", theThreeGuys);
+      }
+    } else {
+      theThreeGuys = [];
+    }
     socket.emit("playlist", {
       status: "success",
       playlist: this.playlist,
       playlistIndex: 0,
       seektime: this.currentSeekTime,
+      theThreeGuys,
     });
   }
   updateDates() {

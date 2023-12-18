@@ -2,7 +2,8 @@
     export let message:any;
     import {icons} from '$lib/stores/icons';
     import { bulletMode } from '$lib/stores/bulletmode';
-    import { user } from '$lib/stores/user';    
+    import { user } from '$lib/stores/user';  
+    import { theThreeGuys } from '$lib/stores/theThreeGuys'; 
     const getRowClasses = (msg:string)=>{
         let array = [];
         array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -17,6 +18,22 @@
             style=`color:${$icons[message.icon]?.color}`
         }
         return style;
+    }
+    const parseUser = ()=>{
+        let username = message.username;
+        let index = $theThreeGuys.indexOf(username);
+        switch(index){
+            case 0:
+            username += ', the first guy'
+            break;
+            case 1:
+            username += ', the second guy'
+            break;
+            case 2:
+            username += ', the third guy'
+            break;
+        }
+        return username;
     }
 </script>
 {#if message?.username}
@@ -34,11 +51,11 @@
             </span>
             {#if message.message.indexOf('/me ') == 0}
             <span class="actiontext">
-                {message.username} {@html message.message.substring(4)}
+                {parseUser()} {@html message.message.substring(4)}
             </span>
             {:else}
                 <span class="chatUser" style={getUserStyle()}>
-                    {message.username}: 
+                    {parseUser()}: 
                 </span>
                 <span class="chatMsg">
                         {@html message.message}
