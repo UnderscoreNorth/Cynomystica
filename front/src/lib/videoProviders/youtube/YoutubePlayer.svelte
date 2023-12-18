@@ -4,9 +4,9 @@
 	import youTubePlayer from 'youtube-player';
 	import { onDestroy, onMount } from 'svelte';
 	import type { YouTubePlayer } from 'youtube-player/dist/types';
-	import {user} from '$lib/stores/user';
+	import { user } from '$lib/stores/user';
 	import { io } from '$lib/realtime';
-	let player: YouTubePlayer|null;
+	let player: YouTubePlayer | null;
 	const debounceDuration = 100;
 	let debounced = false;
 	let lastSeek = 0;
@@ -26,7 +26,7 @@
 					let serverTime = $video.seekTime;
 					if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000) {
 						console.log('Syncing');
-						player.seekTo(serverTime,true);
+						player.seekTo(serverTime, true);
 					}
 				};
 				const initSyncTime = () => {
@@ -36,38 +36,39 @@
 					}, $userSettings.sync.threshold);
 				};
 				initSyncTime();
-				player.on('stateChange',(async(e)=>{
+				player.on('stateChange', async (e) => {
 					//console.log(e);
-					if(!debounced && $user.accessLevel > -1){
+					if (!debounced && $user.accessLevel > -1) {
 						debounced = true;
 						let currentSeek = await player.getCurrentTime();
-						if(Math.abs(currentSeek - lastSeek) > 1000){
-							io.emit('leaderSeek',currentSeek);
+						if (Math.abs(currentSeek - lastSeek) > 1000) {
+							io.emit('leaderSeek', currentSeek);
 							lastSeek = currentSeek;
 						}
-					setTimeout(()=>{debounced = false},debounceDuration);
+						setTimeout(() => {
+							debounced = false;
+						}, debounceDuration);
 					}
-				}))
+				});
 			});
-		video.subscribe((newVideo)=>{
-			if(newVideo.url !== videoURL && newVideo.type == 'yt' && player){
+		video.subscribe((newVideo) => {
+			if (newVideo.url !== videoURL && newVideo.type == 'yt' && player) {
 				player.loadVideoById(newVideo.url);
 				videoURL = newVideo.url;
 			}
-		})
+		});
 	});
-	onDestroy(()=>{
+	onDestroy(() => {
 		player = null;
-		try{
-			clearInterval(syncInterval)
-		} finally{
-			
+		try {
+			clearInterval(syncInterval);
+		} finally {
 		}
 		let playerEl = document.getElementById('player');
-		while(playerEl?.firstChild){
+		while (playerEl?.firstChild) {
 			playerEl.removeChild(playerEl.firstChild);
 		}
-	})
+	});
 </script>
 
 <div>

@@ -3,7 +3,7 @@
 	import { user } from '$lib/stores/user';
 	import { blocker } from '$lib/stores/blocker';
 	import type { Icon } from '$lib/stores/icons';
-	import { icons} from '$lib/stores/icons';
+	import { icons } from '$lib/stores/icons';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { login } from '$lib/utilities/login';
@@ -18,23 +18,23 @@
 	let lastKey = '';
 	let tabIndex = 0;
 	let tabRegex = /([^ ]+)$/g;
-	let sent:Array<string> = [];
+	let sent: Array<string> = [];
 	let sentIndex = -1;
 	let selectionStart = 0;
 	let selectionEnd = 0;
 	let spoilerMode = false;
 	let iconListEl;
-	
+
 	beforeUpdate(() => {
 		if (input) {
 			({ selectionStart, selectionEnd } = input);
 		}
 	});
-	
+
 	afterUpdate(() => {
-		if(spoilerMode){
-			if(selectionStart == selectionEnd){
-				selectionStart += 3
+		if (spoilerMode) {
+			if (selectionStart == selectionEnd) {
+				selectionStart += 3;
 			} else {
 				selectionStart = selectionEnd;
 				selectionStart += 7;
@@ -44,21 +44,22 @@
 		}
 	});
 	const handleKeyDown = (e: KeyboardEvent) => {
-		if(e.key == 's' && e.ctrlKey == true){
+		if (e.key == 's' && e.ctrlKey == true) {
 			e.preventDefault();
-		}		
-		if(e.key == 'Tab'){
+		}
+		if (e.key == 'Tab') {
 			e.preventDefault();
 			let tabWord = lastInput.match(tabRegex)?.[0].toLowerCase() ?? '';
-			if(tabWord?.length){
-				let matched = $users.users.filter((otherUser)=>{
-					return otherUser.username.toLowerCase().indexOf(tabWord) == 0
-				}).map((otherUser)=>otherUser.username);
-				if(matched.length){
-					inputValue = lastInput.replace(tabRegex,matched[tabIndex])
+			if (tabWord?.length) {
+				let matched = $users.users
+					.filter((otherUser) => {
+						return otherUser.username.toLowerCase().indexOf(tabWord) == 0;
+					})
+					.map((otherUser) => otherUser.username);
+				if (matched.length) {
+					inputValue = lastInput.replace(tabRegex, matched[tabIndex]);
 					tabIndex++;
-					if(tabIndex >= matched.length)
-						tabIndex = 0;
+					if (tabIndex >= matched.length) tabIndex = 0;
 				}
 			}
 		} else {
@@ -66,87 +67,94 @@
 		}
 		if (e.key == 'Enter' && inputValue.trim().length > 0) {
 			if (!$user.username.length) {
-				login(inputValue.trim(),'','guest');
+				login(inputValue.trim(), '', 'guest');
 			} else {
-				sent.unshift(inputValue)
-				if($user.accessLevel < 4){
-					inputValue = inputValue.replace(/(http[^\s]+):pic/gmi,'$1');
+				sent.unshift(inputValue);
+				if ($user.accessLevel < 4) {
+					inputValue = inputValue.replace(/(http[^\s]+):pic/gim, '$1');
 				}
-				io.emit('message', {icon:$userSettings.icon ?? '', msg:inputValue.trim()});
+				io.emit('message', { icon: $userSettings.icon ?? '', msg: inputValue.trim() });
 			}
 			inputValue = '';
 		}
 		lastKey = e.key;
 	};
-	const handleKeyUp = (e:KeyboardEvent)=>{
+	const handleKeyUp = (e: KeyboardEvent) => {
 		//console.log(e);
-		if(e.key == 's' && e.ctrlKey == true){
+		if (e.key == 's' && e.ctrlKey == true) {
 			spoilerMode = true;
 			const { selectionStart: start, selectionEnd: end } = input;
 			console.log(start);
-			let spoileredText = `[s]${inputValue.slice(start, end)}[/s]`; 
+			let spoileredText = `[s]${inputValue.slice(start, end)}[/s]`;
 			inputValue = `${inputValue.slice(0, start)}${spoileredText}${inputValue.slice(end)}`;
 		} else {
 			spoilerMode = false;
 		}
-		if(e.key !== 'Tab')
-			lastInput = inputValue;
-		if(['ArrowUp','ArrowDown'].includes(e.key)){
-			if(sent.length){
-				if(e.key == 'ArrowUp'){
+		if (e.key !== 'Tab') lastInput = inputValue;
+		if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+			if (sent.length) {
+				if (e.key == 'ArrowUp') {
 					sentIndex++;
 				} else {
 					sentIndex--;
 				}
-				if(sentIndex >= sent.length){
+				if (sentIndex >= sent.length) {
 					sentIndex = 0;
-				} else if (sentIndex < 0){
-					sentIndex = sent.length -1;
+				} else if (sentIndex < 0) {
+					sentIndex = sent.length - 1;
 				}
-				inputValue = sent[sentIndex]
-			}	
+				inputValue = sent[sentIndex];
+			}
 		} else {
 			sentIndex = -1;
 		}
-	}
-	const toggleIconList = (e:MouseEvent)=>{
+	};
+	const toggleIconList = (e: MouseEvent) => {
 		iconListOpen = !iconListOpen;
 		e.stopPropagation();
-	}
-	const selectIcon = (icon:any)=>{
+	};
+	const selectIcon = (icon: any) => {
 		$userSettings.icon = icon;
-	}
-	const handleFocus = ()=>{
+	};
+	const handleFocus = () => {
 		$tabText = '';
-	}
+	};
 	onMount(() => {
-	if(browser){
-		window.addEventListener("click", function(event) {
-			iconListOpen = false;
-		});
-	}
-});
-	
+		if (browser) {
+			window.addEventListener('click', function (event) {
+				iconListOpen = false;
+			});
+		}
+	});
 </script>
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<div id='iconSelect' on:click={toggleIconList} bind:this={iconListEl} >
-		{#if $userSettings.icon && $icons[$userSettings.icon]?.url}
-		<img src={$icons[$userSettings.icon].url} alt='icon' />
-		{/if}
-	</div>
-	{#if iconListOpen}	
-	<div id='iconList' style={iconListEl?.getBoundingClientRect()?.top < 250 ? 'top:2rem;' : 'bottom:2rem'} >
-		{#each Array.from(new Set(Object.values($icons).map(x=>x.preset))) as preset}
-			<div class='presetContainer'>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div id="iconSelect" on:click={toggleIconList} bind:this={iconListEl}>
+	{#if $userSettings.icon && $icons[$userSettings.icon]?.url}
+		<img src={$icons[$userSettings.icon].url} alt="icon" />
+	{/if}
+</div>
+{#if iconListOpen}
+	<div
+		id="iconList"
+		style={iconListEl?.getBoundingClientRect()?.top < 250 ? 'top:2rem;' : 'bottom:2rem'}
+	>
+		{#each Array.from(new Set(Object.values($icons).map((x) => x.preset))) as preset}
+			<div class="presetContainer">
 				<div>
 					<b>{preset}</b>
 				</div>
-				{#each Object.entries($icons) as [id,icon]}
+				{#each Object.entries($icons) as [id, icon]}
 					{#if icon.preset == preset}
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<div on:click={()=>{selectIcon(id)}} class='iconListItem'>
+						<div
+							on:click={() => {
+								selectIcon(id);
+							}}
+							class="iconListItem"
+						>
 							{#if icon.url}
-								<img src={icon.url} alt='icon' />
+								<img src={icon.url} alt="icon" />
 							{/if}
 							<span>
 								{icon.display}
@@ -157,8 +165,8 @@
 			</div>
 		{/each}
 	</div>
-	{/if}
-	<input
+{/if}
+<input
 	id="inputBar"
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
@@ -169,59 +177,60 @@
 	on:focus={handleFocus}
 	autocomplete="off"
 />
+
 <style>
-	#iconSelect{
-		position:absolute;
-		float:left;
-		left:0.5rem;
-		width:1.8rem;
-		height:1.8rem;
-		top:0.1rem;
+	#iconSelect {
+		position: absolute;
+		float: left;
+		left: 0.5rem;
+		width: 1.8rem;
+		height: 1.8rem;
+		top: 0.1rem;
 		z-index: 0;
-		border-right:solid 1px;
+		border-right: solid 1px;
 	}
-	#iconList{
-		position:absolute;
-		left:0.5rem;
-		max-height:70vh;
+	#iconList {
+		position: absolute;
+		left: 0.5rem;
+		max-height: 70vh;
 		overflow-y: scroll;
-		background:white;
-		z-index:2;
-		color:black;
+		background: white;
+		z-index: 2;
+		color: black;
 		box-shadow: 1px 1px 5px 0px black;
-		border:solid 1px black;
+		border: solid 1px black;
 	}
-	.presetContainer{
-		display:inline-block;
+	.presetContainer {
+		display: inline-block;
 		vertical-align: top;
 	}
-	.iconListItem{
-		display:flex;
+	.iconListItem {
+		display: flex;
 		align-items: center;
-		height:1.8rem
+		height: 1.8rem;
 	}
-	.iconListItem:hover{
-		background-color:#1E90FF;
+	.iconListItem:hover {
+		background-color: #1e90ff;
 	}
-	.iconListItem img, #iconSelect img{
-		height:1.8rem;
-		width:1.8rem;
-		margin-right:0.2rem;
+	.iconListItem img,
+	#iconSelect img {
+		height: 1.8rem;
+		width: 1.8rem;
+		margin-right: 0.2rem;
 	}
-	#iconSelect img{
-		margin-bottom:-0.1rem;
-		margin-top:-1px;
+	#iconSelect img {
+		margin-bottom: -0.1rem;
+		margin-top: -1px;
 	}
-	#iconSelect:hover{
-		background-color:#1E90FF;
+	#iconSelect:hover {
+		background-color: #1e90ff;
 	}
-	#inputBar{
-		padding:2px;
-		border:0;
-		height:calc(100% - 4px);
-		width:calc(100% - 2px - 2.8rem);
-		padding-left:2.8rem;
-		margin:0;
+	#inputBar {
+		padding: 2px;
+		border: 0;
+		height: calc(100% - 4px);
+		width: calc(100% - 2px - 2.8rem);
+		padding-left: 2.8rem;
+		margin: 0;
 	}
 </style>
-

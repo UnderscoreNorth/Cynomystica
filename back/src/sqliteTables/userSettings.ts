@@ -30,8 +30,10 @@ export default class {
         display: {
           danmaku: e.danmakuDisplay,
           chat: e.chatPosition,
-          chatWidth: e.chatWidth,
           video: e.videoDisplay,
+        },
+        chat: {
+          chatWidth: e.chatWidth,
         },
         icon: e.selectedIcon,
         users: [],
@@ -47,7 +49,7 @@ export default class {
     send.chatPosition = obj.display.chat;
     send.videoDisplay = obj.display.video ? 1 : 0;
     send.danmakuDisplay = obj.display.danmaku;
-    send.chatWidth = obj.display.chatWidth;
+    send.chatWidth = obj.chat.chatWidth;
     send.syncThreshold = obj.sync.threshold;
     send.selectedIcon = obj.icon;
     await db

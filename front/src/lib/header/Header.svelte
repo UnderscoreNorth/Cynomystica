@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Login from './Login.svelte';
-	import UserSettingsContainer from '$lib/userSettings/UserSettingsContainer.svelte';
+	import UserSettingsContainer from '$lib/settings/UserSettingsContainer.svelte';
 	import ModerationContainer from '$lib/moderation/ModerationContainer.svelte';
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
@@ -33,15 +33,15 @@
 	const toggleModeration = () => {
 		moderationModalOpen = !moderationModalOpen;
 	};
-	const toggleSchedule = () =>{
+	const toggleSchedule = () => {
 		scheduleModalOpen = !scheduleModalOpen;
-	}
-	const toggleBulletMode = ()=>{
+	};
+	const toggleBulletMode = () => {
 		bulletMode.set(!$bulletMode);
-	}
-	const toggleInfo = ()=>{
+	};
+	const toggleInfo = () => {
 		infoModalOpen = !infoModalOpen;
-	}
+	};
 	const dummy = () => {};
 	/*
 	<IconButton Icon={MdPoll} onClick={togglePlaylist} tooltip={'Polls'} />
@@ -58,23 +58,22 @@
 	<nav>
 		<div id="siteName">Cynomystica |</div>
 		<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
-		
+
 		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
-		
-		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />		
-		<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />		
+
+		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
+		<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
 		<div id="loginLi"><Login /></div>
 		<Alert />
 	</nav>
 	{#if userSettingsModalOpen}
-	<Modal closeModal={toggleSettings}>
-		<UserSettingsContainer/>
-	</Modal>
-		
+		<Modal closeModal={toggleSettings}>
+			<UserSettingsContainer />
+		</Modal>
 	{/if}
 	{#if playListModalOpen}
 		<Modal closeModal={togglePlaylist}>
-			<PlaylistContainer/>
+			<PlaylistContainer />
 		</Modal>
 	{/if}
 	{#if moderationModalOpen}
@@ -87,7 +86,7 @@
 	{/if}
 	{#if infoModalOpen}
 		<Modal closeModal={toggleInfo}>
-			<InfoContainer/>
+			<InfoContainer />
 		</Modal>
 	{/if}
 </header>

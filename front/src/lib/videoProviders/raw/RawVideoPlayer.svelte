@@ -14,8 +14,7 @@
 			e.currentTime = serverTime;
 		}
 	};
-	const seekLeader = (e: Event) => {
-	};
+	const seekLeader = (e: Event) => {};
 </script>
 
 <!-- svelte-ignore a11y-media-has-caption -->

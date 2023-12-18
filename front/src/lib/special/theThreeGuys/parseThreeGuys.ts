@@ -1,7 +1,6 @@
-import { theThreeGuys } from '$lib/stores/theThreeGuys';
-let threeGuys: any;
-theThreeGuys.subscribe((v) => (threeGuys = v));
-export default function parseThreeGuys(username: string) {
+import { writable } from 'svelte/store';
+
+export function parseThreeGuys(username: string) {
 	const index = threeGuys.indexOf(username);
 	switch (index) {
 		case 0:
@@ -16,3 +15,6 @@ export default function parseThreeGuys(username: string) {
 	}
 	return username;
 }
+export const theThreeGuys = writable(['']);
+let threeGuys: Array<string>;
+theThreeGuys.subscribe((v) => (threeGuys = v));

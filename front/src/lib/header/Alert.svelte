@@ -7,18 +7,18 @@
 	import type { blockerType } from '$lib/stores/blocker';
 	import { io } from '$lib/realtime';
 	io.on('alert', (messageObj) => {
-		if(messageObj.type == 'login-token'){
+		if (messageObj.type == 'login-token') {
 			localStorage.clear();
 			return;
-		} else if (messageObj.type == 'banned'){
-			localStorage.clear();
-			io.disconnect();
-			return;
-		} else if (messageObj.type =='IP banned'){
+		} else if (messageObj.type == 'banned') {
 			localStorage.clear();
 			io.disconnect();
 			return;
-		} else if (messageObj.type =='Reload'){
+		} else if (messageObj.type == 'IP banned') {
+			localStorage.clear();
+			io.disconnect();
+			return;
+		} else if (messageObj.type == 'Reload') {
 			location.reload();
 		}
 		messages.push(messageObj);

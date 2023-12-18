@@ -9,7 +9,7 @@
 	let toggleLogin = false;
 	const signIn = () => {
 		if (usernameInput.length && passwordInput.length) {
-			login(usernameInput,passwordInput,'password');			
+			login(usernameInput, passwordInput, 'password');
 			blocker.update((n: blockerType) => {
 				n.login = true;
 				return n;
@@ -28,59 +28,64 @@
 	const signOut = () => {
 		localStorage.clear();
 		location.reload();
-	}
+	};
 </script>
 
 <div>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<span id='loginToggle' on:click={()=>{toggleLogin = !toggleLogin}}>Account</span>
-	
-		<div id='loginDiv' style='display:{toggleLogin ? 'block' : 'none' }'>
-			{#if $user.username}
+	<span
+		id="loginToggle"
+		on:click={() => {
+			toggleLogin = !toggleLogin;
+		}}>Account</span
+	>
+
+	<div id="loginDiv" style="display:{toggleLogin ? 'block' : 'none'}">
+		{#if $user.username}
+			<span>
+				Signed in as {$user.username}
+				{$user.accessLevel === 0 ? ' (guest)' : ''}
+				<button title="Sign out" on:click={() => signOut()}>X</button>
+			</span>
+		{:else}
+			<form>
+				<input type="text" placeholder="Username" bind:value={usernameInput} />
+				<input type="password" placeholder="Password" bind:value={passwordInput} />
 				<span>
-					Signed in as {$user.username}
-					{$user.accessLevel === 0 ? ' (guest)' : ''}
-					<button title='Sign out' on:click={()=>signOut()}>X</button>
+					<button on:click={signIn} disabled={$blocker.login}>Sign In</button>
+					<button on:click={signUp} disabled={$blocker.login}>Sign Up</button>
 				</span>
-			{:else}
-				<form>
-					<input type="text" placeholder="Username" bind:value={usernameInput} />
-					<input type="password" placeholder="Password" bind:value={passwordInput} />
-					<span>
-						<button on:click={signIn} disabled={$blocker.login}>Sign In</button>
-						<button on:click={signUp} disabled={$blocker.login}>Sign Up</button>
-					</span>
-				</form>
-			{/if}
-		</div>
+			</form>
+		{/if}
+	</div>
 </div>
 
 <style>
 	input {
 		width: 8rem;
 	}
-	#loginToggle{
-		display:none;
+	#loginToggle {
+		display: none;
 	}
-	@media (orientation:landscape) {	
-		#loginDiv{
-			display: block !important;;
+	@media (orientation: landscape) {
+		#loginDiv {
+			display: block !important;
 		}
 	}
-	@media (orientation:portrait) {
-		#loginToggle{
-			display:unset;
+	@media (orientation: portrait) {
+		#loginToggle {
+			display: unset;
 		}
-		#loginDiv{
-			position:fixed;
+		#loginDiv {
+			position: fixed;
 			background-color: var(--color-bg-dark-1);
-			left:0;
-			right:0;
-			padding:1rem;
+			left: 0;
+			right: 0;
+			padding: 1rem;
 			z-index: 1;
 		}
-		#loginDiv form{
-			display:flex;
+		#loginDiv form {
+			display: flex;
 			flex-wrap: wrap;
 			flex-direction: column;
 			align-items: center;

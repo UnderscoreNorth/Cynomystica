@@ -13,7 +13,7 @@ import { icons } from './icons';
 import { login } from '$lib/utilities/login';
 import { permissions } from './permissions';
 import { tabText } from './tabText';
-import { theThreeGuys } from './theThreeGuys';
+import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 let userObj: any = {};
 user.subscribe((e) => {
 	userObj = e;
@@ -143,7 +143,10 @@ const init = () => {
 			userSettings.set(e);
 			setTimeout(() => {
 				e.blockSave = false;
-				userSettings.set(e);
+				userSettings.update((n) => {
+					e.chat.anonymous = n.chat.anonymous;
+					return e;
+				});
 			}, 500);
 		}
 	});
