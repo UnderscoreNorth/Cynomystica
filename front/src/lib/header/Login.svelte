@@ -62,12 +62,12 @@
 	#loginToggle{
 		display:none;
 	}
-	@media only screen and (min-width: 769px) {	
+	@media (orientation:landscape) {	
 		#loginDiv{
 			display: block !important;;
 		}
 	}
-	@media (max-width: 768px) or (orientation:portrait) {
+	@media (orientation:portrait) {
 		#loginToggle{
 			display:unset;
 		}

@@ -1,4 +1,7 @@
 export default function messageFormatter(msg: string) {
+  msg = msg.replace(/</g, "&lt;");
+  msg = msg.replace(/>/g, "&gt;");
+  console.log(msg);
   let classStylers = [
     { type: "greentext", consume: false, regex: ">" },
     { type: "redtext", consume: true, regex: "red:" },
@@ -58,7 +61,6 @@ export default function messageFormatter(msg: string) {
   }
   let formattedMsg = "";
   for (let msgPart of arr) {
-    msgPart.content = msgPart.content.replace("<", "&lt;").replace(">", "&gt;");
     if (msgPart.type == "strong") {
       formattedMsg += `<strong>${msgPart.content}</strong>`;
     } else if (msgPart.type == "italic") {
@@ -68,7 +70,7 @@ export default function messageFormatter(msg: string) {
     } else if (msgPart.type == "pic") {
       formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer"><img src=${msgPart.content} /></a>`;
     } else if (msgPart.type == "link") {
-      formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer">${msgPart.content}</a>`;
+      formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer">{msgPart.content}</a>`;
     } else {
       formattedMsg += `${msgPart.content}`;
     }

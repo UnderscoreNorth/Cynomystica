@@ -12,6 +12,11 @@ import type { iconList } from './icons';
 import { icons } from './icons';
 import { login } from '$lib/utilities/login';
 import { permissions } from './permissions';
+import { tabText } from './tabText';
+let userObj: any = {};
+user.subscribe((e) => {
+	userObj = e;
+});
 
 const init = () => {
 	io.on('connected', () => {
@@ -53,6 +58,9 @@ const init = () => {
 					pushMsg(msg);
 				}
 			} else {
+				if (e.message.includes(userObj.username) && userObj.username) {
+					if (document.hidden == true) tabText.set(`*Pinged by ${e.username}*`);
+				}
 				pushMsg(e);
 			}
 

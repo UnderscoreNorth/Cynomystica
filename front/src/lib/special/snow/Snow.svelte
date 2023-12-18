@@ -1,10 +1,13 @@
 <script lang='ts'>
     function getStyle(){
         let xStart = Math.random();
-        let xEnd = xStart + (Math.random() - 0.5) * .50
-        let scale = Math.random();
+        let angle = (Math.random() - 0.5) * 0.25;
+        let xMid = xStart + angle;
+        let xEnd = xMid + angle * Math.random();
+        let scale = Math.random() * 0.8 + 0.2;
         let duration = Math.random() * 20 + 10;
         let delay = Math.random() * -duration;
+        let mid = 0.5 + (Math.random() - 0.5) * 0.2;
         return `
         opacity:${Math.random()};
         animation:snowfall ${duration}s linear infinite;
@@ -12,6 +15,8 @@
         --xStart:${xStart*100}vw;
         --xEnd:${xEnd*100}vw;
         --scale:${scale};
+        --xMid:${xMid*100}vw;
+        --yMid:${mid*100}vh;
         `;
     }
 </script>

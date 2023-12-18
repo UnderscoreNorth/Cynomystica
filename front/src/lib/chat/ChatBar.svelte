@@ -181,7 +181,7 @@
 	}
 	#iconList{
 		position:absolute;
-		bottom:2rem;
+		top: 0rem;
 		left:0.5rem;
 		max-height:70vh;
 		overflow-y: scroll;

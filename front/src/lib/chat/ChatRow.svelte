@@ -3,14 +3,11 @@
     import {icons} from '$lib/stores/icons';
     import { bulletMode } from '$lib/stores/bulletmode';
     import { user } from '$lib/stores/user';    
-    import { tabText } from '$lib/stores/tabText';
     const getRowClasses = (msg:string)=>{
         let array = [];
         array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
         if(msg.includes($user.username) && $user.username){
             array.push('userHighlighted');
-            if(document.hidden == true)
-                $tabText = `*Pinged by ${message.username}*`;
         }
         return array.join(' ');
     }

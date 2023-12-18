@@ -167,6 +167,9 @@ button:focus:not(:focus-visible) {
 	from {
 		transform: translate(var(--xStart), calc(0vh - 20px)) scale(var(--scale));
 	}
+	50% {
+		transform: translate(var(--xMid), var(--yMid)) scale(var(--scale));
+	}
 	to {
 		transform: translate(var(--xEnd), calc(100vh + 20px)) scale(var(--scale));
 	}
