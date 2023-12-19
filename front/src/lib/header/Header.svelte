@@ -65,7 +65,7 @@
 
 		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
 		<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
-		<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls'} />
+		<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
 		<div id="loginLi"><Login /></div>
 		<Alert />
 	</nav>

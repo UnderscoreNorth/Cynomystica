@@ -20,6 +20,7 @@
 <b>Dec 19, 2023</b>
 <ul>
 	<li>Added a single emote</li>
+	<li>Polls/Pinned Messages</li>
 </ul>
 <b>Dec 18, 2023</b>
 <ul>
