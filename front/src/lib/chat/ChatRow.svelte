@@ -5,6 +5,7 @@
 	import { user } from '$lib/stores/user';
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 	import { userSettings } from '$lib/stores/userSettings';
+	import { chatInput } from '$lib/stores/chat';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -26,6 +27,11 @@
 		if ($userSettings.chat.anonymous) username = '';
 		return username;
 	};
+	function clickMessage(e:PointerEvent){
+		if(e.target?.classList?.contains('emote')){
+			$chatInput += e.target?.title;
+		}
+	}
 </script>
 
 {#if message?.username}
@@ -53,7 +59,7 @@
 									{parseUser()}
 								</span>
 							{/if}
-							<span class="chatMsg">
+							<span class="chatMsg" on:click={clickMessage}>
 								{@html message.message}
 							</span>
 						{/if}

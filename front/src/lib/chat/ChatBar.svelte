@@ -12,7 +12,7 @@
 	import { tabText } from '$lib/stores/tabText';
 	import { afterUpdate, beforeUpdate } from 'svelte';
 	import {emotes} from '$lib/stores/emotes';
-	let inputValue: string = '';
+	import { chatInput } from '$lib/stores/chat';
 	let lastInput = '';
 	let iconListOpen = false;
 	let input: HTMLInputElement;
@@ -40,9 +40,9 @@
 				selectionStart = selectionEnd;
 				selectionStart += 7;
 			}
-			input.setSelectionRange(selectionStart, selectionStart);
-			input.focus();
+			input.setSelectionRange(selectionStart, selectionStart);			
 		}
+		input.focus();
 	});
 	const handleKeyDown = (e: KeyboardEvent) => {
 		if (e.key == 's' && e.ctrlKey == true) {
@@ -60,7 +60,7 @@
 				let matchedEmotes = Object.keys($emotes).filter((emote)=> emote.toLowerCase().indexOf(tabWord)==0)
 				let matched = matchedUsers.concat(matchedEmotes);
 				if (matched.length) {
-					inputValue = lastInput.replace(tabRegex, matched[tabIndex]);
+					$chatInput = lastInput.replace(tabRegex, matched[tabIndex]);
 					tabIndex++;
 					if (tabIndex >= matched.length) tabIndex = 0;
 				}
@@ -68,17 +68,17 @@
 		} else {
 			tabIndex = 0;
 		}
-		if (e.key == 'Enter' && inputValue.trim().length > 0) {
+		if (e.key == 'Enter' && $chatInput.trim().length > 0) {
 			if (!$user.username.length) {
-				login(inputValue.trim(), '', 'guest');
+				login($chatInput.trim(), '', 'guest');
 			} else {
-				sent.unshift(inputValue);
+				sent.unshift($chatInput);
 				if ($user.accessLevel < 4) {
-					inputValue = inputValue.replace(/(http[^\s]+):pic/gim, '$1');
+					$chatInput = $chatInput.replace(/(http[^\s]+):pic/gim, '$1');
 				}
-				io.emit('message', { icon: $userSettings.icon ?? '', msg: inputValue.trim() });
+				io.emit('message', { icon: $userSettings.icon ?? '', msg: $chatInput.trim() });
 			}
-			inputValue = '';
+			$chatInput = '';
 		}
 		lastKey = e.key;
 	};
@@ -88,12 +88,12 @@
 			spoilerMode = true;
 			const { selectionStart: start, selectionEnd: end } = input;
 			console.log(start);
-			let spoileredText = `[s]${inputValue.slice(start, end)}[/s]`;
-			inputValue = `${inputValue.slice(0, start)}${spoileredText}${inputValue.slice(end)}`;
+			let spoileredText = `[s]${$chatInput.slice(start, end)}[/s]`;
+			$chatInput = `${$chatInput.slice(0, start)}${spoileredText}${$chatInput.slice(end)}`;
 		} else {
 			spoilerMode = false;
 		}
-		if (e.key !== 'Tab') lastInput = inputValue;
+		if (e.key !== 'Tab') lastInput = $chatInput;
 		if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
 			if (sent.length) {
 				if (e.key == 'ArrowUp') {
@@ -106,7 +106,7 @@
 				} else if (sentIndex < 0) {
 					sentIndex = sent.length - 1;
 				}
-				inputValue = sent[sentIndex];
+				$chatInput = sent[sentIndex];
 			}
 		} else {
 			sentIndex = -1;
@@ -173,7 +173,7 @@
 	id="inputBar"
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
-	bind:value={inputValue}
+	bind:value={$chatInput}
 	bind:this={input}
 	on:keydown={handleKeyDown}
 	on:keyup={handleKeyUp}

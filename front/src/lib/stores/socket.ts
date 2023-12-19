@@ -67,14 +67,12 @@ const init = () => {
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
 			const pushMsg = (msg) => {
-				console.log(emoteObj, msg);
 				for (const emoteName in emoteObj) {
 					const emoteURL = emoteObj[emoteName];
 					msg.message = msg.message.replaceAll(
 						emoteName,
 						`<img title='${emoteName}' class='emote' src='${emoteURL}'/>`
 					);
-					console.log(msg.message);
 				}
 				msg.played = false;
 				oldChat.push(msg);
