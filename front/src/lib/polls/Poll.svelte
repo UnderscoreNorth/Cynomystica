@@ -17,16 +17,17 @@
         } else {
             io.emit('close-poll',{pollID});
         }
+
     }
     const getTimeLeft = ()=>{
         let hours = -1;
         let minutes = -1;
         let seconds = (Math.floor((Date.parse(poll.dateCreate)/1000 + poll.duration) - new Date().getTime()/1000) + 1 );
-        if(seconds > 90){
+        if(seconds > 60){
             minutes = Math.floor(seconds / 60);
             seconds = seconds % 60;
         }
-        if(minutes > 90){
+        if(minutes > 60){
             hours = Math.floor(minutes / 60);
             minutes = minutes % 60;
         }
