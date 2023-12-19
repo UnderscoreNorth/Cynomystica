@@ -79,7 +79,6 @@ io.on("connection", async (socket: socketInterface) => {
   );
   console.log("new connection", socket.handshake.headers["x-real-ip"]);
   if (!socket.request.headers["user-agent"]) socket.disconnect();
-  console.log(64, await userModeration.getUser(socket.handshake["x-real-ip"]));
   if ((await userModeration.getUser(socket.handshake["x-real-ip"])).length) {
     socket.emit("alert", {
       type: "IP banned",

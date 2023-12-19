@@ -7,5 +7,4 @@ const socket = ioClient(ENDPOINT, {
 	transports: ['websocket'],
 	upgrade: false
 });
-socket.emit('version', 1.02);
 export const io = socket;

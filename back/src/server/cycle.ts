@@ -52,9 +52,11 @@ export const cycle = async () => {
     } finally {
       inCycle = false;
       if (beat == 60) {
-        checkVersion();
         logActivity();
         beat = 0;
+      }
+      if (beat % 10 == 0) {
+        checkVersion();
       }
       if (beat % 5 == 0) {
         playlist.send(IO());

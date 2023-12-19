@@ -5,11 +5,13 @@ export default async function upsertUserSettings(
   msg: string
 ) {
   try {
-    await userSettings.upsert(
-      socket.username,
-      socket.request.headers["user-agent"],
-      msg
-    );
+    if (socket.username && socket.accessLevel > 0) {
+      await userSettings.upsert(
+        socket.username,
+        socket.request.headers["user-agent"],
+        msg
+      );
+    }
   } catch (err) {
     console.log(err);
     socket.emit("alert", {

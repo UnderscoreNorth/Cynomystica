@@ -27,6 +27,7 @@ emotes.subscribe((e) => {
 
 const init = () => {
 	io.on('connected', (e) => {
+		io.emit('version', 1.03);
 		user.update((n) => {
 			n.uuid = e;
 			return n;

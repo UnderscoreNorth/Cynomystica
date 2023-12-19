@@ -24,7 +24,6 @@ export default class {
       // @ts-ignore
       obj[row.text] = row.url;
     }
-    console.log(obj);
     return obj;
   };
   static upsert = async (username: string, obj: any) => {};
