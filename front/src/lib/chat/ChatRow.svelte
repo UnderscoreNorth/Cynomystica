@@ -56,7 +56,7 @@
 						{:else}
 							{#if !$userSettings.chat.anonymous}
 								<span class="chatUser" style={getUserStyle()}>
-									{parseUser()}
+									{parseUser()}: 
 								</span>
 							{/if}
 							<span class="chatMsg" on:click={clickMessage}>
