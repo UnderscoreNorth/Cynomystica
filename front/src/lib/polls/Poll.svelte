@@ -46,7 +46,7 @@
     <b class='pollTitle'>
         {@html poll.title.replaceAll(/(http[^\s]+)/g,(match,url)=>{return `<a target='_blank' href='${url}'>${url}</a>`})}
     </b>
-    {#if $user.accessLevel >=0}
+    {#if $user.accessLevel >=4}
     <button on:click={()=>closePoll()}>
         {poll.dateClose || poll.options.length == 0 ? 'Delete' : 'End'}
     </button>
