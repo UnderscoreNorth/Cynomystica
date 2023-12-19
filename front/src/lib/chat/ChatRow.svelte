@@ -30,33 +30,35 @@
 </script>
 
 {#if message?.username}
-	{#key $icons}
-		{#key message?.icon}
-			<tr class={getRowClasses(message.message)}>
-				<td class="chatTime">
-					[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
-				</td>
-				<td style="width:99%">
-					<span class="chatIcon">
-						{#if message.icon && $icons[message.icon]?.url}
-							<img src={$icons[message.icon].url} alt="icon" title={$icons[message.icon].display} />
+	{#key message.username}	
+		{#key $icons}
+			{#key message?.icon}
+				<tr class={getRowClasses(message.message)}>
+					<td class="chatTime">
+						[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
+					</td>
+					<td style="width:99%">
+						<span class="chatIcon">
+							{#if message.icon && $icons[message.icon]?.url}
+								<img src={$icons[message.icon].url} alt="icon" title={$icons[message.icon].display} />
+							{/if}
+						</span>
+						{#if message.message.indexOf('/me ') == 0}
+							<span class="actiontext">
+								{parseUser()}
+								{@html message.message.substring(4)}
+							</span>
+						{:else}
+							<span class="chatUser" style={getUserStyle()}>
+								{parseUser()}
+							</span>
+							<span class="chatMsg">
+								{@html message.message}
+							</span>
 						{/if}
-					</span>
-					{#if message.message.indexOf('/me ') == 0}
-						<span class="actiontext">
-							{parseUser()}
-							{@html message.message.substring(4)}
-						</span>
-					{:else}
-						<span class="chatUser" style={getUserStyle()}>
-							{parseUser()}
-						</span>
-						<span class="chatMsg">
-							{@html message.message}
-						</span>
-					{/if}
-				</td>
-			</tr>
+					</td>
+				</tr>
+			{/key}
 		{/key}
 	{/key}
 {/if}
