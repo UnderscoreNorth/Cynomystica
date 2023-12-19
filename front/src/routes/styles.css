@@ -163,3 +163,7 @@ button:focus:not(:focus-visible) {
 	font-style: italic;
 	color: grey;
 }
+img.emote {
+	max-width: 2rem;
+	max-height: 2rem;
+}

@@ -14,9 +14,14 @@ import { login } from '$lib/utilities/login';
 import { permissions } from './permissions';
 import { tabText } from './tabText';
 import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
+import { emotes } from './emotes';
 let userObj: any = {};
+let emoteObj: Record<string, string> = {};
 user.subscribe((e) => {
 	userObj = e;
+});
+emotes.subscribe((e) => {
+	emoteObj = e;
 });
 
 const init = () => {
@@ -62,6 +67,15 @@ const init = () => {
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
 			const pushMsg = (msg) => {
+				console.log(emoteObj, msg);
+				for (const emoteName in emoteObj) {
+					const emoteURL = emoteObj[emoteName];
+					msg.message = msg.message.replaceAll(
+						emoteName,
+						`<img title='${emoteName}' class='emote' src='${emoteURL}'/>`
+					);
+					console.log(msg.message);
+				}
 				msg.played = false;
 				oldChat.push(msg);
 				if (oldChat.length > 500) oldChat.splice(0, oldChat.length - 500);
@@ -149,6 +163,9 @@ const init = () => {
 				});
 			}, 500);
 		}
+	});
+	io.on('emotes', (e) => {
+		emotes.set(e);
 	});
 };
 export default init;

@@ -11,6 +11,7 @@
 	import { userSettings } from '$lib/stores/userSettings';
 	import { tabText } from '$lib/stores/tabText';
 	import { afterUpdate, beforeUpdate } from 'svelte';
+	import {emotes} from '$lib/stores/emotes';
 	let inputValue: string = '';
 	let lastInput = '';
 	let iconListOpen = false;
@@ -51,11 +52,13 @@
 			e.preventDefault();
 			let tabWord = lastInput.match(tabRegex)?.[0].toLowerCase() ?? '';
 			if (tabWord?.length) {
-				let matched = $users.users
+				let matchedUsers = $users.users
 					.filter((otherUser) => {
 						return otherUser.username.toLowerCase().indexOf(tabWord) == 0;
 					})
 					.map((otherUser) => otherUser.username);
+				let matchedEmotes = Object.keys($emotes).filter((emote)=> emote.toLowerCase().indexOf(tabWord)==0)
+				let matched = matchedUsers.concat(matchedEmotes);
 				if (matched.length) {
 					inputValue = lastInput.replace(tabRegex, matched[tabIndex]);
 					tabIndex++;

@@ -7,6 +7,7 @@ import permissions from "../sqliteTables/permissions";
 import icons from "../sqliteTables/icons";
 import refreshTokens from "../sqliteTables/refreshTokens";
 import playlists from "../sqliteTables/playlists";
+import emotes from "../sqliteTables/emotes";
 
 import { xml2js, xml2json } from "xml-js";
 import parseURL from "../lib/parseURL";
@@ -22,6 +23,7 @@ export default async function dbInit() {
     icons,
     refreshTokens,
     playlists,
+    emotes,
   ];
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
 

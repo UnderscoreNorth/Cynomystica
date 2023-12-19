@@ -17,6 +17,10 @@
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>
+<b>Dec 19, 2023</b>
+<ul>
+	<li>Added a single emote</li>
+</ul>
 <b>Dec 18, 2023</b>
 <ul>
 	<li>The Three Guys</li>

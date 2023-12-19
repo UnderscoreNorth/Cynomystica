@@ -34,6 +34,7 @@ import upsertUserSettings from "./controller/upsert-usersettings";
 import playlist from "./server/playlist";
 import updatePlaylist from "./controller/update-playlist";
 import SyncPlay from "./server/syncplay";
+import sendEmotes from "./lib/sendEmotes";
 
 dbInit();
 const app = express();
@@ -93,6 +94,7 @@ io.on("connection", async (socket: socketInterface) => {
   });
   sendUserList();
   sendPermissions(socket);
+  sendEmotes(socket);
   chat().getRecent(socket);
   socket.emit("icons", await Icons.get());
   getSchedule(socket);
