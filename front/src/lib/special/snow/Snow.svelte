@@ -16,7 +16,7 @@
         --xEnd:${xEnd * 100}vw;
         --scale:${scale};
         --xMid:${xMid * 100}vw;
-        --yMid:${mid * 100}vh;
+        --yMid:${mid * 100}svh;
         `;
 	}
 </script>
@@ -30,7 +30,7 @@
 <style>
 	#snowContainer {
 		position: absolute;
-		height: 100vh;
+		height: 100svh;
 		width: 100vw;
 		z-index: 3;
 		top: 0;
@@ -48,13 +48,13 @@
 	}
 	@keyframes -global-snowfall {
 		from {
-			transform: translate(var(--xStart), calc(0vh - 20px)) scale(var(--scale));
+			transform: translate(var(--xStart), calc(0svh - 20px)) scale(var(--scale));
 		}
 		50% {
 			transform: translate(var(--xMid), var(--yMid)) scale(var(--scale));
 		}
 		to {
-			transform: translate(var(--xEnd), calc(100vh + 20px)) scale(var(--scale));
+			transform: translate(var(--xEnd), calc(100svh + 20px)) scale(var(--scale));
 		}
 	}
 </style>

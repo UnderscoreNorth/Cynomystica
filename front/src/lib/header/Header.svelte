@@ -18,12 +18,14 @@
 	import MdClearAll from 'svelte-icons/md/MdClearAll.svelte';
 	import MdInfoOutline from 'svelte-icons/md/MdInfoOutline.svelte';
 	import InfoContainer from '$lib/information/infoContainer.svelte';
+	import PollModal from '$lib/polls/PollModal.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
 	let moderationModalOpen: boolean = false;
 	let scheduleModalOpen: boolean = false;
 	let infoModalOpen: boolean = false;
+	let pollModalOpen: boolean = false;
 	const toggleSettings = () => {
 		userSettingsModalOpen = !userSettingsModalOpen;
 	};
@@ -36,15 +38,15 @@
 	const toggleSchedule = () => {
 		scheduleModalOpen = !scheduleModalOpen;
 	};
-	const toggleBulletMode = () => {
-		bulletMode.set(!$bulletMode);
-	};
 	const toggleInfo = () => {
 		infoModalOpen = !infoModalOpen;
 	};
+	const togglePoll = ()=>{
+		pollModalOpen = !pollModalOpen;
+	}
 	const dummy = () => {};
 	/*
-	<IconButton Icon={MdPoll} onClick={togglePlaylist} tooltip={'Polls'} />
+	
 	<IconButton
 			Icon={MdSentimentVeryDissatisfied}
 			onClick={toggleModeration}
@@ -63,6 +65,7 @@
 
 		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
 		<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
+		<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls'} />
 		<div id="loginLi"><Login /></div>
 		<Alert />
 	</nav>
@@ -89,6 +92,11 @@
 			<InfoContainer />
 		</Modal>
 	{/if}
+	{#if pollModalOpen}
+		<Modal closeModal={togglePoll}>
+			<PollModal />
+		</Modal>
+	{/if}
 </header>
 
 <style>
@@ -111,5 +119,10 @@
 		flex-flow: row wrap;
 		align-items: stretch;
 		line-height: 2rem;
+	}
+	@media (orientation:portrait){
+		#siteName{
+			display:none;
+		}
 	}
 </style>

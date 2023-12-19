@@ -10,12 +10,12 @@ export interface userType {
 	icon: string;
 	accessToken: Token | undefined;
 	refreshToken: Token | undefined;
+	uuid: string;
 }
-const userObj: userType = {
+export const user = writable({
 	username: '',
 	accessLevel: -1,
 	icon: '',
 	accessToken: undefined,
 	refreshToken: undefined
-};
-export const user = writable(userObj);
+} as userType);

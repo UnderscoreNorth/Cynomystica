@@ -30,11 +30,16 @@ import sendPermissions from "./lib/sendPermissions";
 import userMod from "./controller/user-mod";
 import version from "./controller/version";
 import upsertUserSettings from "./controller/upsert-usersettings";
+import closePoll from "./controller/polls/close-poll";
+import createPoll from "./controller/polls/create-poll";
+import deletePoll from "./controller/polls/delete-poll";
+import votePoll from "./controller/polls/vote-poll";
 
 import playlist from "./server/playlist";
 import updatePlaylist from "./controller/update-playlist";
 import SyncPlay from "./server/syncplay";
 import sendEmotes from "./lib/sendEmotes";
+import polls from "./server/polls";
 
 dbInit();
 const app = express();
@@ -62,6 +67,10 @@ const ioEvents = {
   version: version,
   "update-playlist": updatePlaylist,
   "upsert-usersettings": upsertUserSettings,
+  "close-poll": closePoll,
+  "create-poll": createPoll,
+  "delete-poll": deletePoll,
+  "vote-poll": votePoll,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -79,7 +88,7 @@ io.on("connection", async (socket: socketInterface) => {
     socket.disconnect();
     return;
   }
-  socket.emit("connected");
+  socket.emit("connected", socket.uuid);
   for (let event in ioEvents) {
     try {
       socket.on(event, async (msg) => {
@@ -96,6 +105,7 @@ io.on("connection", async (socket: socketInterface) => {
   sendPermissions(socket);
   sendEmotes(socket);
   chat().getRecent(socket);
+  polls().get(socket);
   socket.emit("icons", await Icons.get());
   getSchedule(socket);
 });

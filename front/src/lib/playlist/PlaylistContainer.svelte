@@ -91,7 +91,7 @@
 		width: 100%;
 	}
 	#tableContainer {
-		max-height: 60vh;
+		max-height: 60svh;
 		width: 100%;
 		overflow-y: scroll;
 	}

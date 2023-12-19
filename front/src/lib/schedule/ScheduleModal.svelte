@@ -91,7 +91,7 @@
 		max-width: 50rem;
 		background: var(--color-bg-dark-3);
 		opacity: 0.9;
-		margin-top: calc(50vh - 12rem);
+		margin-top: calc(50svh - 12rem);
 		border: solid 1px var(--color-bg-dark-1);
 		color: white;
 	}

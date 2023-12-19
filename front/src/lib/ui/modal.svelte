@@ -22,11 +22,12 @@
 		max-width: 90vw;
 		margin-top: 2em;
 		color: white;
-		max-height: calc(90vh - 2em);
+		max-height: calc(90svh - 2em);
 		overflow-y: auto;
 		overflow-x: hidden;
 		position: relative;
 		height: fit-content;
+		padding-top:0;
 	}
 	#closeModal {
 		position: absolute;

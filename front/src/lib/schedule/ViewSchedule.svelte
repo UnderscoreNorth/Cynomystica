@@ -116,7 +116,7 @@
 		grid-template-rows: repeat(1800, 1);
 		grid-column-gap: 0;
 		grid-row-gap: 0;
-		max-height: calc(100vh - 13rem);
+		max-height: calc(100svh - 13rem);
 		overflow-y: scroll;
 		padding-bottom: 1px;
 	}

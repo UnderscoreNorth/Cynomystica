@@ -106,6 +106,6 @@
 	}
 	:global(.chatMsg img) {
 		max-width: 100%;
-		max-height: 30vh;
+		max-height: 30svh;
 	}
 </style>

@@ -20,7 +20,7 @@
 }
 
 body {
-	min-height: 100vh;
+	min-height: 100svh;
 	margin: 0;
 	background-attachment: fixed;
 	background-color: var(--color-bg-dark-2);
@@ -119,7 +119,7 @@ button:focus:not(:focus-visible) {
 	color: white;
 }
 .modalbg {
-	height: 100vh;
+	height: 100svh;
 	width: 100vw;
 	position: absolute;
 	z-index: 1;

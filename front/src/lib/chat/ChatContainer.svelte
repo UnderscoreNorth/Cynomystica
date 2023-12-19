@@ -7,14 +7,17 @@
 	import type { usersType, otherUser } from '$lib/stores/users';
 	import ChatBar from './ChatBar.svelte';
 	import ChatRow from './ChatRow.svelte';
+	import Poll from '$lib/polls/Poll.svelte';
+	import { polls } from '$lib/stores/polls';	
+	//@ts-ignore
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	import OtherUserModal from './OtherUserModal.svelte';
-	import { bulletMode } from '$lib/stores/bulletmode';
 	import { browser } from '$app/environment';
 	import { permissions } from '$lib/stores/permissions';
 	let settingsObj: any;
 	let usersObj: usersType;
 	let selectedOtherUser: otherUser | null;
+	let hiddenPolls = new Set();
 	$: userListOpen = false;
 	userSettings.subscribe((value) => {
 		settingsObj = value;
@@ -27,9 +30,9 @@
 	const selectOtherUser = (user: otherUser | null) => {
 		if ($user.accessLevel >= $permissions.userMod) selectedOtherUser = user;
 	};
-	let chatMessageElem: HTMLElement | null;
-	let chatScroller;
-	if (browser) chatMessageElem = document.getElementById('chatMessages');
+	let chatMessageElem: HTMLElement;
+	let chatScroller:HTMLDivElement;
+	if (browser) chatMessageElem = document.getElementById('chatMessages') as HTMLElement;
 	let initScroll = true;
 	onMount(() => {
 		initScroll = true;
@@ -39,10 +42,11 @@
 		chat.subscribe((value) => {
 			messages = value;
 			setTimeout(() => {
-				let chatMessages = document.getElementById('chatScroller');
-				let parent = document.getElementById('chatMessages');
+				let chatMessages = document.getElementById('chatScroller') as HTMLElement;
+				let parent = document.getElementById('chatMessages') as HTMLElement;
 				if (
-					chatMessages?.scrollTop + parent?.offsetHeight + 100 > chatMessages?.scrollHeight ||
+					chatMessages?.scrollTop + parent?.offsetHeight + 100 
+					> chatMessages?.scrollHeight ||
 					initScroll
 				) {
 					chatMessages.scrollTop = chatMessages?.scrollHeight;
@@ -50,13 +54,16 @@
 			}, 50);
 		});
 	});
-
+	const hidePoll = (pollID:string)=>{
+		hiddenPolls.add(pollID);
+		hiddenPolls = hiddenPolls;
+	}
 	const toggleUserList = () => {
 		userListOpen = !userListOpen;
 	};
 </script>
 
-<div class="chatContainer" id={$bulletMode ? 'chatContainerb' : ''} style="width:100%">
+<div class="chatContainer" style="width:100%">
 	<div id="grid">
 		<div id="chatHeader">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -64,35 +71,49 @@
 			{$users.connectedUsers} connected user{$users.connectedUsers == 1 ? '' : 's'}
 		</div>
 		<div id="chatMessages">
-			{#if !$bulletMode}
-				{#if userListOpen}
-					<div id="userList">
-						Userlist
-						<hr />
-						{#each $users.users as userItem}
-							{#if userItem.accessLevel >= 0}
-								<!-- svelte-ignore a11y-click-events-have-key-events -->
-								<div
-									class="userListItem"
-									accessLevel={userItem.accessLevel}
-									on:click={() => {
-										selectOtherUser(userItem);
-									}}
-								>
-									{userItem.username}
-								</div>
-							{/if}
-						{/each}
-					</div>
-				{/if}
-				<div id="chatScroller" bind:this={chatScroller}>
-					<table id="chatTable">
+			{#if userListOpen}
+				<div id="userList">
+					Userlist
+					<hr />
+					{#each $users.users as userItem}
+						{#if userItem.accessLevel >= 0}
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
+							<div
+								class={"userListItem accessLevel" + userItem.accessLevel}									
+								on:click={() => {
+									selectOtherUser(userItem);
+								}}
+							>
+								{userItem.username}
+							</div>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+			<div id="chatScroller" bind:this={chatScroller}>
+				<table id="chatTable">
+					<thead>
+						{#key hiddenPolls}
+							{#each Object.entries($polls) as poll}
+								{#if hiddenPolls.has(poll[0]) == false}
+								<tr>
+									<td colspan=2>
+										<div class='poll'>
+											<Poll poll={poll[1]} pollID={poll[0]} hideFn={hidePoll}></Poll>
+										</div>
+									</td>
+								</tr>
+								{/if}	
+							{/each}
+						{/key}
+					</thead>
+					<tbody>
 						{#each messages as message}
 							<ChatRow {message} />
 						{/each}
-					</table>
-				</div>
-			{/if}
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div id="chatBarContainer">
 			<ChatBar />
@@ -104,7 +125,7 @@
 </div>
 
 <style>
-	.userListItem[accessLevel='0'] {
+	.userListItem.accessLevel0 {
 		font-style: italic;
 	}
 	#chatHeader {
@@ -130,10 +151,10 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
-	:global(#chatTable tr:nth-child(2n)) {
+	:global(#chatTable tbody tr:nth-child(2n)) {
 		background: rgba(0, 0, 0, 0.15);
 	}
-	:global(#chatContainerb #chatTable tr:nth-child(2n)) {
+	:global(#chatContainerb #chatTable tbody tr:nth-child(2n)) {
 		background: none;
 	}
 	.chatContainer {
@@ -177,19 +198,18 @@
 		box-shadow: 4px 0px 4px black, inset 0px 0.5em var(--color-bg-dark-1);
 		overflow-y: scroll;
 	}
-
-	#chatContainerb {
-		background: none;
+	thead{
+		position:sticky;
+		top:0;	
+		padding:1rem;
 	}
-	#chatContainerb #chatHeader {
-		border: none;
-	}
-
-	#chatContainerb #chatScroller::-webkit-scrollbar {
-		display: none;
-	}
-	#chatContainerb #chatScroller {
-		-ms-overflow-style: none; /* IE and Edge */
-		scrollbar-width: none; /* Firefox */
+	.poll{
+		padding:0.5rem;
+		font-size: 0.8rem;
+		box-shadow: 1px 1px 5px 0px black;
+		background: var(--color-bg-dark-1);
+		margin:5px;
+		color:white;
+		opacity:0.9;
 	}
 </style>

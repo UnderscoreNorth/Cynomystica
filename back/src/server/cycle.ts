@@ -1,5 +1,6 @@
 import { default as playlist } from "./playlist";
 import { default as IO, activityCheck, checkVersion } from "./socket";
+import polls from "./polls";
 import chat from "./chat";
 import { writeToLog } from "../lib/logger";
 
@@ -44,6 +45,7 @@ export const cycle = async () => {
         playlist.send(IO());
       }
       lastPlaylist = currentPlaylist;
+      polls().check();
       chat().logMessages();
     } catch (err) {
       console.log("cycle", err);

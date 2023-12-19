@@ -64,6 +64,9 @@
 		text-align: left;
 		white-space: nowrap;
 	}
+	:global(.bulletText img){
+		max-height:50svh;
+	}
 	@keyframes textScrollAnim {
 		0% {
 			transform: translateX(100%);

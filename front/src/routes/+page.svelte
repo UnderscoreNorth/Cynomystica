@@ -55,19 +55,19 @@
 
 <style>
 	#app {
-		height: 100vh;
+		height: 100svh;
 		width: 100vw;
 		overflow: hidden;
 	}
 	main {
 		display: flex;
-		height: calc(100vh - 2rem);
+		height: calc(100svh - 2rem);
 		width: 100vw;
 		overflow-y: hidden;
 	}
 	#cVideo,
 	#cChat {
-		height: calc(100vh - 2rem);
+		height: calc(100svh - 2rem);
 	}
 	#cChat {
 		flex-grow: 1;
@@ -86,7 +86,7 @@
 		}
 		#cChat {
 			display: block;
-			height: calc(100vh - 2rem - 100vw * 9 / 16);
+			height: calc(100svh - 2rem - 100vw * 9 / 16);
 			flex-grow: 1;
 		}
 		#cVideo {

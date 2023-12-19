@@ -15,6 +15,7 @@ import { permissions } from './permissions';
 import { tabText } from './tabText';
 import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 import { emotes } from './emotes';
+import { polls, type Poll } from './polls';
 let userObj: any = {};
 let emoteObj: Record<string, string> = {};
 user.subscribe((e) => {
@@ -25,7 +26,11 @@ emotes.subscribe((e) => {
 });
 
 const init = () => {
-	io.on('connected', () => {
+	io.on('connected', (e) => {
+		user.update((n) => {
+			n.uuid = e;
+			return n;
+		});
 		if (localStorage.getItem('username')) {
 			login(localStorage.getItem('username'), localStorage.getItem('refreshToken'), 'token');
 		} else {
@@ -40,6 +45,17 @@ const init = () => {
 			});
 			if (reload) location.reload();
 		}
+	});
+	io.on('poll', (e: Record<string, Poll>) => {
+		polls.update((n) => {
+			for (const pollID in n) {
+				const nPoll = n[pollID];
+				if (nPoll.dateClose !== undefined && e[pollID] !== undefined) {
+					e[pollID] = nPoll;
+				}
+			}
+			return e;
+		});
 	});
 
 	let currentChat: Array<object>;
@@ -83,7 +99,7 @@ const init = () => {
 					pushMsg(msg);
 				}
 			} else {
-				if (e.message.includes(userObj.username) && userObj.username) {
+				if (e.message?.includes(userObj.username) && userObj.username) {
 					if (document.hidden == true) tabText.set(`*Pinged by ${e.username}*`);
 				}
 				pushMsg(e);
@@ -126,12 +142,15 @@ const init = () => {
 			n.login = false;
 			return n;
 		});
-		user.set({
-			username: e.username,
-			accessLevel: e.accessLevel,
-			icon: '',
-			accessToken: e.accessToken,
-			refreshToken: e.refreshToken
+		user.update((n) => {
+			return {
+				username: e.username,
+				accessLevel: e.accessLevel,
+				icon: '',
+				accessToken: e.accessToken,
+				refreshToken: e.refreshToken,
+				uuid: n.uuid
+			};
 		});
 		if (e.accessLevel >= 1) {
 			localStorage.setItem('accessToken', e.accessToken.token);

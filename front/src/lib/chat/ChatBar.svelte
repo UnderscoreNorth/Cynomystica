@@ -195,7 +195,7 @@
 	#iconList {
 		position: absolute;
 		left: 0.5rem;
-		max-height: 70vh;
+		max-height: 70svh;
 		overflow-y: scroll;
 		background: white;
 		z-index: 2;
