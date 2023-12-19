@@ -47,14 +47,19 @@ class PlayList {
           await IO().sockets.fetchSockets()
         ) as unknown as socketInterface[]) {
           if (socket.username) {
-            theThreeGuys.push(socket.username);
+            theThreeGuys.push(socket);
           }
         }
         theThreeGuys = theThreeGuys
+          .sort(
+            (a: socketInterface, b: socketInterface) =>
+              a.lastMessage.getTime() ?? 0 - b.lastMessage.getTime() ?? 0
+          )
+          .slice(0, 10)
           .map((value) => ({ value, sort: Math.random() }))
           .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value);
-        theThreeGuys = theThreeGuys.slice(0, 2);
+          .map(({ value }) => value.username);
+        theThreeGuys = theThreeGuys.slice(0, 3);
         console.log("TheThreeGuys", theThreeGuys);
       }
     } else {

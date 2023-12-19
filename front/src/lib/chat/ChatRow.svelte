@@ -23,7 +23,6 @@
 	const parseUser = () => {
 		let username = message.username;
 		username = parseThreeGuys(username);
-		username += ':';
 		if ($userSettings.chat.anonymous) username = '';
 		return username;
 	};
@@ -49,9 +48,11 @@
 								{@html message.message.substring(4)}
 							</span>
 						{:else}
-							<span class="chatUser" style={getUserStyle()}>
-								{parseUser()}
-							</span>
+							{#if !$userSettings.chat.anonymous}
+								<span class="chatUser" style={getUserStyle()}>
+									{parseUser()}
+								</span>
+							{/if}
 							<span class="chatMsg">
 								{@html message.message}
 							</span>
