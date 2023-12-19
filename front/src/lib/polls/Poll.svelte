@@ -18,6 +18,20 @@
             io.emit('close-poll',{pollID});
         }
     }
+    const getTimeLeft = ()=>{
+        let hours = -1;
+        let minutes = -1;
+        let seconds = (Math.floor((Date.parse(poll.dateCreate)/1000 + poll.duration) - new Date().getTime()/1000) + 1 );
+        if(seconds > 90){
+            minutes = Math.floor(seconds / 60);
+            seconds = seconds % 60;
+        }
+        if(minutes > 90){
+            hours = Math.floor(minutes / 60);
+            minutes = minutes % 60;
+        }
+        return `${hours >= 0 ? hours + 'hr, ' : ''}${minutes >= 0 ? minutes + 'min, ' : ''}${seconds}s`;
+    }
     let timer = 0;
     onMount(() => {
         if(poll.duration > 0){
@@ -44,7 +58,7 @@
 <small>{poll.options.length ? 'opened' : 'pinned'} by {poll.username}
     {#if poll.duration > 0 && !poll.dateClose}
         {#key timer}
-        {' - Closes in ' + (Math.floor((Date.parse(poll.dateCreate)/1000 + poll.duration) - new Date().getTime()/1000) + 1 )+ 's'}
+        {' - Closes in ' + getTimeLeft()}
         {/key}
         
     {/if}
