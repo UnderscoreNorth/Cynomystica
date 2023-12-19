@@ -41,7 +41,8 @@ const init = () => {
 				accessLevel: -1,
 				icon: '',
 				accessToken: undefined,
-				refreshToken: undefined
+				refreshToken: undefined,
+				uuid: e
 			});
 			if (reload) location.reload();
 		}
