@@ -35,7 +35,7 @@
 
 <section id="app">
 	<c id="cHeader"><Header /></c>
-	{#if $userSettings.display.snow}
+	{#if $userSettings.display.snow > 0}
 		<Snow />
 	{/if}
 	<main>

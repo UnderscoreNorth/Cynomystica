@@ -6,7 +6,7 @@ export const userSettings = writable({
 		danmaku: 'none',
 		chat: 'left',
 		video: true,
-		snow: false
+		snow: 0
 	},
 	chat: {
 		chatWidth: 21,

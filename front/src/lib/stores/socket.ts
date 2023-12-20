@@ -173,6 +173,7 @@ const init = () => {
 	io.on('usersettings', (e) => {
 		if (e) {
 			e.blockSave = true;
+			e.display.snow = 0;
 			userSettings.set(e);
 			setTimeout(() => {
 				e.blockSave = false;

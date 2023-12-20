@@ -55,12 +55,17 @@
 	</tr>
 	<tr>
 		<th>Snow</th>
-		<td><input type="checkbox" bind:checked={$userSettings.display.snow} /></td>
+		<td>
+			<input
+			type="number" step="50" min=0
+				bind:value={$userSettings.display.snow}
+			/>
+		</td>
 	</tr>
 	<tr>
 		<th rowspan="2">Chat</th>
 		<th>Chat Width</th>
-		<td><input type="number" step="1" bind:value={$userSettings.chat.chatWidth} /></td>
+		<td><input type="number" step="1"  min=0 bind:value={$userSettings.chat.chatWidth} /></td>
 	</tr>
 	<tr>
 		<th>Anonymous Mode</th>
@@ -69,7 +74,7 @@
 	<tr>
 		<th>Sync</th>
 		<th>Threshold (ms)</th>
-		<td><input type="number" step="1" bind:value={$userSettings.sync.threshold} /></td>
+		<td><input type="number" step="100"  min=100 bind:value={$userSettings.sync.threshold} /></td>
 	</tr>
 </table>
 

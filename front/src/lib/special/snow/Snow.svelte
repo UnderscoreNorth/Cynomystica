@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { userSettings } from "$lib/stores/userSettings";
 	function getStyle() {
 		let xStart = Math.random();
 		let angle = (Math.random() - 0.5) * 0.25;
@@ -22,9 +23,11 @@
 </script>
 
 <div id="snowContainer">
-	{#each Array(500) as _, index (index)}
-		<div class="snow" style={getStyle()} />
-	{/each}
+	{#key $userSettings.display.snow}
+		{#each Array($userSettings.display.snow) as _, index (index)}
+			<div class="snow" style={getStyle()} />
+		{/each}
+	{/key}
 </div>
 
 <style>
