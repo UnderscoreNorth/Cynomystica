@@ -15,9 +15,6 @@
         io.emit('create-poll', {title,duration,options});
     }
 </script>
-<h3>Polls/Pinned Messages
-</h3>
-<hr>
 {#if $user.accessLevel >= 4}
     <table>
         <tr>

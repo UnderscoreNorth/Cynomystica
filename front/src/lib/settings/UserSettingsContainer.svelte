@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { userSettings } from '$lib/stores/userSettings';
 </script>
-
-<h3>User Settings</h3>
-<hr />
 <table>
 	<tr>
 		<th rowspan="4">Display</th>

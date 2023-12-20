@@ -26,9 +26,7 @@
 </script>
 
 <svelte:window bind:innerWidth />
-<h3>
-	Playlist
-	<input
+<input
 		bind:value={mediaURL}
 		placeholder={$user.accessLevel == -1 && $permissions.queuePlaylist > -1
 			? 'Login required'
@@ -41,8 +39,6 @@
 		disabled={queueNextDisabled || $user.accessLevel < $permissions.queuePlaylist}
 		>Queue Next</button
 	>
-</h3>
-<hr />
 <div id="tableContainer">
 	<table>
 		{#if innerWidth > 768}

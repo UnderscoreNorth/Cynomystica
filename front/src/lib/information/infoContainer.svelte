@@ -1,5 +1,3 @@
-<h3>Information</h3>
-<hr />
 <a target="_blank" rel="noreferrer" href="https://forms.gle/vouJ1c4m7iSysj789"
 	>Submit Suggestions https://forms.gle/vouJ1c4m7iSysj789</a
 >

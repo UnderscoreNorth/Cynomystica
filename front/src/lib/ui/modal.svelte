@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let closeModal: Function;
+	export let title:string;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -11,8 +12,16 @@
 			e.stopPropagation();
 		}}
 	>
-		<button id="closeModal" on:click={closeModal()}>X</button>
-		<slot />
+		<div class='modalHeader'>
+			<h3>
+				{title}
+			</h3>
+			<button id="closeModal" on:click={closeModal()}>X</button>
+		</div>
+		<hr>
+		<div class='modalContents'>
+			<slot />
+		</div>
 	</div>
 </div>
 
@@ -22,17 +31,25 @@
 		max-width: 90vw;
 		margin-top: 2em;
 		color: white;
-		max-height: calc(90svh - 2em);
-		overflow-y: auto;
-		overflow-x: hidden;
 		position: relative;
 		height: fit-content;
 		padding-top:0;
 	}
-	#closeModal {
-		position: absolute;
-		top: 0.5rem;
-		right: 0.5rem;
+	.modalHeader{
+		display:flex;		
+		align-items: center;
+	}
+	.modalHeader h3{
+		flex-grow: 1;
+	}
+	#closeModal{
+		flex-grow: 0;
+		height: fit-content;
+	}
+	.modalContents{
+		max-height: calc(90svh - 4rem);
+		overflow-y: auto;
+		overflow-x: hidden;
 	}
 	@media (orientation: portrait) {
 		.modal {

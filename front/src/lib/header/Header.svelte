@@ -70,30 +70,30 @@
 		<Alert />
 	</nav>
 	{#if userSettingsModalOpen}
-		<Modal closeModal={toggleSettings}>
+		<Modal closeModal={toggleSettings} title={'User Settings'}>
 			<UserSettingsContainer />
 		</Modal>
 	{/if}
 	{#if playListModalOpen}
-		<Modal closeModal={togglePlaylist}>
+		<Modal closeModal={togglePlaylist} title={'Playlist'}>
 			<PlaylistContainer />
 		</Modal>
 	{/if}
 	{#if moderationModalOpen}
-		<ModerationContainer closeModal={toggleModeration} />
+		<ModerationContainer closeModal={toggleModeration}/>
 	{/if}
 	{#if scheduleModalOpen}
-		<Modal closeModal={toggleSchedule}>
+		<Modal closeModal={toggleSchedule} title={'Schedule'}>
 			<ScheduleContainer />
 		</Modal>
 	{/if}
 	{#if infoModalOpen}
-		<Modal closeModal={toggleInfo}>
+		<Modal closeModal={toggleInfo} title='Info/Updates'>
 			<InfoContainer />
 		</Modal>
 	{/if}
 	{#if pollModalOpen}
-		<Modal closeModal={togglePoll}>
+		<Modal closeModal={togglePoll} title='Polls/Pinned Messages'>
 			<PollModal />
 		</Modal>
 	{/if}

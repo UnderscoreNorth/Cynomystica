@@ -187,8 +187,7 @@ img.emote {
 }
 ::-webkit-scrollbar-thumb {
 	background: var(--color-bg-3);
-	border-left: solid 1px var(--color-bg-4);
-	border-right: solid 1px var(--color-bg-4);
+	border: solid 1px var(--color-bg-4);
 }
 ::-webkit-scrollbar-thumb:hover {
 	background: var(--color-bg-2);

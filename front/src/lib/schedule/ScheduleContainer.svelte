@@ -9,13 +9,9 @@
 	};
 </script>
 
-<h3>
-	Schedule
-	{#if $user.accessLevel >= $permissions.schedule}
+{#if $user.accessLevel >= $permissions.schedule}
 		<button on:click={() => changeSelectedID({})}>Add item</button>
 	{/if}
-</h3>
-<hr />
 <ViewSchedule {changeSelectedID} />
 {#if $user.accessLevel >= $permissions.schedule && selectedID !== null}
 	<ScheduleModal {changeSelectedID} {selectedID} />
