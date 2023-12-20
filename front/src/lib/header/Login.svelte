@@ -78,7 +78,7 @@
 		}
 		#loginDiv {
 			position: fixed;
-			background-color: var(--color-bg-dark-1);
+			background-color: var(--color-bg-2);
 			left: 0;
 			right: 0;
 			padding: 1rem;

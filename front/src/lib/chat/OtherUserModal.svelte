@@ -47,6 +47,6 @@
 	}
 	.userModActionBtn:hover {
 		cursor: pointer;
-		background: var(--color-bg-dark-1);
+		background: var(--color-bg-1);
 	}
 </style>

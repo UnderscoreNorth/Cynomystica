@@ -44,7 +44,7 @@
 {/if}
 {#each Object.entries($polls).sort((a,b)=>(a[1].options.length ? 1 : 0)-(b[1].options.length ? 1 : 0)) as poll}
 <div class='poll'>
-    <Poll poll={poll[1]} pollID={poll[0]} hideFn={undefined}></Poll>
+    <Poll poll={poll[1]} pollID={poll[0]} hideFn={()=>{}}></Poll>
 </div>
 {/each}
 <style>

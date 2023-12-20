@@ -110,8 +110,8 @@
 	#scheduleGrid {
 		display: grid;
 		width: 100%;
-		background: var(--color-bg-light-2);
-		color: var(--color-text-light-2);
+		background: var(--color-bg-4);
+		color: var(--color-fg-4);
 		grid-template-columns: 4rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 		grid-template-rows: repeat(1800, 1);
 		grid-column-gap: 0;

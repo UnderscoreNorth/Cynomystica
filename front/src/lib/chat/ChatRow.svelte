@@ -93,7 +93,7 @@
 		font-size: 0.6em;
 		padding-left: 5px;
 		padding-right: 5px;
-		border-right: 1px solid var(--color-bg-dark-1);
+		border-right: 1px solid var(--color-bg-2);
 	}
 	.chatRow td {
 		line-height: 1rem;

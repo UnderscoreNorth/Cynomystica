@@ -113,8 +113,8 @@
 		display: flex;
 		justify-content: left;
 		width: calc(100vw - 4rem);
-		background: var(--color-bg-dark-1);
-		color: var(--color-text-dark);
+		background: var(--color-bg-2);
+		color: var(--color-fg-2);
 		padding: 0 2rem;
 		flex-flow: row wrap;
 		align-items: stretch;

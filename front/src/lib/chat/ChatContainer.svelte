@@ -138,6 +138,8 @@
 	#chatBarContainer {
 		position: relative;
 		order: 3;
+		display:flex;
+		overflow: visible;
 	}
 	@media (orientation: portrait) {
 		#chatHeader {
@@ -158,11 +160,11 @@
 		background: none;
 	}
 	.chatContainer {
-		background: var(--color-bg-dark-3);
+		background: var(--color-bg-3);
 		height: 100%;
 		display: inline-block;
 		vertical-align: top;
-		color: #a6b7d1;
+		color: var(--color-fg-3);
 	}
 	#grid {
 		display: grid;
@@ -191,12 +193,13 @@
 		top: 0;
 		left: 0;
 		z-index: 0;
-		background: var(--color-bg-dark-3);
+		background: var(--color-bg-3);
 		width: 8rem;
 		height: calc(100% - 1em);
 		padding: 0.5em;
-		box-shadow: 4px 0px 4px black, inset 0px 0.5em var(--color-bg-dark-1);
-		overflow-y: scroll;
+		box-shadow: 4px 0px 4px black, inset 0px 3px var(--color-dark-2);
+		overflow-y: auto;
+		opacity:0.9;
 	}
 	thead{
 		position:sticky;
@@ -207,9 +210,9 @@
 		padding:0.5rem;
 		font-size: 0.8rem;
 		box-shadow: 1px 1px 5px 0px black;
-		background: var(--color-bg-dark-1);
+		background: var(--color-bg-2);
 		margin:5px;
-		color:white;
+		color:var(--color-fg-2);
 		opacity:0.9;
 	}
 </style>

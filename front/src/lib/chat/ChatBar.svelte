@@ -29,6 +29,7 @@
 
 	beforeUpdate(() => {
 		if (input) {
+			//@ts-ignore
 			({ selectionStart, selectionEnd } = input);
 		}
 		beforeInput = $chatInput;
@@ -90,8 +91,9 @@
 		if (e.key == 's' && e.ctrlKey == true) {
 			spoilerMode = true;
 			const { selectionStart: start, selectionEnd: end } = input;
-			console.log(start);
+			//@ts-ignore
 			let spoileredText = `[s]${$chatInput.slice(start, end)}[/s]`;
+			//@ts-ignore
 			$chatInput = `${$chatInput.slice(0, start)}${spoileredText}${$chatInput.slice(end)}`;
 		} else {
 			spoilerMode = false;
@@ -184,25 +186,15 @@
 	autocomplete="off"
 />
 
-<style>
-	#iconSelect {
-		position: absolute;
-		float: left;
-		left: 0.5rem;
-		width: 1.8rem;
-		height: 1.8rem;
-		top: 0.1rem;
-		z-index: 0;
-		border-right: solid 1px;
-	}
+<style>	
 	#iconList {
 		position: absolute;
 		left: 0.5rem;
 		max-height: 70svh;
 		overflow-y: scroll;
-		background: white;
+		background: var(--color-bg-4);
 		z-index: 2;
-		color: black;
+		color: var(--color-fg-4);
 		box-shadow: 1px 1px 5px 0px black;
 		border: solid 1px black;
 	}
@@ -215,18 +207,30 @@
 		align-items: center;
 		height: 1.8rem;
 	}
-	.iconListItem:hover {
-		background-color: #1e90ff;
+	.iconListItem img{
+		padding-right:2px;
 	}
+	.iconListItem:hover {
+		background-color: var(--color-bg-2);
+		color:var(--color-fg-2);
+	}	
 	.iconListItem img,
 	#iconSelect img {
 		height: 1.8rem;
 		width: 1.8rem;
-		margin-right: 0.2rem;
 	}
-	#iconSelect img {
-		margin-bottom: -0.1rem;
-		margin-top: -1px;
+	#iconSelect {
+		position: absolute;
+		float: left;
+		left: 0.5rem;
+		width: 2rem;
+		height: calc(100% - 4px);
+		top: 2px;
+		z-index: 0;
+		border-right: solid 1px black;
+		display:flex;
+		justify-content: center;
+		align-items: center;
 	}
 	#iconSelect:hover {
 		background-color: #1e90ff;
@@ -235,8 +239,9 @@
 		padding: 2px;
 		border: 0;
 		height: calc(100% - 4px);
-		width: calc(100% - 2px - 2.8rem);
 		padding-left: 2.8rem;
 		margin: 0;
+		flex-grow: 1;
+		flex-shrink: 1;
 	}
 </style>

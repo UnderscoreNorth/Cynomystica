@@ -49,8 +49,8 @@
 	#alert {
 		visibility: hidden; /* Hidden by default. Visible on click */
 		min-width: 250px; /* Set a default minimum width */
-		background-color: #333; /* Black background color */
-		color: #fff; /* White text color */
+		background-color: var(--color-bg-3); /* Black background color */
+		color: var(--color-fg-3); /* White text color */
 		text-align: center; /* Centered text */
 		border-radius: 2px; /* Rounded borders */
 		padding: 16px; /* Padding */

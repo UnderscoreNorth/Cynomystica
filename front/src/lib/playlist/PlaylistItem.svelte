@@ -56,7 +56,7 @@
 <style>
 	td {
 		line-height: 2rem;
-		color: var(--color-text-dark);
+		color: var(--color-text-dark-1);
 	}
 	.t-right {
 		text-align: right;

@@ -30,12 +30,12 @@
 <style>
 	.tooltip {
 		box-shadow: 2px 2px 2px black;
-		background: var(--color-bg-light);
+		background: var(--color-bg-4);
 		opacity: 0.85;
 		padding: 4px;
 		position: absolute;
 		z-index: 10;
-		color: black;
+		color: var(--color-fg-4);
 		line-height: 1rem;
 		font-size: 1rem;
 	}

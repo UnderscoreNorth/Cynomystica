@@ -5,7 +5,7 @@
 	import { onMount } from "svelte";
     export let poll:Poll;
     export let pollID:string;
-    export let hideFn:Function | undefined;
+    export let hideFn:Function;
     const vote = (vote:number) =>{
         if(vote == poll.votes[$user.uuid])
             vote = -1;  

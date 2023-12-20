@@ -80,10 +80,10 @@
 		display: table-row;
 	}
 	:global(.classHovered) {
-		background: var(--color-bg-dark-1);
+		background: var(--color-bg-2);
 	}
 	table th {
-		color: var(--color-text-dark);
+		color: var(--color-fg-1);
 		position: sticky;
 		top: 0;
 	}
@@ -93,6 +93,6 @@
 	#tableContainer {
 		max-height: 60svh;
 		width: 100%;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 </style>

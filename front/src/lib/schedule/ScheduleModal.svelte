@@ -38,6 +38,9 @@
 		io.emit('upsert-schedule', sendObj);
 		changeSelectedID(null);
 	};
+	const deleteItem = ()=>{
+		io.emit('delete-schedule',{id})
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -49,6 +52,7 @@
 >
 	<table
 		id="scheduleModal"
+		class='modal'
 		on:click={(e) => {
 			e.stopPropagation();
 		}}
@@ -81,7 +85,12 @@
 			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled={loading} /></td>
 		</tr>
 		<tr>
-			<td colspan="2"><button on:click={upsert}>{newEntry ? 'Add' : 'Edit'}</button></td>
+			<td colspan="2">
+				<button on:click={upsert}>{newEntry ? 'Add' : 'Edit'}</button>
+				{#if !newEntry}
+				<button on:click={deleteItem}>Delete</button>
+				{/if}
+			</td>
 		</tr>
 	</table>
 </div>
@@ -89,17 +98,14 @@
 <style>
 	#scheduleModal {
 		max-width: 50rem;
-		background: var(--color-bg-dark-3);
 		opacity: 0.9;
 		margin-top: calc(50svh - 12rem);
 		border: solid 1px var(--color-bg-dark-1);
-		color: white;
+		padding: 1rem;
+		height:fit-content
 	}
 	input {
 		width: 25rem;
 	}
-	#scheduleModal {
-		padding: 1rem;
-		height: 20rem;
-	}
+
 </style>
