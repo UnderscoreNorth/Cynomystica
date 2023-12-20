@@ -25,11 +25,13 @@
 	let selectionEnd = 0;
 	let spoilerMode = false;
 	let iconListEl;
+	let beforeInput:string;
 
 	beforeUpdate(() => {
 		if (input) {
 			({ selectionStart, selectionEnd } = input);
 		}
+		beforeInput = $chatInput;
 	});
 
 	afterUpdate(() => {
@@ -42,7 +44,8 @@
 			}
 			input.setSelectionRange(selectionStart, selectionStart);			
 		}
-		input.focus();
+		if(beforeInput !== $chatInput)
+			input.focus();
 	});
 	const handleKeyDown = (e: KeyboardEvent) => {
 		if (e.key == 's' && e.ctrlKey == true) {

@@ -94,7 +94,7 @@
 				<table id="chatTable">
 					<thead>
 						{#key hiddenPolls}
-							{#each Object.entries($polls) as poll}
+							{#each Object.entries($polls).sort((a,b)=>(a[1].options.length ? 1 : 0)-(b[1].options.length ? 1 : 0)) as poll}
 								{#if hiddenPolls.has(poll[0]) == false}
 								<tr>
 									<td colspan=2>
