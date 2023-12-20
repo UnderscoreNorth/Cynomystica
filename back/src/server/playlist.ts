@@ -53,7 +53,7 @@ class PlayList {
         theThreeGuys = theThreeGuys
           .sort(
             (a: socketInterface, b: socketInterface) =>
-              a.lastMessage.getTime() ?? 0 - b.lastMessage.getTime() ?? 0
+              a?.lastMessage?.getTime() ?? 0 - b?.lastMessage?.getTime() ?? 0
           )
           .slice(0, 10)
           .map((value) => ({ value, sort: Math.random() }))
