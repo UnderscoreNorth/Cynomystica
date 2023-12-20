@@ -5,7 +5,7 @@
 	import { onMount } from "svelte";
     export let poll:Poll;
     export let pollID:string;
-    export let hideFn:Function;
+    export let hideFn:Function|undefined = undefined;
     const vote = (vote:number) =>{
         if(vote == poll.votes[$user.uuid])
             vote = -1;  
@@ -52,7 +52,7 @@
     </button>
     {/if}
     {#if hideFn !== undefined}
-    <button on:click={()=>hideFn(pollID)}>Hide</button>
+    <button on:click={()=>{if (hideFn!== undefined) hideFn(pollID)}}>Hide</button>
     {/if}
 </div>
 
