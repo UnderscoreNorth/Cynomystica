@@ -125,7 +125,7 @@
 		position:absolute;
 		top:1rem;
 		left:1rem;
-		z-index: 1;
+		z-index: 2;
 		width:calc(100% - 1rem);
 		display:flex;
 	}

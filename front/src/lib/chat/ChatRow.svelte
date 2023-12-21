@@ -4,9 +4,9 @@
 	import { bulletMode } from '$lib/stores/bulletmode';
 	import { user } from '$lib/stores/user';
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
-	import { userSettings } from '$lib/stores/userSettings';
-	import { chatInput } from '$lib/stores/chat';
+	import {chatInput } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
+	import { onMount } from 'svelte';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -33,13 +33,25 @@
 			$chatInput += e.target?.title;
 		}
 	}
+	let el:HTMLTableRowElement;
+	onMount(()=>{		
+		let chatContainer = el.parentElement?.parentElement?.parentElement as HTMLElement;
+		if (
+			chatContainer.scrollTop + chatContainer.offsetHeight + 100 > chatContainer.scrollHeight || $tempSettings.minimize || $tempSettings.initScroll
+		) {			
+			setTimeout(()=>{
+			el.scrollIntoView(false)
+			$tempSettings.initScroll = false;
+		},5);	
+		}
+	})
 </script>
 
 {#if message?.username}
 	{#key message.username}	
 		{#key $icons}
 			{#key message?.icon}
-				<tr class={getRowClasses(message.message)}>
+				<tr bind:this={el} class={getRowClasses(message.message)}>
 					<td class="chatTime">
 						[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
 					</td>
@@ -108,5 +120,6 @@
 	:global(.chatMsg img) {
 		max-width: 100%;
 		max-height: 30svh;
+		vertical-align: middle;
 	}
 </style>

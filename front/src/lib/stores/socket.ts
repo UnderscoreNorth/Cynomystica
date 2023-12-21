@@ -98,31 +98,33 @@ const init = () => {
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
 			const pushMsg = (msg) => {
-				for (const emoteName in emoteObj) {
-					const emoteURL = emoteObj[emoteName];
-					msg.message = msg.message.replaceAll(
-						emoteName,
-						`<img title='${emoteName}' class='emote' src='${emoteURL}'/>`
-					);
-				}
-				if (tempSettingObj.audio == true) {
-					for (const sfx of chatSFX) {
-						if (msg.message.includes(sfx[0])) {
-							const audioElement = document.createElement('audio');
-							audioElement.autoplay = true;
-							audioElement.src = sfx[1];
-							const app = document.getElementById('app');
-							app?.append(audioElement);
-							setTimeout(() => {
-								app?.removeChild(audioElement);
-							}, 5000);
+				if (msg.message) {
+					for (const emoteName in emoteObj) {
+						const emoteURL = emoteObj[emoteName];
+						msg.message = msg.message.replaceAll(
+							emoteName,
+							`<img title='${emoteName}' class='emote' src='${emoteURL}'/>`
+						);
+					}
+					if (tempSettingObj.audio == true) {
+						for (const sfx of chatSFX) {
+							if (msg.message.includes(sfx[0])) {
+								const audioElement = document.createElement('audio');
+								audioElement.autoplay = true;
+								audioElement.src = sfx[1];
+								const app = document.getElementById('app');
+								app?.append(audioElement);
+								setTimeout(() => {
+									app?.removeChild(audioElement);
+								}, 5000);
+							}
 						}
 					}
+					msg.played = false;
+					oldChat.push(msg);
+					if (oldChat.length > userSettingsObj.chat.chatArray)
+						oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
 				}
-				msg.played = false;
-				oldChat.push(msg);
-				if (oldChat.length > userSettingsObj.chat.chatArray)
-					oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
 			};
 			if (e?.length > 0) {
 				for (let msg of e) {

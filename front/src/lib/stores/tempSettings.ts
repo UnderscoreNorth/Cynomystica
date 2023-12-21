@@ -4,5 +4,6 @@ export const tempSettings = writable({
 	snow: 0,
 	anonymous: false,
 	minimize: false,
-	audio: false
+	audio: false,
+	initScroll: true
 });

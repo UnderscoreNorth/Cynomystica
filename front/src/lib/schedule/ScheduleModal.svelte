@@ -44,7 +44,7 @@
 <div
 	class="modalbg"
 	on:click={() => {
-		changeSelectedID(null);
+		changeSelectedID(undefined);
 	}}
 >
 	<table

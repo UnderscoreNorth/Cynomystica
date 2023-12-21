@@ -40,17 +40,21 @@
 		<Snow />
 	{/if}
 	<main>
+		{#if $userSettings.display.chat !== 'none'}
+			<c
+				id="cChat"
+				class={$tempSettings.minimize ? 'minimal' : ''}
+				style:width={`${$userSettings.chat.chatWidth}rem`}
+				style:order={$userSettings.display.chat == 'left' ? 1 : 3}
+				style:left={$userSettings.display.chat == 'left' && $tempSettings.minimize ? 0 : ''}
+				style:right={$userSettings.display.chat == 'right' && $tempSettings.minimize ? 0 : ''}
+				><ChatContainer /></c
+			>
+		{/if}
 		{#if $userSettings.display.video}<c
 				id="cVideo"
 				style:width={`calc(100% - ${$userSettings.chat.chatWidth}rem)`}><VideoContainer /></c
 			>{/if}
-		{#if $userSettings.display.chat !== 'none' && !$tempSettings.minimize}
-			<c
-				id="cChat"
-				style:width={`${$userSettings.chat.chatWidth}rem`}
-				style:order={$userSettings.display.chat == 'left' ? 1 : 3}><ChatContainer /></c
-			>
-		{/if}
 	</main>
 </section>
 
@@ -61,7 +65,7 @@
 		overflow: hidden;
 		display:flex;
 		flex-direction: column;
-		background:var(--color-bg-2);
+		
 	}
 	main {
 		display: flex;
@@ -72,6 +76,11 @@
 	#cChat {
 		flex-grow: 1;
 		order: 1;
+	}
+	#cChat.minimal{
+		position:fixed;
+		z-index: 1;
+		pointer-events: none;
 	}
 	#cVideo {
 		flex-shrink: 1;

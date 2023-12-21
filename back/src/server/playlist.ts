@@ -43,9 +43,10 @@ class PlayList {
     }*/
     if (this.playlist?.[0]?.name.includes("School Days")) {
       if (theThreeGuys.length == 0) {
-        for (let socket of Object.values(
-          await IO().sockets.fetchSockets()
-        ) as unknown as socketInterface[]) {
+        theThreeGuys = ["TheThirdGuy"];
+        let sockets = Object.values(await IO().sockets.fetchSockets());
+        theThreeGuys = [];
+        for (let socket of sockets as unknown as socketInterface[]) {
           if (socket.username) {
             theThreeGuys.push(socket);
           }
@@ -53,9 +54,14 @@ class PlayList {
         theThreeGuys = theThreeGuys
           .sort(
             (a: socketInterface, b: socketInterface) =>
-              a?.lastMessage?.getTime() ?? 0 - b?.lastMessage?.getTime() ?? 0
+              b?.lastMessage?.getTime() ?? 0 - a?.lastMessage?.getTime() ?? 0
           )
-          .slice(0, 10)
+          .slice(0, 10);
+        console.log(
+          "TheTenGuys",
+          theThreeGuys.map((a) => a.username)
+        );
+        theThreeGuys = theThreeGuys
           .map((value) => ({ value, sort: Math.random() }))
           .sort((a, b) => a.sort - b.sort)
           .map(({ value }) => value.username);

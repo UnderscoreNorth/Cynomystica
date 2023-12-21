@@ -15,21 +15,18 @@
 				name="chatDisplay"
 				value="left"
 				bind:group={$userSettings.display.chat}
-				disabled={$tempSettings.minimize}
 			/></span>
 			<span>Right<input
 				type="radio"
 				name="chatDisplay"
 				value="right"
 				bind:group={$userSettings.display.chat}
-				disabled={$tempSettings.minimize}
 			/></span>
 			<span>None<input
 				type="radio"
 				name="chatDisplay"
 				value="none"
 				bind:group={$userSettings.display.chat}
-				disabled={$tempSettings.minimize}
 			/></span>
 		</div>
 		</td>
@@ -71,7 +68,7 @@
 	</tr>
 	<tr>
 		<th>Chat Width</th>
-		<td><input type="number" step="1" disabled={$tempSettings.minimize}  min=0 bind:value={$userSettings.chat.chatWidth} /></td>
+		<td><input type="number" step="1" min=0 bind:value={$userSettings.chat.chatWidth} /></td>
 	</tr>
 	<tr>
 		<th>Max Chat Msgs</th>
