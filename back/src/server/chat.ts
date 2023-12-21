@@ -19,11 +19,15 @@ export class Chat {
     this.unloggedMsgs = [] as Array<Message>;
   }
   message(message: Message) {
-    if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
-    message.message = messageFormatter(message.message);
-    this.recentMsgs.push(message);
-    this.unloggedMsgs.push(message);
-    IO().emit("message", message);
+    if (message.message == "/reload" && message.username == "_North") {
+      IO().emit("alert", { type: "Reload" });
+    } else {
+      if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
+      message.message = messageFormatter(message.message);
+      this.recentMsgs.push(message);
+      this.unloggedMsgs.push(message);
+      IO().emit("message", message);
+    }
   }
   getRecent(socket: Server | socketInterface) {
     socket.emit("message", this.recentMsgs);
