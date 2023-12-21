@@ -16,13 +16,22 @@ import { tabText } from './tabText';
 import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 import { emotes } from './emotes';
 import { polls, type Poll } from './polls';
+import { tempSettings } from './tempSettings';
 let userObj: any = {};
 let emoteObj: Record<string, string> = {};
+let tempSettingObj: Record<string, any> = {};
+let userSettingsObj: Record<string, any> = {};
 user.subscribe((e) => {
 	userObj = e;
 });
 emotes.subscribe((e) => {
 	emoteObj = e;
+});
+tempSettings.subscribe((e) => {
+	tempSettingObj = e;
+});
+userSettings.subscribe((e) => {
+	userSettingsObj = e;
 });
 
 const init = () => {
@@ -82,6 +91,10 @@ const init = () => {
 			theThreeGuys.set(e.theThreeGuys);
 		}
 	});
+	const chatSFX = [
+		[`<span class='redtext'>`, '/redtruth.mp3'],
+		['ahaha.wav', '/ahaha.wav.mp3']
+	];
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
 			const pushMsg = (msg) => {
@@ -92,9 +105,24 @@ const init = () => {
 						`<img title='${emoteName}' class='emote' src='${emoteURL}'/>`
 					);
 				}
+				if (tempSettingObj.audio == true) {
+					for (const sfx of chatSFX) {
+						if (msg.message.includes(sfx[0])) {
+							const audioElement = document.createElement('audio');
+							audioElement.autoplay = true;
+							audioElement.src = sfx[1];
+							const app = document.getElementById('app');
+							app?.append(audioElement);
+							setTimeout(() => {
+								app?.removeChild(audioElement);
+							}, 5000);
+						}
+					}
+				}
 				msg.played = false;
 				oldChat.push(msg);
-				if (oldChat.length > 500) oldChat.splice(0, oldChat.length - 500);
+				if (oldChat.length > userSettingsObj.chat.chatArray)
+					oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
 			};
 			if (e?.length > 0) {
 				for (let msg of e) {
@@ -173,14 +201,10 @@ const init = () => {
 	io.on('usersettings', (e) => {
 		if (e) {
 			e.blockSave = true;
-			e.display.snow = 0;
 			userSettings.set(e);
 			setTimeout(() => {
 				e.blockSave = false;
-				userSettings.update((n) => {
-					e.chat.anonymous = n.chat.anonymous;
-					return e;
-				});
+				userSettings.set(e);
 			}, 500);
 		}
 	});

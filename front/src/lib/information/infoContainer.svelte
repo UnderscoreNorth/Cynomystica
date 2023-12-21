@@ -15,6 +15,13 @@
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>
+<b>Dec 21, 2023</b>
+<ul>
+	<li>Youtube livestream support</li>
+	<li>Max chat size user setting</li>
+	<li>Optional SFX on chat trigger</li>
+	<li>Video Minimal mode</li>
+</ul>
 <b>Dec 19, 2023</b>
 <ul>
 	<li>Added a single emote</li>

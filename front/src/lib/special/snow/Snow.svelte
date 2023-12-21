@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tempSettings } from "$lib/stores/tempSettings";
 	import { userSettings } from "$lib/stores/userSettings";
 	function getStyle() {
 		let xStart = Math.random();
@@ -23,8 +24,8 @@
 </script>
 
 <div id="snowContainer">
-	{#key $userSettings.display.snow}
-		{#each Array($userSettings.display.snow) as _, index (index)}
+	{#key $tempSettings.snow}
+		{#each Array($tempSettings.snow) as _, index (index)}
 			<div class="snow" style={getStyle()} />
 		{/each}
 	{/key}

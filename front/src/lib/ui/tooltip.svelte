@@ -22,9 +22,8 @@
 <div on:mouseover={mouseOver} on:mouseleave={mouseLeave} on:mousemove={mouseMove}>
 	<slot />
 </div>
-
 {#if isHovered}
-	<div style="top: {y}px; left: {x + 10}px;" class="tooltip">{title}</div>
+	<div style="top: {y}px; left: {x + 10}px;" class="tooltip">{@html title}</div>
 {/if}
 
 <style>

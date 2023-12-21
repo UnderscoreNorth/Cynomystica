@@ -10,6 +10,7 @@ export default class {
     'chatWidth' INT,
     'syncThreshold' INT,    
     'selectedIcon' VARCHAR(200),
+    'maxMsgs' INT,
     'dateModified' DATETIME(20) DEFAULT (DATETIME('now')),
     PRIMARY KEY ('username','useragent')
 );`;
@@ -34,6 +35,7 @@ export default class {
         },
         chat: {
           chatWidth: e.chatWidth,
+          chatArray: e.maxMsgs,
         },
         icon: e.selectedIcon,
         users: [],
@@ -52,12 +54,13 @@ export default class {
     send.chatWidth = obj.chat.chatWidth;
     send.syncThreshold = obj.sync.threshold;
     send.selectedIcon = obj.icon;
+    send.maxMsgs = obj.chat.chatArray > 0 ? obj.chat.chatArray : 500;
     await db
       .prepare(
         `
               INSERT INTO userSettings
-              (username, useragent,chatPosition,videoDisplay,danmakuDisplay,chatWidth,syncThreshold,selectedIcon) 
-              VALUES (@username, @useragent,@chatPosition,@videoDisplay,@danmakuDisplay,@chatWidth,@syncThreshold,@selectedIcon)
+              (username, useragent,chatPosition,videoDisplay,danmakuDisplay,chatWidth,syncThreshold,selectedIcon,maxMsgs) 
+              VALUES (@username, @useragent,@chatPosition,@videoDisplay,@danmakuDisplay,@chatWidth,@syncThreshold,@selectedIcon,@maxMsgs)
               ON CONFLICT(username,useragent) DO UPDATE SET
                 chatPosition=@chatPosition,
                 videoDisplay=@videoDisplay,
@@ -65,6 +68,7 @@ export default class {
                 chatWidth=@chatWidth,
                 syncThreshold=@syncThreshold,
                 selectedIcon=@selectedIcon,
+                maxMsgs=@maxMsgs,
                 dateModified = DATETIME('now')`
       )
       .run(send);

@@ -3,8 +3,9 @@
 	import { permissions } from '$lib/stores/permissions';
 	import { user } from '$lib/stores/user';
 	import ScheduleModal from './ScheduleModal.svelte';
-	let selectedID: string | null = null;
-	const changeSelectedID = (newID: string | null) => {
+	import type {ScheduleItem} from '$lib/stores/schedule';
+	let selectedID: ScheduleItem | null = null;
+	const changeSelectedID = (newID: ScheduleItem | null) => {
 		selectedID = newID;
 	};
 </script>

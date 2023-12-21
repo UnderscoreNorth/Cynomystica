@@ -1,24 +1,23 @@
 <script lang="ts">
 	import { io } from '$lib/realtime';
+	import type { ScheduleItem } from '$lib/stores/schedule';
 	export let changeSelectedID: Function;
-	export let selectedID: any;
+	export let selectedID: ScheduleItem|null;
 	import moment from 'moment';
 	let url: String;
 	let title: String;
 	let playtime: String | null = null;
-	let leewayBefore: Number;
-	let leewayAfter: Number;
 	let visible: boolean;
 	let finishtime: String | null = null;
 	let id: string;
 	let loading = false;
 	let newEntry = false;
-	if (selectedID.id) {
+	if (selectedID?.id) {
 		newEntry = false;
 		url = selectedID.url;
 		title = selectedID.title;
-		finishtime = moment.utc(selectedID.finishtime).local().format('YYYY-MM-DD HH:mm:ss');
-		playtime = moment.utc(selectedID.playtime).local().format('YYYY-MM-DD HH:mm:ss');
+		finishtime = moment.utc(selectedID.finishTimeUTC).local().format('YYYY-MM-DD HH:mm:ss');
+		playtime = moment.utc(selectedID.playTimeUTC).local().format('YYYY-MM-DD HH:mm:ss');
 		id = selectedID.id;
 	} else {
 		newEntry = true;
@@ -30,13 +29,11 @@
 			url,
 			title,
 			playtime,
-			leewayBefore,
-			leewayAfter,
 			visible,
 			selectedID
 		};
 		io.emit('upsert-schedule', sendObj);
-		changeSelectedID(null);
+		changeSelectedID(undefined);
 	};
 	const deleteItem = ()=>{
 		io.emit('delete-schedule',{id})
@@ -70,16 +67,6 @@
 		</tr>
 		<tr>
 			<th>Finish time</th><td><input type="datetime-local" disabled bind:value={finishtime} /></td>
-		</tr>
-		<tr>
-			<th>Leeway Before (s)</th><td
-				><input type="number" bind:value={leewayBefore} disabled={loading} /></td
-			>
-		</tr>
-		<tr>
-			<th>Leeway After (s)</th><td
-				><input type="number" bind:value={leewayAfter} disabled={loading} /></td
-			>
 		</tr>
 		<tr>
 			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled={loading} /></td>

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { schedule } from '$lib/stores/schedule';
+	import { schedule, type ScheduleItem } from '$lib/stores/schedule';
 	import moment from 'moment';
 	import type { Moment } from 'moment';
 	import { io } from '$lib/realtime';
 	export let changeSelectedID: Function;
 	let date = moment().startOf('day');
 	let week = [] as Array<Moment>;
-	let scheduleArray = [];
-	let timeSet = new Set();
+	let scheduleArray:Array<ScheduleItem> = [];
+	let timeSet:Set<number> = new Set();
 	let minSplit = 0;
 	let maxSplit = 1000;
 	io.emit('get-schedule');
@@ -41,15 +41,8 @@
 				if (endingSplit < startingSplit) {
 					endingSplit += 1440;
 				}
-				let gridArea = `${startingSplit + 2}/${diff + 2}/${endingSplit + 2}/${diff + 3}`;
-				scheduleArray.push({
-					title: item.title,
-					gridArea,
-					id: item.id,
-					playtime: item.playTimeUTC,
-					finishtime: item.finishTimeUTC,
-					url: item.url
-				});
+				item.gridArea = `${startingSplit + 2}/${diff + 2}/${endingSplit + 2}/${diff + 3}`;
+				scheduleArray.push(item);
 				if (startingSplit < minSplit) minSplit = startingSplit;
 				if (endingSplit > maxSplit) maxSplit = endingSplit;
 			}
@@ -87,12 +80,12 @@
 			{day.format('ddd DD')}
 		</div>
 	{/each}
-	{#each scheduleArray as item}
+	{#each scheduleArray as item}		
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
-			class="scheduleItem"
-			style={`grid-area:${item.gridArea}`}
-			on:click={() => changeSelectedID(item)}
+		class="scheduleItem"
+		style={`grid-area:${item.gridArea}`}
+		on:click={() => changeSelectedID(item)}
 		>
 			{item.title}
 		</div>
@@ -120,7 +113,7 @@
 		overflow-y: scroll;
 		padding-bottom: 1px;
 	}
-	#scheduleGrid div {
+	#scheduleGrid>div {
 		display: flex;
 		justify-content: center;
 		align-content: center;

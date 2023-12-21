@@ -10,6 +10,7 @@
 	import { user } from '$lib/stores/user';
 	import { tabText } from '$lib/stores/tabText';
 	import Snow from '$lib/special/snow/Snow.svelte';
+	import { tempSettings } from '$lib/stores/tempSettings';
 	let defaultTabtext = 'Cynomystica';
 	let tabName = defaultTabtext;
 
@@ -35,7 +36,7 @@
 
 <section id="app">
 	<c id="cHeader"><Header /></c>
-	{#if $userSettings.display.snow > 0}
+	{#if $tempSettings.snow > 0}
 		<Snow />
 	{/if}
 	<main>
@@ -43,7 +44,7 @@
 				id="cVideo"
 				style:width={`calc(100% - ${$userSettings.chat.chatWidth}rem)`}><VideoContainer /></c
 			>{/if}
-		{#if $userSettings.display.chat !== 'none'}
+		{#if $userSettings.display.chat !== 'none' && !$tempSettings.minimize}
 			<c
 				id="cChat"
 				style:width={`${$userSettings.chat.chatWidth}rem`}
@@ -58,16 +59,15 @@
 		height: 100svh;
 		width: 100vw;
 		overflow: hidden;
+		display:flex;
+		flex-direction: column;
+		background:var(--color-bg-2);
 	}
 	main {
 		display: flex;
-		height: calc(100svh - 2rem);
+		flex-grow:1;
 		width: 100vw;
 		overflow-y: hidden;
-	}
-	#cVideo,
-	#cChat {
-		height: calc(100svh - 2rem);
 	}
 	#cChat {
 		flex-grow: 1;

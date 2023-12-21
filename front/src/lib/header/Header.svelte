@@ -1,24 +1,23 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Login from './Login.svelte';
 	import UserSettingsContainer from '$lib/settings/UserSettingsContainer.svelte';
 	import ModerationContainer from '$lib/moderation/ModerationContainer.svelte';
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
 	import Alert from './Alert.svelte';
-	import { bulletMode } from '$lib/stores/bulletmode';
 	import Modal from '$lib/ui/modal.svelte';
-
+	
 	import IconButton from '$lib/ui/iconButton.svelte';
 	import MdPoll from 'svelte-icons/md/MdPoll.svelte';
 	import MdSettings from 'svelte-icons/md/MdSettings.svelte';
 	import MdViewList from 'svelte-icons/md/MdViewList.svelte';
 	import MdSentimentVeryDissatisfied from 'svelte-icons/md/MdSentimentVeryDissatisfied.svelte';
 	import MdDateRange from 'svelte-icons/md/MdDateRange.svelte';
-	import MdClearAll from 'svelte-icons/md/MdClearAll.svelte';
 	import MdInfoOutline from 'svelte-icons/md/MdInfoOutline.svelte';
 	import InfoContainer from '$lib/information/infoContainer.svelte';
 	import PollModal from '$lib/polls/PollModal.svelte';
+	import { tempSettings } from '$lib/stores/tempSettings';
+	import ChatBar from '$lib/chat/ChatBar.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -44,6 +43,7 @@
 	const togglePoll = ()=>{
 		pollModalOpen = !pollModalOpen;
 	}
+		
 	const dummy = () => {};
 	/*
 	
@@ -51,24 +51,34 @@
 			Icon={MdSentimentVeryDissatisfied}
 			onClick={toggleModeration}
 			tooltip={'User Management'}
-		/>
-		<IconButton Icon={MdClearAll} onClick={toggleBulletMode} tooltip={'Fullscreen Bullet Mode'} />
+		/>		
 	*/
 </script>
 
-<header>
-	<nav>
-		<div id="siteName">Cynomystica |</div>
-		<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
+<header>	
+	{#if $tempSettings.minimize}
+		<div id='minimalHeader'>
+			<div id='minimalSettings'>
+				<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />			
+			</div>		
+			<div id='minimalChatBar'>
+				<ChatBar />
+			</div>
+		</div>
+	{:else}
+		<nav>
+			<div id="siteName">Cynomystica |</div>
+			<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
 
-		<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
+			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
 
-		<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
-		<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
-		<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
-		<div id="loginLi"><Login /></div>
-		<Alert />
-	</nav>
+			<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
+			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
+			<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
+			<div id="loginLi"><Login /></div>
+		</nav>
+	{/if}
+	<Alert />
 	{#if userSettingsModalOpen}
 		<Modal closeModal={toggleSettings} title={'User Settings'}>
 			<UserSettingsContainer />
@@ -108,6 +118,40 @@
 		display: flex;
 		justify-content: space-between;
 		border-bottom: solid 1px black;
+	}
+	#minimalHeader{
+		color: var(--color-fg-2);
+		opacity:0.5;
+		position:absolute;
+		top:1rem;
+		left:1rem;
+		z-index: 1;
+		width:calc(100% - 1rem);
+		display:flex;
+	}
+	#minimalSettings{
+		float:left;
+		background:rgba(0,0,0,0.2);
+		border-radius:0.5rem;
+	}
+	#minimalChatBar{
+		max-width: 80vw;	
+		width:20rem;
+		display:flex;
+		position: relative;
+		margin:auto;
+		height:max-content;
+		height:2rem;
+	}
+	:global(#minimalChatBar>input){
+		background:rgba(0,0,0,0.1);
+		border-radius: 0.5rem;
+		text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+		outline:solid 1px rgba(255,255,255,0.1);
+	}
+	:global(#minimalChatBar>#iconSelect){
+		border:none;
+		opacity:0.3;
 	}
 	nav {
 		display: flex;

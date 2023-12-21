@@ -92,7 +92,6 @@
         height:fit-content;
     }
     .pollTitle{
-        word-wrap: break-word;
-        word-break: break-all;
+        word-break: break-word;
     }
 </style>

@@ -1,10 +1,11 @@
 <script lang="ts">
 	export let closeModal: Function;
 	export let title:string;
+	export let zIndex = 1;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="modalbg" on:click={closeModal()}>
+<div class="modalbg" style={`z-index:${zIndex}`} on:click={closeModal()}>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div
 		class="modal"

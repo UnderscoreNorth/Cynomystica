@@ -5,12 +5,11 @@ export const userSettings = writable({
 	display: {
 		danmaku: 'none',
 		chat: 'left',
-		video: true,
-		snow: 0
+		video: true
 	},
 	chat: {
 		chatWidth: 21,
-		anonymous: false
+		chatArray: 500
 	},
 	icon: '',
 	users: [],

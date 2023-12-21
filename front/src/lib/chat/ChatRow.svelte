@@ -6,6 +6,7 @@
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 	import { userSettings } from '$lib/stores/userSettings';
 	import { chatInput } from '$lib/stores/chat';
+	import { tempSettings } from '$lib/stores/tempSettings';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -24,7 +25,7 @@
 	const parseUser = () => {
 		let username = message.username;
 		username = parseThreeGuys(username);
-		if ($userSettings.chat.anonymous) username = '';
+		if ($tempSettings.anonymous) username = '';
 		return username;
 	};
 	function clickMessage(e:PointerEvent){
@@ -54,7 +55,7 @@
 								{@html message.message.substring(4)}
 							</span>
 						{:else}
-							{#if !$userSettings.chat.anonymous}
+							{#if !$tempSettings.anonymous}
 								<span class="chatUser" style={getUserStyle()}>
 									{parseUser()}: 
 								</span>

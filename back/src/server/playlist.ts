@@ -84,7 +84,10 @@ class PlayList {
       this.currentSeekTime =
         Math.abs(new Date().getTime() - this.playlist[0].startDate.getTime()) /
         1000;
-      if (this.currentSeekTime > this.playlist[0].duration) {
+      if (
+        this.currentSeekTime > this.playlist[0].duration &&
+        this.playlist[0].duration > 0
+      ) {
         this.deleteVideo(this.playlist[0].id);
         this.playing = false;
         change = true;
@@ -111,8 +114,11 @@ class PlayList {
       if (index > 0) {
         item.startDate = lastEndDate;
       }
-      if (!(item.duration > 0)) break;
+      if (item.duration == 0) break;
       item.endDate = new Date(item.startDate.getTime() + item.duration * 1000);
+      if (item.duration == -1) {
+        item.endDate = item.startDate;
+      }
       lastEndDate = item.endDate;
     }
     if (change) playlist.send(IO());

@@ -1,4 +1,5 @@
 export const secondsToTime = (duration: number) => {
+	if (duration == -1) return 'LIVE';
 	let hours = 0,
 		minutes = 0,
 		seconds = 0;
