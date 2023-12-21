@@ -42,7 +42,7 @@
 	<main>
 		{#if $userSettings.display.video}<c
 				id="cVideo"
-				>
+				style:width={`calc(100% - ${$userSettings.chat.chatWidth}rem)`}>
 				<VideoContainer /></c
 			>{/if}
 		{#if $userSettings.display.chat !== 'none'}
