@@ -38,7 +38,7 @@
 	}
 </script>
 {#if messages.length > 0}
-	<Modal title={'Alerts'} zIndex={2} closeModal={closeModal}>
+	<Modal title={'Alerts'} zIndex={3} closeModal={closeModal}>
 		<table>
 			{#each messages as messageObj, i}
 				<tr>

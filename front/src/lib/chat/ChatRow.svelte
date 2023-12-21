@@ -72,6 +72,7 @@
 									{parseUser()}: 
 								</span>
 							{/if}
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
 							<span class="chatMsg" on:click={clickMessage}>
 								{@html message.message}
 							</span>
@@ -94,9 +95,6 @@
 	.chatIcon {
 		padding-left: 2px;
 	}
-	.chatRow {
-		font-size: 1rem;
-	}
 	.chatIcon img {
 		height: 1.25rem;
 		width: 1.25rem;
@@ -107,9 +105,6 @@
 		padding-left: 5px;
 		padding-right: 5px;
 		border-right: 1px solid var(--color-bg-2);
-	}
-	.chatRow td {
-		line-height: 1rem;
 	}
 	.chatMsg {
 		overflow-wrap: anywhere;

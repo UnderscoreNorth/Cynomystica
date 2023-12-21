@@ -40,6 +40,11 @@
 		<Snow />
 	{/if}
 	<main>
+		{#if $userSettings.display.video}<c
+				id="cVideo"
+				>
+				<VideoContainer /></c
+			>{/if}
 		{#if $userSettings.display.chat !== 'none'}
 			<c
 				id="cChat"
@@ -51,10 +56,6 @@
 				><ChatContainer /></c
 			>
 		{/if}
-		{#if $userSettings.display.video}<c
-				id="cVideo"
-				style:width={`calc(100% - ${$userSettings.chat.chatWidth}rem)`}><VideoContainer /></c
-			>{/if}
 	</main>
 </section>
 

@@ -10,6 +10,7 @@
 		hiddenPolls.add(pollID);
 		hiddenPolls = hiddenPolls;
 	}
+    $tempSettings.initScroll = true;
 </script>
 <div id="chatScroller" bind:this={chatScroller} class={$tempSettings.minimize ? 'chatMinimal' : ''}>
     <table id="chatTable" class={$tempSettings.minimize ? 'chatMinimal' : ''}>
@@ -39,16 +40,13 @@
     #chatScroller.chatMinimal{
         pointer-events: none;
         background:none;
-        margin: 4rem;
-        margin-bottom:8rem;
-        height:calc(100svh - 12rem);
+        margin: 10rem 4rem;
+        height:calc(100svh - 20rem);
         overflow-y: hidden;
-        opacity: 0.25;
+        opacity: 0.5;
         color:var(--color-fg-1);
+        font-size: 1.5rem;
         text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-    }
-    :global(#chatTable.chatMinimal img){
-        opacity:0.2;
     }
     :global(#chatTable.chatMinimal  tbody tr:nth-child(2n)) {
 		background: none;

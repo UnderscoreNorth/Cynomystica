@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let closeModal: Function;
 	export let title:string;
-	export let zIndex = 1;
+	export let zIndex = 2;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
