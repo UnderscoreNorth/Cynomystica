@@ -36,7 +36,7 @@ userSettings.subscribe((e) => {
 
 const init = () => {
 	io.on('connected', (e) => {
-		io.emit('version', 1.03);
+		io.emit('version', 1.04);
 		user.update((n) => {
 			n.uuid = e;
 			return n;
