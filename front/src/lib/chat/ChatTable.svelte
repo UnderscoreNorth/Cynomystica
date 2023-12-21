@@ -77,5 +77,16 @@
 		top:0;	
 		padding:1rem;
 	}
-
+    .poll{
+		padding:0.5rem;
+		font-size: 0.8rem;
+		box-shadow: 1px 1px 5px 0px black;
+		background: var(--color-bg-2);
+		margin:5px;
+		color:var(--color-fg-2);
+		opacity:0.9;
+	}
+    #chatScroller.chatMinimal .poll{
+        display:none;
+    }
 </style>

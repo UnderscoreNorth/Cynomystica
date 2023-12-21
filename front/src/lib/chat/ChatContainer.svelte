@@ -131,14 +131,5 @@
 		box-shadow: 4px 0px 4px black, inset 0px 3px var(--color-dark-2);
 		overflow-y: auto;
 		opacity:0.9;
-	}
-	.poll{
-		padding:0.5rem;
-		font-size: 0.8rem;
-		box-shadow: 1px 1px 5px 0px black;
-		background: var(--color-bg-2);
-		margin:5px;
-		color:var(--color-fg-2);
-		opacity:0.9;
-	}
+	}	
 </style>
