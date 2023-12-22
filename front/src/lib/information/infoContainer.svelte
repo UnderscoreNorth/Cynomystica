@@ -11,7 +11,7 @@
 	<tr><td>blue: text</td><td><span class="bluetext">text</span></td></tr>
 	<tr><td>>text</td><td><span class="greentext">>text</span></td></tr>
 	<tr><td>/me text</td><td><span class="actiontext">Username text</span></td></tr>
-	<tr><td>TAB</td><td>autocompletes username<br />tab again to cycle</td></tr>
+	<tr><td>TAB</td><td>autocompletes username/emote<br />tab again to cycle</td></tr>
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>

@@ -37,12 +37,12 @@
 	onMount(()=>{		
 		let chatContainer = el.parentElement?.parentElement?.parentElement as HTMLElement;
 		if (
-			chatContainer.scrollTop + chatContainer.offsetHeight + 100 > chatContainer.scrollHeight || $tempSettings.minimize || $tempSettings.initScroll
+			chatContainer.scrollTop + chatContainer.offsetHeight + 400 > chatContainer.scrollHeight || $tempSettings.minimize || $tempSettings.initScroll
 		) {			
 			setTimeout(()=>{
 			el.scrollIntoView(false)
 			$tempSettings.initScroll = false;
-		},5);	
+		},100);	
 		}
 	})
 </script>
