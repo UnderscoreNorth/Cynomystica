@@ -5,11 +5,9 @@
     import { chat } from '$lib/stores/chat';
     import { tempSettings } from '$lib/stores/tempSettings';
 	import { onMount } from 'svelte';
-	let chatScroller:HTMLDivElement;
-    let hiddenPolls = new Set();
+	let chatScroller:HTMLDivElement;    
 	const hidePoll = (pollID:string)=>{
-		hiddenPolls.add(pollID);
-		hiddenPolls = hiddenPolls;
+        $tempSettings.hiddenPolls = $tempSettings.hiddenPolls.add(pollID)
 	}
     $tempSettings.initScroll = true;    
     let debounce = false;
@@ -42,9 +40,9 @@
 <div id="chatScroller" on:scroll={scrollEvent} bind:this={chatScroller} class={$tempSettings.minimize ? 'chatMinimal' : ''}>
     <table id="chatTable" class={$tempSettings.minimize ? 'chatMinimal' : ''}>
         <thead>
-            {#key hiddenPolls}
+            {#key $tempSettings.hiddenPolls}
                 {#each Object.entries($polls).sort((a,b)=>(a[1].options.length ? 1 : 0)-(b[1].options.length ? 1 : 0)) as poll}
-                    {#if hiddenPolls.has(poll[0]) == false}
+                    {#if $tempSettings.hiddenPolls.has(poll[0]) == false}
                     <tr>
                         <td colspan=2>
                             <div class='poll'>
