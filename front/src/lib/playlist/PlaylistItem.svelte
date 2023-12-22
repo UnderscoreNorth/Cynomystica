@@ -42,9 +42,9 @@
 	</td>
 	<td
 		><a
-			href={(item.type == 'yt' ? `https://youtube.com/watch?v=` : ``) + item.url}
+			href={((item.type == 'yt' || item.type == 'ytlive' ) ? `https://youtube.com/watch?v=` : ``) + item.url}
 			target="_blank"
-			rel="noreferrer">{item.name}</a
+			rel="noreferrer">{item.name}</a 
 		></td
 	>
 	<td class="t-right">{new Date(item.startDate).toLocaleTimeString()}</td>

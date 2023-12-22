@@ -37,7 +37,6 @@
 				};
 				initSyncTime();
 				player.on('stateChange', async (e) => {
-					//console.log(e);
 					if (!debounced && $user.accessLevel > -1) {
 						debounced = true;
 						let currentSeek = await player.getCurrentTime();

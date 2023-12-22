@@ -5,5 +5,6 @@ export const tempSettings = writable({
 	anonymous: false,
 	minimize: false,
 	audio: false,
-	initScroll: true
+	initScroll: true,
+	videoVolume: 1
 });
