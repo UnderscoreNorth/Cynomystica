@@ -4,15 +4,42 @@
     import { polls } from '$lib/stores/polls';	
     import { chat } from '$lib/stores/chat';
     import { tempSettings } from '$lib/stores/tempSettings';
+	import { onMount } from 'svelte';
 	let chatScroller:HTMLDivElement;
     let hiddenPolls = new Set();
 	const hidePoll = (pollID:string)=>{
 		hiddenPolls.add(pollID);
 		hiddenPolls = hiddenPolls;
 	}
-    $tempSettings.initScroll = true;
+    $tempSettings.initScroll = true;    
+    let debounce = false;
+    const scrollEvent = (e)=>{
+        if(!debounce){
+            debounce = true;
+            if(chatScroller.scrollTop + chatScroller.offsetHeight + 400 > chatScroller.scrollHeight){
+                $tempSettings.initScroll = true;
+            } else {
+                $tempSettings.initScroll = false;
+            }                
+            setTimeout(()=>{
+                debounce = false;
+            },100);
+        }
+    }
+    onMount(()=>{
+        chat.subscribe((e)=>{
+            if ($tempSettings.minimize || $tempSettings.initScroll){
+                setTimeout(()=>{
+                    console.log('scroll')
+                    chatScroller?.lastElementChild?.lastElementChild?.lastElementChild?.scrollIntoView();
+                },50);
+            }
+                
+        })
+    })
+    
 </script>
-<div id="chatScroller" bind:this={chatScroller} class={$tempSettings.minimize ? 'chatMinimal' : ''}>
+<div id="chatScroller" on:scroll={scrollEvent} bind:this={chatScroller} class={$tempSettings.minimize ? 'chatMinimal' : ''}>
     <table id="chatTable" class={$tempSettings.minimize ? 'chatMinimal' : ''}>
         <thead>
             {#key hiddenPolls}
