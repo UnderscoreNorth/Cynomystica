@@ -28,7 +28,6 @@
         chat.subscribe((e)=>{
             if ($tempSettings.minimize || $tempSettings.initScroll){
                 setTimeout(()=>{
-                    console.log('scroll')
                     chatScroller?.lastElementChild?.lastElementChild?.lastElementChild?.scrollIntoView();
                 },50);
             }

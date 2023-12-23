@@ -34,12 +34,14 @@ import closePoll from "./controller/polls/close-poll";
 import createPoll from "./controller/polls/create-poll";
 import deletePoll from "./controller/polls/delete-poll";
 import votePoll from "./controller/polls/vote-poll";
+import upsertIcons from "./controller/upsert-icons";
 
 import playlist from "./server/playlist";
 import updatePlaylist from "./controller/update-playlist";
 import SyncPlay from "./server/syncplay";
 import sendEmotes from "./lib/sendEmotes";
 import polls from "./server/polls";
+import sendIcons from "./lib/sendIcons";
 
 dbInit();
 const app = express();
@@ -71,6 +73,7 @@ const ioEvents = {
   "create-poll": createPoll,
   "delete-poll": deletePoll,
   "vote-poll": votePoll,
+  "upsert-icons": upsertIcons,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -105,7 +108,7 @@ io.on("connection", async (socket: socketInterface) => {
   sendEmotes(socket);
   chat().getRecent(socket);
   polls().get(socket);
-  socket.emit("icons", await Icons.get());
+  sendIcons(socket);
   getSchedule(socket);
 });
 

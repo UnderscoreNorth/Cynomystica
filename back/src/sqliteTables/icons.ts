@@ -10,17 +10,7 @@ export default class {
         PRIMARY KEY ('id','preset')
     );`;
   static init = () => {
-    let icons = {
-      Toradora: [
-        ["", "#000000", ""],
-        ["Taiga", "#000000", "/icons/toradora/taiga.png"],
-        ["Ami", "#000000", "/icons/toradora/ami.png"],
-        ["Minori", "#000000", "/icons/toradora/minori.png"],
-        ["Inko", "#000000", "/icons/toradora/inko.png"],
-        ["Ryuuji", "#000000", "/icons/toradora/ryuuji.png"],
-        ["Yasuko", "#000000", "/icons/toradora/mom.png"],
-      ],
-    };
+    let icons = {};
     let insertText =
       "INSERT INTO icons (id, display, color, url,preset) VALUES";
     let insertRows = [];
@@ -54,5 +44,33 @@ export default class {
     }
     return obj;
   };
-  static upsert = async (username: string, obj: any) => {};
+  static upsert = async (obj: any) => {
+    if (Object.keys(obj).length > 0) {
+      //@ts-ignore
+      let preset = Object.values(obj)[0].preset;
+      await db
+        .prepare(
+          `
+            DELETE FROM icons
+            WHERE preset=@preset`
+        )
+        .run({ preset });
+      for (let iconID in obj) {
+        let iconObj = obj[iconID];
+        iconObj.id = iconObj.display;
+        await db
+          .prepare(
+            `
+            INSERT INTO icons
+            (id, display, color, url, preset) 
+            VALUES (@id,@display,@color,@url,@preset)
+            ON CONFLICT(id, preset) DO UPDATE SET
+                display=@display,
+                color=@color,
+                url=@url`
+          )
+          .run(iconObj);
+      }
+    }
+  };
 }

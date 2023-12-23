@@ -45,6 +45,12 @@
 			}
 			input.setSelectionRange(selectionStart, selectionStart);			
 		}
+		if($chatInput.length >= 500){
+			input.style.outline = 'solid 2px red';
+			$chatInput = $chatInput.substring(0,500);
+		} else {
+			input.style.outline = ''
+		}
 		if(beforeInput !== $chatInput)
 			input.focus();
 	});

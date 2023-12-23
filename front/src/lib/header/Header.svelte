@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Login from './Login.svelte';
-	import UserSettingsContainer from '$lib/settings/UserSettingsContainer.svelte';
 	import ModerationContainer from '$lib/moderation/ModerationContainer.svelte';
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
@@ -18,6 +17,7 @@
 	import PollModal from '$lib/polls/PollModal.svelte';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import ChatBar from '$lib/chat/ChatBar.svelte';
+	import SettingsContainer from '$lib/settings/SettingsContainer.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -80,8 +80,8 @@
 	{/if}
 	<Alert />
 	{#if userSettingsModalOpen}
-		<Modal closeModal={toggleSettings} title={'User Settings'}>
-			<UserSettingsContainer />
+		<Modal closeModal={toggleSettings} title={'Settings'}>
+			<SettingsContainer />
 		</Modal>
 	{/if}
 	{#if playListModalOpen}
