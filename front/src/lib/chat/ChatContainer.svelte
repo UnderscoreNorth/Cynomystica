@@ -104,7 +104,7 @@
 		vertical-align: top;
 	}
 	#chatGrid {
-		background: var(--color-bg-3);
+		background: var(--color-bg-2);
 		color: var(--color-fg-3);
 		display: grid;
 		grid-template-columns: 1fr;

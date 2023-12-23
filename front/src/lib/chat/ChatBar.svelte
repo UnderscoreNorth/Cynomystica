@@ -156,7 +156,7 @@
 		{#each Array.from(new Set(Object.values($icons).map((x) => x.preset))) as preset}
 			<div class="presetContainer">
 				<div>
-					<b>{preset}</b>
+					<u>{preset}</u>
 				</div>
 				{#each Object.entries($icons) as [id, icon]}
 					{#if icon.preset == preset}
@@ -170,7 +170,7 @@
 							{#if icon.url}
 								<img src={icon.url} alt="icon" />
 							{/if}
-							<span>
+							<span style:color={icon.color}>
 								{icon.display}
 							</span>
 						</div>
@@ -198,11 +198,12 @@
 		left: 0.5rem;
 		max-height: 70svh;
 		overflow-y: scroll;
-		background: var(--color-bg-4);
+		background: var(--color-bg-3);
 		z-index: 2;
-		color: var(--color-fg-4);
+		color: var(--color-fg-3);
 		box-shadow: 1px 1px 5px 0px black;
 		border: solid 1px black;
+		font-weight: bold;
 	}
 	.presetContainer {
 		display: inline-block;
