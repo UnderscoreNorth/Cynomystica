@@ -4,21 +4,38 @@
     import { io } from "$lib/realtime";
     //@ts-ignore
     import MdDelete from 'svelte-icons/md/MdDelete.svelte'
+    import Modal from "$lib/ui/modal.svelte";
 
     let iconsGrouped:Record<string, Record<string, Icon>> = {};
     let disableSave = false;
-    for(let icon of Object.values($icons)){
-        iconsGrouped[icon.preset] = iconsGrouped[icon.preset] || {};
-        iconsGrouped[icon.preset][icon.display] = structuredClone(icon);
-    }
+    icons.subscribe((e)=>{
+        iconsGrouped = {};
+        for(let icon of Object.values($icons)){
+            iconsGrouped[icon.preset] = iconsGrouped[icon.preset] || {};
+            iconsGrouped[icon.preset][icon.display] = structuredClone(icon);
+        }
+    })
+    let deleteModal = '';
     let selectedPreset = '';
     let newPresetText = '';
+    let textEl:HTMLTextAreaElement;
+    let presetTblEl:HTMLTableElement;
+    let iconTblEl:HTMLTableElement;
     const placeholderKeyUp = (e:KeyboardEvent)=>{
         let newPreset = newPresetText.trim();        
-        if(e.key == 'Enter' && newPreset.length > 0){
-            iconsGrouped[newPreset] = {};
+        if(e.key == 'Enter' && newPreset.length > 0 && !Object.keys(iconsGrouped).includes(newPreset)){
+            iconsGrouped[newPreset] = {
+            0:{
+                display:'',
+                url:'',
+                preset:newPreset,
+                color:''
+            }};
             newPresetText = '';
-            selectedPreset = newPreset;
+            changeSelectedPreset(newPreset);
+            setTimeout(()=>{
+                presetTblEl.lastElementChild?.scrollIntoView();
+            },50);
         }
     }
     const checkDuplicate = (icon:string) =>{
@@ -43,96 +60,147 @@
             preset:selectedPreset,
             color:''
         }
+        setTimeout(()=>{
+            iconTblEl.lastElementChild?.scrollIntoView();
+        },50)
     }
     const deleteIcon = (icon:string)=>{
         delete iconsGrouped[selectedPreset][icon];
         iconsGrouped = iconsGrouped;
     }
-    const savePreset = ()=>{        
-        io.emit('upsert-icons',iconsGrouped[selectedPreset]);
+    const exportJSON = ()=>{        
+        textEl.value = JSON.stringify(
+            Object.values(iconsGrouped[selectedPreset])
+            .map((x)=>{delete x?.preset; return x}));
+        textEl.select();
+    }
+    const importJSON = ()=>{
+        try{
+            let importObj = JSON.parse(textEl.value ?? '');
+            importObj = importObj.map((x)=>{x.preset = selectedPreset; return x});
+            iconsGrouped[selectedPreset] = {...importObj}
+        } catch{
+
+        }
+    }
+    const savePreset = (deletePreset=false,preset='')=>{
+        if(deletePreset){
+            iconsGrouped[selectedPreset] = {}
+        }        
+        io.emit('upsert-icons',{preset:(preset.length ? preset : selectedPreset),icons:iconsGrouped[selectedPreset]});        
+    }
+    const changeSelectedPreset = (preset:string)=>{
+        selectedPreset = preset;
+        if(textEl)
+            textEl.value = '';
     }
 </script>
 <div id='iconContainer'>
     <div class='presetContainer'>
-        {#each Object.keys(iconsGrouped) as preset}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div 
-                class={'preset' + (preset == selectedPreset ? ' selected' : '')}
-                on:click={()=>{selectedPreset=preset}}
-            >
-                {preset}
-            </div>
-        {/each}
-        <input placeholder="Create new preset" bind:value={newPresetText} on:keyup={placeholderKeyUp}>
-    </div>
-    <div class='iconList'>
-        {#if selectedPreset}
-            <table>
-
-            <tr>
-                <th colspan=2>Name</th>
-                <th>URL</th>
-                <th colspan=2>User Color</th>
-                <th></th>
-            </tr>
-            {#each Object.keys(iconsGrouped?.[selectedPreset] ?? {}) as icon}
+        <div class='scroller'>
+            <table bind:this={presetTblEl}>
+                {#each Object.keys(iconsGrouped) as preset}
                 <tr>
-                    <td>
-                        {#if iconsGrouped[selectedPreset][icon].url}
-                            <img 
-                                src={iconsGrouped[selectedPreset][icon].url} 
-                                alt={iconsGrouped[selectedPreset][icon].url}
-                            />
-                        {/if}
-                    </td>
-                    <td>
-                        <input style:width={'5rem'} 
-                        bind:value={iconsGrouped[selectedPreset][icon].display} 
-                        class={checkDuplicate(icon)}>
-                    </td>
-                    <td>
-                        <input 
-                        bind:value={iconsGrouped[selectedPreset][icon].url} >
-                    </td>
-                    <td>
-                        <input style:width={'5rem'} 
-                        bind:value={iconsGrouped[selectedPreset][icon].color} >
-                    </td>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <td 
-                        style:background={iconsGrouped[selectedPreset][icon].color} 
-                        style:width={'1.8rem'} style:border-radius={'4px'}>
+                        class={'preset' + (preset == selectedPreset ? ' selected' : '')}
+                        on:click={()=>{changeSelectedPreset(preset)}}>
+                            {preset}
                     </td>
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <td class='iconDelete' on:click={()=>deleteIcon(icon)}>
+                    <td class='iconDelete' style:height={'1rem'} on:click={()=>deleteModal=preset}>
                         <MdDelete />
                     </td>
                 </tr>
             {/each}
-                <tr>
-                    <td colspan=5>                        
-                        <button on:click={()=>{addRow()}}>Add New</button>
-                        {#key disableSave}
-                            <button on:click={()=>{savePreset()}} disabled={disableSave}>Save</button>
-                        {/key}
-                    </td>
-                </tr>
-        </table>
+            </table>
+        </div>
+        <input placeholder="Create new preset" bind:value={newPresetText} on:keyup={placeholderKeyUp}>
+    </div>
+    <div class='iconList'>
+        {#if selectedPreset}
+            <div class='scroller'>
+                <table bind:this={iconTblEl}>
+                    <tr>
+                        <th colspan=2>Name</th>
+                        <th>URL</th>
+                        <th colspan=2>User Color</th>
+                        <th></th>
+                    </tr>
+                    {#each Object.keys(iconsGrouped?.[selectedPreset] ?? {}) as icon}
+                        <tr>
+                            <td>
+                                {#if iconsGrouped[selectedPreset][icon].url}
+                                    <img 
+                                        src={iconsGrouped[selectedPreset][icon].url} 
+                                        alt={iconsGrouped[selectedPreset][icon].url}
+                                    />
+                                {/if}
+                            </td>
+                            <td>
+                                <input style:max-width={'5rem'} 
+                                bind:value={iconsGrouped[selectedPreset][icon].display} 
+                                class={checkDuplicate(icon)}>
+                            </td>
+                            <td>
+                                <input 
+                                bind:value={iconsGrouped[selectedPreset][icon].url} >
+                            </td>
+                            <td>
+                                <input style:max-width={'5rem'} 
+                                bind:value={iconsGrouped[selectedPreset][icon].color} >
+                            </td>
+                            <td 
+                                style:background={iconsGrouped[selectedPreset][icon].color} 
+                                style:min-width={'1.8rem'} style:border-radius={'4px'}>
+                            </td>
+                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                            <td class='iconDelete'  style:min-width={'1.8rem'} on:click={()=>deleteIcon(icon)}>
+                                <MdDelete />
+                            </td>
+                        </tr>
+                    {/each}
+                </table>
+            </div>
+            {#key disableSave}
+                <button on:click={()=>{importJSON()}}>Import JSON</button>           
+                <button on:click={()=>{exportJSON()}} disabled={disableSave}>Export JSON</button>           
+                <button on:click={()=>{addRow()}}>Add New</button>                        
+                <button on:click={()=>{savePreset()}} disabled={disableSave}>Save</button>
+            {/key}
+            <br>
+            <textarea bind:this={textEl}></textarea>
         {/if}
     </div>
+    {#if deleteModal !== ''}
+    <Modal title={'Delete'} closeModal={()=>{deleteModal=''}}>
+        Delete Icon Preset: {deleteModal}?<br><br>
+        <button on:click={()=>{savePreset(true,deleteModal);deleteModal = '';}}>Yes</button>
+        <button on:click={()=>deleteModal=''}>No</button>
+    </Modal>
+    {/if}
 </div>
 <style>
     #iconContainer{
         display:flex;
-    }
+    }    
     .presetContainer{
         padding-right: 5px;
         border-right: solid 3px var(--color-bg-2);
+        margin-right:5px;
     }
     .iconList{
-        min-width: 10rem;
+        width: 32rem;
     }
     .preset{
         cursor: pointer;
+    }
+    .scroller{
+        height: 50svh;
+        overflow-y: auto;
+    }
+    table{
+        width:100%;
     }
     .preset.selected{
         cursor: default;
@@ -165,6 +233,28 @@
         cursor: pointer;
         background-color: var(--color-bg-2);
         border-radius: 3px;
-        width:1.8rem;
+        aspect-ratio: 1;
+    }
+    textarea{
+        width:-webkit-fill-available;
+        height:4rem;
+    }
+    @media (orientation:portrait){
+        #iconContainer{
+            display:block;
+            width:100%;
+        }
+        .presetContainer{
+            padding-right: 0;
+            border-right: none;
+        }
+        .iconList{
+            width:100%;
+        }
+        .scroller{
+        height: auto;
+        overflow-y: auto;
+        width:100%;
+    }
     }
 </style>

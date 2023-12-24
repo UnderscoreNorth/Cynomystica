@@ -44,9 +44,11 @@
 		width: 8rem;
 		margin-top: 4rem;
 		margin-left: calc(26rem - 100vw);
+		color:var(--color-fg-3)
 	}
 	.userModActionBtn:hover {
 		cursor: pointer;
 		background: var(--color-bg-1);
+		color:var(--color-fg-1)
 	}
 </style>

@@ -45,9 +45,9 @@ export default class {
     return obj;
   };
   static upsert = async (obj: any) => {
-    if (Object.keys(obj).length > 0) {
+    if (obj.preset) {
       //@ts-ignore
-      let preset = Object.values(obj)[0].preset;
+      let preset = obj.preset;
       await db
         .prepare(
           `
@@ -55,8 +55,8 @@ export default class {
             WHERE preset=@preset`
         )
         .run({ preset });
-      for (let iconID in obj) {
-        let iconObj = obj[iconID];
+      for (let iconID in obj.icons) {
+        let iconObj = obj.icons[iconID];
         iconObj.id = iconObj.display;
         await db
           .prepare(

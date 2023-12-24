@@ -92,7 +92,9 @@ button {
 	background: var(--color-fg-1);
 	border: solid 1px;
 }
-
+button:active {
+	background: var(--color-fg-3);
+}
 button:focus:not(:focus-visible) {
 	outline: none;
 }

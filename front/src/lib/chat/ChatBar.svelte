@@ -204,10 +204,12 @@
 		box-shadow: 1px 1px 5px 0px black;
 		border: solid 1px black;
 		font-weight: bold;
+		width:max-content;
 	}
 	.presetContainer {
 		display: inline-block;
 		vertical-align: top;
+		padding:0 5px;
 	}
 	.iconListItem {
 		display: flex;

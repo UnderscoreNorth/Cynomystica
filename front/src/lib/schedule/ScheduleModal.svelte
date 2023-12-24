@@ -84,15 +84,16 @@
 
 <style>
 	#scheduleModal {
-		max-width: 50rem;
+		max-width: 80vw;
 		opacity: 0.9;
 		margin-top: calc(50svh - 12rem);
 		border: solid 1px var(--color-bg-dark-1);
 		padding: 1rem;
 		height:fit-content
+		
 	}
 	input {
-		width: 25rem;
+		width: fit-content;
 	}
 
 </style>

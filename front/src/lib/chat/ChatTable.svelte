@@ -95,6 +95,7 @@
 		overflow-x: hidden;
         background-image: url(/CynoChatBG.png);
 		background-position: bottom;
+		color: var(--color-fg-3);
 	}
 	thead{
 		position:sticky;

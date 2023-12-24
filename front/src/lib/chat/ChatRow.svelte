@@ -18,7 +18,7 @@
 	};
 	const getUserStyle = () => {
 		let style = '';
-		if ($icons[message.icon]?.url) {
+		if ($icons[message.icon]?.color) {
 			style = `color:${$icons[message.icon]?.color}`;
 		}
 		return style;
@@ -43,7 +43,7 @@
 					<td class="chatTime">
 						[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
 					</td>
-					<td style="width:99%">
+					<td style="width:99%;overflow-wrap:anywhere">
 						<span class="chatIcon">
 							{#if message.icon && $icons[message.icon]?.url}
 								<img src={$icons[message.icon].url} alt="icon" title={$icons[message.icon].display} />
@@ -93,9 +93,6 @@
 		padding-left: 5px;
 		padding-right: 5px;
 		border-right: 1px solid var(--color-bg-2);
-	}
-	.chatMsg {
-		overflow-wrap: anywhere;
 	}
 	.userHighlighted {
 		color: white;

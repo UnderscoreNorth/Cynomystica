@@ -128,11 +128,18 @@
 		position: sticky;
 		top: 0;
 		background: inherit;
+		white-space:nowrap;
+		min-width: 4rem;
+		z-index: 1;
 	}
 	.scheduleTime {
 		font-size: 0.6rem !important;
 		min-height: 4px;
 		border: none !important;
+		position:sticky;
+		left:0;
+		background:inherit;
+		margin-right:2px
 	}
 	.scheduleItem {
 		background: rgba(0, 0, 0, 0.05);

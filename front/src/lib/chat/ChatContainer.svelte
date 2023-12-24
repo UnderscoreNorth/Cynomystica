@@ -82,6 +82,8 @@
 		line-height: 2em;
 		border-bottom: solid 1px black;
 		order: 1;
+		background: var(--color-bg-2);
+		color: var(--color-fg-2);
 	}
 
 	#chatBarContainer {
@@ -104,8 +106,7 @@
 		vertical-align: top;
 	}
 	#chatGrid {
-		background: var(--color-bg-2);
-		color: var(--color-fg-3);
+		
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-template-rows: 2em 1fr 2em 5px;
@@ -125,10 +126,11 @@
 		left: 0;
 		z-index: 0;
 		background: var(--color-bg-3);
+		color:var(--color-fg-3);
 		width: 8rem;
 		height: calc(100% - 1em);
 		padding: 0.5em;
-		box-shadow: 4px 0px 4px black, inset 0px 3px var(--color-dark-2);
+		box-shadow: 4px 0px 4px black;
 		overflow-y: auto;
 		opacity:0.9;
 	}	

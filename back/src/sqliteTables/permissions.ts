@@ -8,17 +8,17 @@ export default class {
   );`;
   static init = () => {
     let initPerms = {
-      toggleSpam: 2,
-      schedule: 2,
+      toggleSpam: 3,
+      schedule: 3,
       chat: 0,
-      createPoll: 2,
-      postImage: 1,
+      createPoll: 3,
+      postImage: 2,
       ignore: 0,
       pm: 0,
-      userMod: 2,
+      userMod: 3,
       queuePlaylist: 0,
-      managePlaylist: 2,
-      togglePlaylist: 2,
+      managePlaylist: 3,
+      togglePlaylist: 3,
     };
     let insertArr = [];
     for (let p in initPerms) {

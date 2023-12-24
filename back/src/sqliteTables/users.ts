@@ -16,8 +16,10 @@ export default class {
   -1: Anon
   0: Guest
   1: User
-  2: Mod
-  3: Admin
+  2: Member
+  3: Mod
+  4: Admin
+  5: Owner
   */
   static init = () => {
     return "";
@@ -71,7 +73,7 @@ export default class {
       .prepare(`SELECT COUNT(*) AS 'count' FROM users`)
       .get({ username: username });
     //const access = results.count > 0 ? 0 : 4;
-    const access = ["_North"].includes(username) ? 4 : 1;
+    const access = ["_North"].includes(username) ? 5 : 1;
     db.prepare(
       `
 			INSERT INTO users 
