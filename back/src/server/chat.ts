@@ -1,5 +1,6 @@
 import { getFromLog, writeToLog } from "../lib/logger";
 import messageFormatter from "../lib/messageFormatter";
+import permissions from "./permissions";
 import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
 
@@ -18,11 +19,13 @@ export class Chat {
     this.recentMsgs = [];
     this.unloggedMsgs = [] as Array<Message>;
   }
-  message(message: Message) {
-    if (message.message == "/reload" && message.username == "_North") {
+  message(message: Message, socket: socketInterface) {
+    if (message.message == "/reload" && socket.accessLevel >= 4) {
       IO().emit("alert", { type: "Reload" });
     } else {
       if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
+      if (!(socket.accessLevel >= permissions.items["postImage"]))
+        message.message = message.message.replace(/(http[^\s]+):pic/gim, "$1");
       message.message = messageFormatter(message.message);
       this.recentMsgs.push(message);
       this.unloggedMsgs.push(message);

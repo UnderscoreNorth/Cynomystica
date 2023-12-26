@@ -12,5 +12,5 @@ export default function message(socket: socketInterface, obj: incomingMessage) {
     time: new Date(),
   };
   socket.lastMessage = new Date();
-  chat().message(messageObj);
+  chat().message(messageObj, socket);
 }

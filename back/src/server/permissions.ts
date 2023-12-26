@@ -7,7 +7,7 @@ class Permissions {
     this.refresh();
   }
   send(socket: socketInterface | Server) {
-    socket.emit("permissions", this.items);
+    socket?.emit("permissions", this.items);
   }
   refresh() {
     permissionsSQL.getAll().then((v) => {

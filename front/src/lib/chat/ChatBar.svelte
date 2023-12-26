@@ -82,9 +82,6 @@
 				login($chatInput.trim(), '', 'guest');
 			} else {
 				sent.unshift($chatInput);
-				if ($user.accessLevel < 4) {
-					$chatInput = $chatInput.replaceAll(/(http[^\s]+):pic/gim, '$1');
-				}
 				io.emit('message', { icon: $userSettings.icon ?? '', msg: $chatInput.trim() });
 			}
 			$chatInput = '';
