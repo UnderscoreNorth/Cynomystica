@@ -3,9 +3,13 @@ import { writable } from 'svelte/store';
 export const tempSettings = writable({
 	snow: 0,
 	anonymous: false,
-	minimize: false,
+	minimize: {
+		toggle: false,
+		opacity: 50
+	},
 	audio: false,
-	initScroll: true,
+	scrollLock: true,
 	videoVolume: 1,
-	hiddenPolls: new Set()
+	hiddenPolls: new Set(),
+	scheduleView: 'calendar'
 });

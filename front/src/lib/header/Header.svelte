@@ -56,7 +56,7 @@
 </script>
 
 <header>	
-	{#if $tempSettings.minimize}
+	{#if $tempSettings.minimize.toggle}
 		<div id='minimalHeader'>
 			<div id='minimalSettings'>
 				<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />			

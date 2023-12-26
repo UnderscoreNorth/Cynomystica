@@ -3,6 +3,7 @@
 	import moment from 'moment';
 	import type { Moment } from 'moment';
 	import { io } from '$lib/realtime';
+	import { tempSettings } from '$lib/stores/tempSettings';
 	export let changeSelectedID: Function;
 	let date = moment().startOf('day');
 	let week = [] as Array<Moment>;
@@ -59,47 +60,73 @@
 		getSchedule();
 	});
 </script>
-
-<div id="scheduleGrid">
-	<div class="scheduleHeader" style="grid-area:1/1/2/2">
-		<span>
-			<button
-				on:click={() => {
-					moveDate(-1);
-				}}>{`<`}</button
+{#if $tempSettings.scheduleView == 'calendar'}
+	<div id="scheduleGrid">
+		<div class="scheduleHeader" style="grid-area:1/1/2/2">
+			<span>
+				<button
+					on:click={() => {
+						moveDate(-1);
+					}}>{`<`}</button
+				>
+				<button
+					on:click={() => {
+						moveDate(1);
+					}}>{`>`}</button
+				>
+			</span>
+		</div>
+		{#each week as day, i}
+			<div class="scheduleHeader" style={`grid-area:1/${i + 2}/2/${i + 3};font-weight:bold`}>
+				{day.format('ddd DD')}
+			</div>
+		{/each}
+		{#each scheduleArray as item}		
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div
+			class="scheduleItem"
+			style={`grid-area:${item.gridArea}`}
+			on:click={() => changeSelectedID(item)}
 			>
-			<button
-				on:click={() => {
-					moveDate(1);
-				}}>{`>`}</button
-			>
-		</span>
+				{item.title}
+			</div>
+		{/each}
+		{#each Array.from(timeSet) as item}
+			<div class="scheduleTime" style={`grid-area:${item + 2}/1/${item + 3}/2`}>
+				{#if item % 5 == 0}
+					{splitToTime(item)}
+				{/if}
+			</div>
+		{/each}
 	</div>
-	{#each week as day, i}
-		<div class="scheduleHeader" style={`grid-area:1/${i + 2}/2/${i + 3};font-weight:bold`}>
-			{day.format('ddd DD')}
-		</div>
-	{/each}
-	{#each scheduleArray as item}		
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div
-		class="scheduleItem"
-		style={`grid-area:${item.gridArea}`}
-		on:click={() => changeSelectedID(item)}
-		>
-			{item.title}
-		</div>
-	{/each}
-	{#each Array.from(timeSet) as item}
-		<div class="scheduleTime" style={`grid-area:${item + 2}/1/${item + 3}/2`}>
-			{#if item % 5 == 0}
-				{splitToTime(item)}
+{:else}
+	<table id='scheduleList'>
+		<tr>
+			<th>Item</th>
+			<th colspan=4>Date</th>
+		</tr>
+		{#each $schedule as item}
+			{#if Date.parse(item.playTimeUTC.toString()) > new Date().getTime()}
+			<tr>
+				<td style:padding-right={'0.5rem'}>{item.title}</td>
+				<td>{moment.utc(item.playTimeUTC).local().format('ddd MMM Do')}</td>
+				<td>{moment.utc(item.playTimeUTC).local().format('H:mm')}</td>
+				<td>-</td>
+				<td>{moment.utc(item.finishTimeUTC).local().format('H:mm')}</td>
+			</tr>
 			{/if}
-		</div>
-	{/each}
-</div>
+		{/each}
+	</table>
+{/if}
+
 
 <style>
+	#scheduleList tr:nth-child(2n){
+		background:rgba(255,255,255,0.1)
+	}
+	#scheduleList{
+		border-collapse: collapse;
+	}
 	#scheduleGrid {
 		display: grid;
 		width: 100%;

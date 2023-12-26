@@ -9,15 +9,15 @@
 	const hidePoll = (pollID:string)=>{
         $tempSettings.hiddenPolls = $tempSettings.hiddenPolls.add(pollID)
 	}
-    $tempSettings.initScroll = true;    
+    $tempSettings.scrollLock = true;    
     let debounce = false;
     const scrollEvent = (e)=>{
         if(!debounce){
             debounce = true;
-            if(chatScroller.scrollTop + chatScroller.offsetHeight + 400 > chatScroller.scrollHeight){
-                $tempSettings.initScroll = true;
+            if(chatScroller.scrollTop + chatScroller.offsetHeight + 25 > chatScroller.scrollHeight){
+                $tempSettings.scrollLock = true;
             } else {
-                $tempSettings.initScroll = false;
+                $tempSettings.scrollLock = false;
             }                
             setTimeout(()=>{
                 debounce = false;
@@ -26,7 +26,7 @@
     }
     onMount(()=>{
         chat.subscribe((e)=>{
-            if ($tempSettings.minimize || $tempSettings.initScroll){
+            if ($tempSettings.minimize.toggle || $tempSettings.scrollLock){
                 setTimeout(()=>{
                     chatScroller?.lastElementChild?.lastElementChild?.lastElementChild?.scrollIntoView();
                 },50);
@@ -36,8 +36,13 @@
     })
     
 </script>
-<div id="chatScroller" on:scroll={scrollEvent} bind:this={chatScroller} class={$tempSettings.minimize ? 'chatMinimal' : ''}>
-    <table id="chatTable" class={$tempSettings.minimize ? 'chatMinimal' : ''}>
+<div id="chatScroller" 
+    on:scroll={scrollEvent} 
+    bind:this={chatScroller} 
+    class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}
+    style:opacity={$tempSettings.minimize.toggle ? $tempSettings.minimize.opacity/100 : ''}
+>
+    <table id="chatTable" class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}>
         <thead>
             {#key $tempSettings.hiddenPolls}
                 {#each Object.entries($polls).sort((a,b)=>(a[1].options.length ? 1 : 0)-(b[1].options.length ? 1 : 0)) as poll}
@@ -67,7 +72,6 @@
         margin: 10rem 4rem;
         height:calc(100svh - 20rem);
         overflow-y: hidden;
-        opacity: 0.5;
         color:var(--color-fg-1);
         font-size: 1.5rem;
         text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;

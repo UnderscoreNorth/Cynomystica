@@ -15,6 +15,12 @@
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>
+<b>Dec 26, 2023</b>
+<ul>
+	<li>Opacity setting on Video Minimal Mode</li>
+	<li>Scroll lock button</li>
+	<li>Refresh video button</li>
+</ul>
 <b>Dec 21, 2023</b>
 <ul>
 	<li>Youtube livestream support</li>

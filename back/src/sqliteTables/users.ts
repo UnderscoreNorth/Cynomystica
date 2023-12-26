@@ -9,6 +9,7 @@ export default class {
 		'passwordHash' VARCHAR(100) NOT NULL,
 		'accessLevel' int,
 		'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
+    'lastLogin' DATETIME(20) DEFAULT (DATETIME('now')),
 		PRIMARY KEY ('username')
 	);`;
   /*
@@ -38,6 +39,18 @@ export default class {
       );
     }
     return errorMessages;
+  };
+  static updateLastLogin = (username: string) => {
+    db.prepare(
+      `UPDATE users set lastLogin=DATETIME('now') WHERE username=@username`
+    ).run({ username });
+  };
+  static updateRole = async (username: string, accessLevel: number) => {
+    await db
+      .prepare(
+        `UPDATE users set accessLevel=@accessLevel WHERE username=@username`
+      )
+      .run({ username, accessLevel });
   };
 
   static passwordCheck = (password: string) => {
@@ -113,7 +126,7 @@ export default class {
   static getUsers = () => {
     const results = db
       .prepare(
-        `SELECT username, accessLevel, dateCreated FROM users ORDER BY username`
+        `SELECT username, accessLevel, dateCreated, lastLogin FROM users ORDER BY username`
       )
       .all();
     return results;

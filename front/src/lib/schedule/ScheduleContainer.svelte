@@ -8,12 +8,16 @@
 	const changeSelectedID = (newID: ScheduleItem | null) => {
 		selectedID = newID;
 	};
+	import { tempSettings } from '$lib/stores/tempSettings';
 </script>
 
-{#if $user.accessLevel >= $permissions.schedule}
-		<button on:click={() => changeSelectedID(null)}>Add item</button>
-	{/if}
+{#if $user.accessLevel >= $permissions.manageSchedule}
+	<button on:click={() => changeSelectedID(null)}>Add item</button>
+{/if}
+<button on:click={()=>$tempSettings.scheduleView = ($tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar')}>
+	Switch to {$tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar'} view
+</button>
 <ViewSchedule {changeSelectedID} />
-{#if $user.accessLevel >= $permissions.schedule && selectedID !== undefined}
+{#if $user.accessLevel >= $permissions.manageSchedule && selectedID !== undefined}
 	<ScheduleModal {changeSelectedID} {selectedID} />
 {/if}

@@ -36,7 +36,7 @@
 		<td>
 			<input type="checkbox" 
 			bind:checked={$userSettings.display.video} 
-			disabled={$tempSettings.minimize}
+			disabled={$tempSettings.minimize.toggle}
 			/>
 		</td>
 	</tr>
@@ -86,7 +86,12 @@
 			Temporary<br>Settings
 		</th>
 		<th>Video Minimal</th>
-		<td><input type='checkbox' on:change={()=>{$userSettings.display.video = true}} bind:checked={$tempSettings.minimize} /></td>
+		<td>
+			<input type='checkbox' on:change={()=>{$userSettings.display.video = true}} bind:checked={$tempSettings.minimize.toggle} />
+			{#if $tempSettings.minimize.toggle}
+				Opacity <input type='number' style:width={'3rem'} min=0 max=100 step=10 bind:value={$tempSettings.minimize.opacity}>%
+			{/if}
+		</td>
 	</tr>
 	<tr>
 		<th>Anonymous Mode</th>

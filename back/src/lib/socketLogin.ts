@@ -28,6 +28,7 @@ export default async function socketLogin(
   socket.username = username;
   socket.accessLevel = accessLevel;
   if (accessLevel >= 1) {
+    users.updateLastLogin(socket.username);
     socket.emit(
       "usersettings",
       await userSettings.get(

@@ -36,7 +36,7 @@ userSettings.subscribe((e) => {
 
 const init = () => {
 	io.on('connected', (e) => {
-		io.emit('version', 1.04);
+		io.emit('version', 1.05);
 		user.update((n) => {
 			n.uuid = e;
 			return n;
@@ -169,6 +169,12 @@ const init = () => {
 	io.on('icons', (e: iconList) => {
 		icons.set(e);
 	});
+	io.on('access-update', (e) => {
+		user.update((n) => {
+			n.accessLevel = e;
+			return n;
+		});
+	});
 	io.on('login', (e) => {
 		blocker.update((n) => {
 			n.login = false;
@@ -198,7 +204,10 @@ const init = () => {
 		}
 	});
 	io.on('permissions', (e) => {
-		permissions.set(e);
+		permissions.update((n) => {
+			Object.assign(n, e);
+			return n;
+		});
 	});
 	io.on('usersettings', (e) => {
 		if (e) {

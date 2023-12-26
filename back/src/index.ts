@@ -26,16 +26,19 @@ import signUp from "./controller/sign-up";
 import upsertSchedule from "./controller/upsert-schedule";
 import loginToken from "./controller/login-token";
 import getSchedule from "./controller/get-schedule";
-import sendPermissions from "./lib/sendPermissions";
+import upsertPermissions from "./controller/settings/upsert-permissions";
 import userMod from "./controller/user-mod";
 import version from "./controller/version";
-import upsertUserSettings from "./controller/upsert-usersettings";
+import upsertUserSettings from "./controller/settings/upsert-usersettings";
 import closePoll from "./controller/polls/close-poll";
 import createPoll from "./controller/polls/create-poll";
 import deletePoll from "./controller/polls/delete-poll";
 import votePoll from "./controller/polls/vote-poll";
-import upsertIcons from "./controller/upsert-icons";
+import upsertIcons from "./controller/settings/upsert-icons";
+import getUserManagement from "./controller/settings/get-user-management";
+import updateUserRole from "./controller/settings/update-user-role";
 
+import permissions from "./server/permissions";
 import playlist from "./server/playlist";
 import updatePlaylist from "./controller/update-playlist";
 import SyncPlay from "./server/syncplay";
@@ -74,6 +77,9 @@ const ioEvents = {
   "delete-poll": deletePoll,
   "vote-poll": votePoll,
   "upsert-icons": upsertIcons,
+  "upsert-permissions": upsertPermissions,
+  "get-user-management": getUserManagement,
+  "update-user-role": updateUserRole,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -104,7 +110,7 @@ io.on("connection", async (socket: socketInterface) => {
     console.log("reconnection", socket.username, socket2.username);
   });
   sendUserList();
-  sendPermissions(socket);
+  permissions.send(socket);
   sendEmotes(socket);
   chat().getRecent(socket);
   polls().get(socket);

@@ -6,6 +6,7 @@ import schedule from "../sqliteTables/schedule";
 import moment from "moment";
 import playlists from "../sqliteTables/playlists";
 import { writeToLog } from "../lib/logger";
+import permissions from "./permissions";
 
 export type PlaylistOrder = Array<number>;
 export type PlaylistObj = Array<PlaylistItem>;
@@ -158,7 +159,10 @@ class PlayList {
       return;
     }
     if (socket) {
-      if (parseRaw(new URL(mediaURL)).type == "raw" && socket.accessLevel < 2) {
+      if (
+        parseRaw(new URL(mediaURL)).type == "raw" &&
+        !(socket.accessLevel >= permissions.items["queueRaw"])
+      ) {
         socketError(`You don't have permission to queue raw videos`);
         return;
       }

@@ -21,7 +21,7 @@
 	};
 	let innerWidth = 0;
 	const updatePlaylist = () => {
-		if ($user.accessLevel >= 3) io.emit('update-playlist', $playlist);
+		if ($user.accessLevel >= $permissions.managePlaylist) io.emit('update-playlist', $playlist);
 	};
 </script>
 
@@ -52,7 +52,7 @@
 			</tr>
 		{/if}
 		{#each $playlist as item, i}
-			{#if $user.accessLevel >= 3}
+			{#if $user.accessLevel >= $permissions.managePlaylist}
 				<SortableItems
 					class={`dragRows ${hoverIndex === i ? 'classHovered' : ''}`}
 					propItemNumber={i}

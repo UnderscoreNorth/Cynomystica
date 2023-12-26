@@ -2,7 +2,6 @@
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
 	import { blocker } from '$lib/stores/blocker';
-	import type { Icon } from '$lib/stores/icons';
 	import { icons } from '$lib/stores/icons';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
@@ -84,7 +83,7 @@
 			} else {
 				sent.unshift($chatInput);
 				if ($user.accessLevel < 4) {
-					$chatInput = $chatInput.replace(/(http[^\s]+):pic/gim, '$1');
+					$chatInput = $chatInput.replaceAll(/(http[^\s]+):pic/gim, '$1');
 				}
 				io.emit('message', { icon: $userSettings.icon ?? '', msg: $chatInput.trim() });
 			}
@@ -92,6 +91,13 @@
 		}
 		lastKey = e.key;
 	};
+	onMount(()=>{
+		/*setInterval(()=>{
+			if($user.username.includes('bot'))
+				io.emit('message', { icon: $userSettings.icon ?? '', msg: Math.random().toString() });
+		},1000);*/
+	})
+	
 	const handleKeyUp = (e: KeyboardEvent) => {
 		//console.log(e);
 		if (e.key == 's' && e.ctrlKey == true) {
@@ -205,6 +211,8 @@
 		border: solid 1px black;
 		font-weight: bold;
 		width:max-content;
+		max-width: 90vw;
+		max-height: 20rem;
 	}
 	.presetContainer {
 		display: inline-block;

@@ -2,6 +2,7 @@
     import { user } from "$lib/stores/user";
     import { io } from '$lib/realtime';
     import { polls } from "$lib/stores/polls";
+    import { permissions } from "$lib/stores/permissions";
 	import Poll from "./Poll.svelte";
     let title = '';
     let duration:number;
@@ -15,7 +16,7 @@
         io.emit('create-poll', {title,duration,options});
     }
 </script>
-{#if $user.accessLevel >= 4}
+{#if $user.accessLevel >= $permissions.managePolls}
     <table>
         <tr>
             <th>Title</th>

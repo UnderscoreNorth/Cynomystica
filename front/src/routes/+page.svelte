@@ -48,11 +48,11 @@
 		{#if $userSettings.display.chat !== 'none'}
 			<c
 				id="cChat"
-				class={$tempSettings.minimize ? 'minimal' : ''}
+				class={$tempSettings.minimize.toggle ? 'minimal' : ''}
 				style:width={`${$userSettings.chat.chatWidth}rem`}
 				style:order={$userSettings.display.chat == 'left' ? 1 : 3}
-				style:left={$userSettings.display.chat == 'left' && $tempSettings.minimize ? 0 : ''}
-				style:right={$userSettings.display.chat == 'right' && $tempSettings.minimize ? 0 : ''}
+				style:left={$userSettings.display.chat == 'left' && $tempSettings.minimize.toggle ? 0 : ''}
+				style:right={$userSettings.display.chat == 'right' && $tempSettings.minimize.toggle ? 0 : ''}
 				><ChatContainer /></c
 			>
 		{/if}

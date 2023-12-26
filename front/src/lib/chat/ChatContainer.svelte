@@ -5,12 +5,17 @@
 	import { user } from '$lib/stores/user';
 	import type { usersType, otherUser } from '$lib/stores/users';
 	import ChatBar from './ChatBar.svelte';
+	import OtherUserModal from './OtherUserModal.svelte';
 	//@ts-ignore
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
-	import OtherUserModal from './OtherUserModal.svelte';
+	//@ts-ignore
+	import MdLockOutline from 'svelte-icons/md/MdLockOutline.svelte'
+	//@ts-ignore
+	import MdLockOpen from 'svelte-icons/md/MdLockOpen.svelte'
 	
 	import { permissions } from '$lib/stores/permissions';
 	import ChatTable from './ChatTable.svelte';
+	import Tooltip from '$lib/ui/tooltip.svelte';
 	let settingsObj: any;
 	let usersObj: usersType;
 	let selectedOtherUser: otherUser | null;
@@ -32,14 +37,27 @@
 </script>
 
 <div class="chatContainer" style="width:100%">
-	{#if $tempSettings.minimize}
+	{#if $tempSettings.minimize.toggle}
 		<ChatTable />
 	{:else}
 		<div id="chatGrid">
 			<div id="chatHeader">
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
-				{$users.connectedUsers} connected user{$users.connectedUsers == 1 ? '' : 's'}
+				<span style:flex-grow=1>
+					{$users.connectedUsers} connected user{$users.connectedUsers == 1 ? '' : 's'}
+				</span>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<Tooltip title='Toggle autoscroll'>
+					<div class="svgIcon"
+						on:click={()=>$tempSettings.scrollLock = !$tempSettings.scrollLock}>
+						{#if $tempSettings.scrollLock}
+							<MdLockOutline />
+						{:else}
+							<MdLockOpen />
+						{/if}
+					</div>
+				</Tooltip>
 			</div>
 			<div id="chatMessages">
 				{#if userListOpen}

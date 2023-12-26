@@ -6,8 +6,6 @@
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 	import {chatInput } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
-	import { onMount } from 'svelte';
-	import { tick } from 'svelte';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -16,14 +14,14 @@
 		}
 		return array.join(' ');
 	};
-	const getUserStyle = () => {
+	const getUserStyle = (icons,message) => {
 		let style = '';
-		if ($icons[message.icon]?.color) {
+		if (icons[message.icon]?.color) {
 			style = `color:${$icons[message.icon]?.color}`;
 		}
 		return style;
 	};
-	const parseUser = () => {
+	const parseUser = (message:any) => {
 		let username = message.username;
 		username = parseThreeGuys(username);
 		if ($tempSettings.anonymous) username = '';
@@ -36,40 +34,34 @@
 	}
 </script>
 {#if message?.username}
-	{#key message.username}	
-		{#key $icons}
-			{#key message?.icon}
-				<tr class={getRowClasses(message.message)}>
-					<td class="chatTime">
-						[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
-					</td>
-					<td style="width:99%;overflow-wrap:anywhere">
-						<span class="chatIcon">
-							{#if message.icon && $icons[message.icon]?.url}
-								<img src={$icons[message.icon].url} alt="icon" title={$icons[message.icon].display} />
-							{/if}
-						</span>
-						{#if message.message.indexOf('/me ') == 0}
-							<span class="actiontext">
-								{parseUser()}
-								{@html message.message.substring(4)}
-							</span>
-						{:else}
-							{#if !$tempSettings.anonymous}
-								<span class="chatUser" style={getUserStyle()}>
-									{parseUser()}: 
-								</span>
-							{/if}
-							<!-- svelte-ignore a11y-click-events-have-key-events -->
-							<span class="chatMsg" on:click={clickMessage}>
-								{@html message.message}
-							</span>
-						{/if}
-					</td>
-				</tr>
-			{/key}
-		{/key}
-	{/key}
+	<tr class={getRowClasses(message.message)}>
+		<td class="chatTime">
+			[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
+		</td>
+		<td style="width:99%;overflow-wrap:anywhere">
+			<span class="chatIcon">
+				{#if message.icon && $icons[message.icon]?.url}
+					<img src={$icons[message.icon].url} alt="icon" title={$icons[message.icon].display} />
+				{/if}
+			</span>
+			{#if message.message.indexOf('/me ') == 0}
+				<span class="actiontext">
+					{parseUser(message)}
+					{@html message.message.substring(4)}
+				</span>
+			{:else}
+				{#if !$tempSettings.anonymous}
+					<span class="chatUser" style={getUserStyle($icons,message)}>
+						{parseUser(message)}: 
+					</span>
+				{/if}
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span class="chatMsg" on:click={clickMessage}>
+					{@html message.message}
+				</span>
+			{/if}
+		</td>
+	</tr>
 {/if}
 
 <style>

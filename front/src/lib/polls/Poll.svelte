@@ -3,6 +3,7 @@
     import { io } from "$lib/realtime";
     import { user } from "$lib/stores/user";
 	import { onMount } from "svelte";
+    import { permissions } from "$lib/stores/permissions";
     export let poll:Poll;
     export let pollID:string;
     export let hideFn:Function|undefined = undefined;
@@ -46,7 +47,7 @@
     <b class='pollTitle'>
         {@html poll.title.replaceAll(/(http[^\s]+)/g,(match,url)=>{return `<a target='_blank' href='${url}'>${url}</a>`})}
     </b>
-    {#if $user.accessLevel >=4}
+    {#if $user.accessLevel >=$permissions.managePolls}
     <button on:click={()=>closePoll()}>
         {poll.dateClose || poll.options.length == 0 ? 'Delete' : 'End'}
     </button>

@@ -9,7 +9,7 @@ export const userSettings = writable({
 	},
 	chat: {
 		chatWidth: 21,
-		chatArray: 500
+		chatArray: 150
 	},
 	icon: '',
 	users: [],

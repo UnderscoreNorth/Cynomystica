@@ -45,4 +45,16 @@ export default class {
     }
     return obj;
   };
+  static upsert = async (permission: string, level: number) => {
+    return await db
+      .prepare(
+        `
+    INSERT INTO permissions
+    (permission, level) 
+    VALUES (@permission, @level)
+    ON CONFLICT(permission) DO UPDATE SET
+        level=@level`
+      )
+      .run({ permission, level });
+  };
 }

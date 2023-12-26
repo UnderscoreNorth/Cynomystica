@@ -3,15 +3,31 @@
 	let isHovered = false;
 	let x: number;
 	let y: number;
+	let faceRight = 1;
 
 	function mouseOver(event: MouseEvent) {
 		isHovered = true;
-		x = event.pageX + 5;
-		y = event.pageY + 5;
+		if(event.pageX + 50 > window.innerWidth){
+			faceRight = -1;
+			x = window.innerWidth - event.pageX + 5 * faceRight;
+			y = event.pageY + 5 * faceRight;		
+		} else {
+			faceRight = 1;
+			x = event.pageX + 5 * faceRight;
+			y = event.pageY + 5 * faceRight;		
+		}
 	}
 	function mouseMove(event: MouseEvent) {
-		x = event.pageX + 5;
-		y = event.pageY + 5;
+		if(event.pageX + 50 > window.innerWidth){
+			faceRight = -1;
+			x = window.innerWidth - event.pageX + 5 * faceRight;
+			y = event.pageY + 5 * faceRight;		
+		} else {
+			faceRight = 1;
+			x = event.pageX + 5 * faceRight;
+			y = event.pageY + 5 * faceRight;		
+		}
+		
 	}
 	function mouseLeave() {
 		isHovered = false;
@@ -23,7 +39,10 @@
 	<slot />
 </div>
 {#if isHovered}
-	<div style="top: {y}px; left: {x + 10}px;" class="tooltip">{@html title}</div>
+	<div style="top: {y}px;" 
+		style:left={faceRight == 1 ? `${(x + 10)}px` : ''}
+		style:right={faceRight == -1 ? `${(x - 10)}px` : ''}
+	class="tooltip">{@html title}</div>
 {/if}
 
 <style>

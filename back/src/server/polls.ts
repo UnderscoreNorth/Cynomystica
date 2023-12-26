@@ -1,8 +1,7 @@
 import { default as IO, socketInterface } from "./socket";
+import permissions from "./permissions";
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
-
-const pollManagePermission = 4;
 
 export interface Poll {
   username: string;
@@ -25,7 +24,7 @@ export class Polls {
     options: Array<string>,
     duration: number
   ) {
-    if (socket.accessLevel >= pollManagePermission) {
+    if (socket.accessLevel >= permissions.items["managePolls"]) {
       this.polls[uuidv4()] = {
         username: socket.username,
         duration,
@@ -38,7 +37,7 @@ export class Polls {
     }
   }
   close(socket: socketInterface, pollID: string) {
-    if (socket.accessLevel >= pollManagePermission) {
+    if (socket.accessLevel >= permissions.items["managePolls"]) {
       if (this.polls[pollID]) {
         this.polls[pollID].dateClose = new Date();
         IO().emit("poll", this.polls);
@@ -67,7 +66,7 @@ export class Polls {
     }
   }
   delete(socket: socketInterface, pollID: string) {
-    if (socket.accessLevel >= pollManagePermission) {
+    if (socket.accessLevel >= permissions.items["managePolls"]) {
       delete this.polls[pollID];
       IO().emit("poll", this.polls);
     }
