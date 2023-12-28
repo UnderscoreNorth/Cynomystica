@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from "svelte/transition";
 	export let closeModal: Function;
 	export let title:string;
 	export let zIndex = 2;
@@ -9,6 +10,7 @@
 <div class="modalbg" 
 	style:z-index={zIndex} 
 	style:align-items={align}
+	transition:fade={{duration:50}}
 	on:click={closeModal()}
 >
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -34,6 +36,7 @@
 <style>
 	.modalbg{
 		padding:2em;
+		width:calc(100vw - 4em);
 	}
 	.modal {
 		width: fit-content;
@@ -64,6 +67,11 @@
 		.modal {
 			font-size: 0.7rem;
 			width: calc(100vw - 6em);
+			min-width:auto;
+		}
+		.modalbg{
+			padding:0.5rem;
+			width:calc(100vw - 1em);
 		}
 	}
 </style>

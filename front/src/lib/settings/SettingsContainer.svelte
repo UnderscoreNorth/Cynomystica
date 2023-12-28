@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { settings } from "$lib/stores/settings";
+    import { settings, placeholderText } from "$lib/stores/settings";
     import camelToProper from "$lib/utilities/camelToProper";
     import { io } from "$lib/realtime";
     let settingsObj = structuredClone($settings);
@@ -14,7 +14,7 @@
     {#each Object.keys(settingsObj) as setting}
 <tr>
     <th>{camelToProper(setting)}</th>
-    <td><input bind:value={settingsObj[setting]} /></td>
+    <td><input bind:value={settingsObj[setting]} placeholder={placeholderText?.[setting] ?? ''} /></td>
 </tr>
     {/each}
 </table>

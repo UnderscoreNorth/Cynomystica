@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { userSettings } from '$lib/stores/userSettings';	
 	import { tempSettings } from '$lib/stores/tempSettings';
+	import { settings } from '$lib/stores/settings';
 	import { users } from '$lib/stores/users';
 	import { user } from '$lib/stores/user';
 	import type { usersType, otherUser } from '$lib/stores/users';
@@ -34,6 +35,16 @@
 	const toggleUserList = () => {
 		userListOpen = !userListOpen;
 	};
+	const getUserCountText = (count:number,countText:string) =>{
+		countText = countText || '|n| connected user|s|';
+		if(count == 1){
+			countText = countText.replace(/\|s\|/g,'')
+		} else {
+			countText = countText.replace(/\|s\|/g,'s')
+		}
+		countText = countText.replace(/\|n\|/g,count.toString());
+		return countText;
+	}
 </script>
 
 <div class="chatContainer" style="width:100%">
@@ -45,7 +56,7 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
 				<span style:flex-grow=1>
-					{$users.connectedUsers} connected user{$users.connectedUsers == 1 ? '' : 's'}
+					{getUserCountText($users.connectedUsers,$settings.userCountText)}
 				</span>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<Tooltip title='Toggle autoscroll'>
