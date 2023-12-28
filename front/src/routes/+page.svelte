@@ -11,8 +11,8 @@
 	import { tabText } from '$lib/stores/tabText';
 	import Snow from '$lib/special/snow/Snow.svelte';
 	import { tempSettings } from '$lib/stores/tempSettings';
-	let defaultTabtext = 'Cynomystica';
-	let tabName = defaultTabtext;
+	import { settings } from '$lib/stores/settings';
+	let tabName = $settings.tabName;
 
 	onMount(() => {
 		init();
@@ -20,7 +20,7 @@
 			if ($tabText && tabName !== $tabText) {
 				tabName = $tabText;
 			} else {
-				tabName = defaultTabtext;
+				tabName = $settings.tabName;
 			}
 		}, 1000);
 		userSettings.subscribe((e) => {
@@ -32,6 +32,10 @@
 <svelte:head>
 	<title>{tabName}</title>
 	<meta name="description" content="Prairie Dog Streaming" />
+	<link
+			rel="icon"
+			href={$settings.tabIcon}
+		/>
 </svelte:head>
 
 <section id="app">

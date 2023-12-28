@@ -11,6 +11,7 @@ export interface Permissions {
 	manageEmotes: number;
 	managePermissions: number;
 	manageUsers: number;
+	manageSettings: number;
 }
 const permissionsObj: Permissions = {
 	ignore: 10,
@@ -23,6 +24,7 @@ const permissionsObj: Permissions = {
 	manageEmotes: 10,
 	manageIcons: 10,
 	managePermissions: 10,
-	manageUsers: 10
+	manageUsers: 10,
+	manageSettings: 10
 };
 export const permissions = writable(permissionsObj);

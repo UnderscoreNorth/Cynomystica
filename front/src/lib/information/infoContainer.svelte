@@ -15,6 +15,12 @@
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>
+<b>Dec 27, 2023</b>
+<ul>
+	<li>Video server selection support, use ???streamurl??? to seperate links to the same video</li>
+	<li>Modal to view and select emotes</li>
+	<li>Ability to hide images posted in chat</li>
+</ul>
 <b>Dec 26, 2023</b>
 <ul>
 	<li>Opacity setting on Video Minimal Mode</li>

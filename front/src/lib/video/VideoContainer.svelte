@@ -3,9 +3,10 @@
 	import Video from './Video.svelte';
 	import { browser } from '$app/environment';
 	import { chat } from '$lib/stores/chat';
+	import { settings } from '$lib/stores/settings';
 	let chatMessageElem: HTMLElement | null;
-	let videoHeight;
-	let bulletHeight = 0;
+	let videoHeight:number;
+	let bulletHeight = 40;
 	if (browser) chatMessageElem = document.getElementById('cVideo');
 	chat.subscribe((value) => {
 		for (let message of value) {
@@ -24,8 +25,8 @@
 					chatMessageElem?.appendChild(bulletMessage);
 					bulletMessage.style.top = `${bulletHeight}px`;
 					bulletHeight += 20;
-					if (bulletHeight > videoHeight - 40) {
-						bulletHeight = 0;
+					if (bulletHeight > videoHeight - 80) {
+						bulletHeight = 40;
 					}
 					setTimeout(() => {
 						bulletMessage.remove();
@@ -36,12 +37,15 @@
 	});
 </script>
 
-<div id="videoContainer" style="width:100%" bind:clientHeight={videoHeight}><Video /></div>
+<div 
+	id="videoContainer" style="width:100%" 
+	bind:clientHeight={videoHeight} 
+	style:background-image={$settings.videoBG ? `url(${$settings.videoBG})` : ''}
+><Video /></div>
 
 <style>
 	#videoContainer {
 		background: black;
-		background-image: url('/videobg.jpg');
 		background-position: center;
 		background-size: cover;
 		height: 100%;

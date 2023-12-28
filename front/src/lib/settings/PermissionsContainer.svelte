@@ -1,6 +1,7 @@
 <script lang='ts'>
     import { permissions, type Permissions } from "$lib/stores/permissions";
     import { io } from "$lib/realtime";
+    import camelToProper from "$lib/utilities/camelToProper";
     const userTypes = {
         '-1':'Anonymous',
         '0':'Guest',
@@ -24,12 +25,7 @@
 <table>
 {#each Object.keys(permObj) as permission}
     <tr>
-        <td>{permission.replace(/([A-Z]+)/g, " $1").replace(
-            /\w\S*/g,
-            function(txt) {
-              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            }
-          )}</td>
+        <td>{camelToProper(permission)}</td>
         <td>
             <select bind:value={permObj[permission]}>
                 {#each Object.keys(userTypes) as lvl}

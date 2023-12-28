@@ -22,8 +22,6 @@
 		}, $userSettings.sync.threshold);
 	};
 	const syncTime = (e: any) => {
-		console.log('Sync r');
-		console.log(el);
 		let clientTime = e.currentTime;
 		let serverTime = $video.seekTime;
 		if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 && el.paused == false) {

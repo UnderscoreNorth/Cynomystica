@@ -39,6 +39,7 @@ import getUserManagement from "./controller/settings/get-user-management";
 import updateUserRole from "./controller/settings/update-user-role";
 import upsertEmotes from "./controller/settings/upsert-emotes";
 import upsertPresets from "./controller/settings/upsert-presets";
+import upsertSettings from "./controller/settings/upsert-settings";
 
 import permissions from "./server/permissions";
 import playlist from "./server/playlist";
@@ -85,6 +86,7 @@ const ioEvents = {
   "update-user-role": updateUserRole,
   "upsert-emotes": upsertEmotes,
   "upsert-presets": upsertPresets,
+  "upsert-settings": upsertSettings,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -122,6 +124,7 @@ io.on("connection", async (socket: socketInterface) => {
   sendIcons(socket);
   getSchedule(socket);
   settings.sendPreset(socket);
+  settings.sendSettings(socket);
 });
 
 server.listen(port, () => {

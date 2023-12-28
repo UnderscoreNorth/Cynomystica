@@ -18,12 +18,14 @@ import { emotes, type Emote } from './emotes';
 import { polls, type Poll } from './polls';
 import { tempSettings } from './tempSettings';
 import { presets } from './presets';
+import { settings } from './settings';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
 let tempSettingObj: Record<string, any> = {};
 let userSettingsObj: Record<string, any> = {};
 let presetObj: Record<string, Record<string, boolean>> = {};
+let settingsObj: Record<string, string> = {};
 let initPreset = true;
 user.subscribe((e) => {
 	userObj = e;
@@ -42,6 +44,9 @@ presets.subscribe((e) => {
 	if (!initPreset) {
 		io.emit('upsert-presets', e);
 	}
+});
+settings.subscribe((e) => {
+	settingsObj = e;
 });
 
 const init = () => {
@@ -217,6 +222,8 @@ const init = () => {
 			localStorage.setItem('refreshTokenExpires', e.refreshToken.expires);
 			localStorage.setItem('username', e.username);
 		}
+		if (settingsObj.joinMessage)
+			io.emit('message', { icon: userSettingsObj.icon, msg: settingsObj.joinMessage });
 	});
 	io.on('schedule', (e) => {
 		if (e.status == 'success') {
@@ -241,6 +248,14 @@ const init = () => {
 	});
 	io.on('emotes', (e) => {
 		emotes.set(e);
+	});
+	io.on('settings', (e) => {
+		settings.update((n) => {
+			for (const prop in n) {
+				if (e[prop] !== undefined) n[prop] = e[prop];
+			}
+			return n;
+		});
 	});
 };
 export default init;

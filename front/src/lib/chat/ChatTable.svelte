@@ -5,6 +5,7 @@
     import { chat } from '$lib/stores/chat';
     import { tempSettings } from '$lib/stores/tempSettings';
 	import { onMount } from 'svelte';
+    import { settings } from '$lib/stores/settings';
 	let chatScroller:HTMLDivElement;    
 	const hidePoll = (pollID:string)=>{
         $tempSettings.hiddenPolls = $tempSettings.hiddenPolls.add(pollID)
@@ -41,6 +42,7 @@
     bind:this={chatScroller} 
     class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}
     style:opacity={$tempSettings.minimize.toggle ? $tempSettings.minimize.opacity/100 : ''}
+    style:background-image={$settings.chatBG ? `url(${$settings.chatBG})` : ''}
 >
     <table id="chatTable" class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}>
         <thead>
@@ -94,10 +96,10 @@
 	}
     #chatScroller {
 		height: calc(100% - 0.5rem);
+        background-color: var(--color-bg-3);
 		overflow-y: scroll;
 		padding-bottom: 0.5rem;
 		overflow-x: hidden;
-        background-image: url(/CynoChatBG.png);
 		background-position: bottom;
 		color: var(--color-fg-3);
 	}

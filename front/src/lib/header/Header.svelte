@@ -17,7 +17,7 @@
 	import PollModal from '$lib/polls/PollModal.svelte';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import ChatBar from '$lib/chat/ChatBar.svelte';
-	import SettingsContainer from '$lib/settings/SettingsContainer.svelte';
+	import SettingsModal from '$lib/settings/SettingsModal.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -81,7 +81,7 @@
 	<Alert />
 	{#if userSettingsModalOpen}
 		<Modal closeModal={toggleSettings} title={'Settings'}>
-			<SettingsContainer />
+			<SettingsModal />
 		</Modal>
 	{/if}
 	{#if playListModalOpen}

@@ -8,10 +8,8 @@ import icons from "../sqliteTables/icons";
 import refreshTokens from "../sqliteTables/refreshTokens";
 import playlists from "../sqliteTables/playlists";
 import emotes from "../sqliteTables/emotes";
-
-import { xml2js, xml2json } from "xml-js";
-import parseURL from "../lib/parseURL";
-import { v4 as uuidv4 } from "uuid";
+import settings from "../sqliteTables/settings";
+import presets from "../sqliteTables/presets";
 
 export default async function dbInit() {
   const tableList = [
@@ -24,6 +22,8 @@ export default async function dbInit() {
     refreshTokens,
     playlists,
     emotes,
+    settings,
+    presets,
   ];
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
 
