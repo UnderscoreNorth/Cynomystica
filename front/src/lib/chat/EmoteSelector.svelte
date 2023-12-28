@@ -23,7 +23,7 @@
 	}
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div id="emoteSelect" class='svgIcon' on:click={toggleemoteList} bind:this={emoteListEl}>
+<div id="emoteSelect" on:click={toggleemoteList} bind:this={emoteListEl}>
 	<MdInsertEmoticon />
 </div>
 {#if emoteListOpen}
@@ -71,12 +71,13 @@
 		position: absolute;
 		float: right;
 		right: 0.5rem;
-		width: 2rem;
+		top:2px;
 		height: calc(100% - 4px);
 		z-index: 0;
 		display:flex;
 		justify-content: center;
 		align-items: center;
+		aspect-ratio: 1;
 	}
 	#emoteSelect:hover {
 		background-color: #1e90ff;

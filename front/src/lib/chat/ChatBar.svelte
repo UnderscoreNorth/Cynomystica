@@ -13,6 +13,7 @@
 	import { presets } from '$lib/stores/presets';
 	import IconSelector from './IconSelector.svelte';
 	import EmoteSelector from './EmoteSelector.svelte';
+	import { permissions } from '$lib/stores/permissions';
 	let lastInput = '';
 	let lastKey = '';
 	let tabIndex = 0;
@@ -135,7 +136,7 @@
 <input
 	id="inputBar"
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
-	disabled={$blocker.login}
+	disabled={$blocker.login || ($user.accessLevel < $permissions.chat && $user.accessLevel >= 0)}
 	bind:value={$chatInput}
 	bind:this={$chatEl}
 	on:keydown={handleKeyDown}
@@ -152,5 +153,8 @@
 		margin: 0;
 		flex-grow: 1;
 		flex-shrink: 1;
+	}
+	#inputBar:disabled{
+		background:grey;
 	}
 </style>

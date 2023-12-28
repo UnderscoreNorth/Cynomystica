@@ -19,7 +19,7 @@ class Permissions {
     for (let permission in permissions) {
       await permissionsSQL.upsert(permission, permissions[permission]);
     }
-    this.refresh();
+    await this.refresh();
     this.send(IO());
   }
 }

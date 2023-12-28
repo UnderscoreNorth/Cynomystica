@@ -7,28 +7,28 @@
 
 	function mouseOver(event: MouseEvent) {
 		isHovered = true;
-		if(event.pageX + 200 > window.innerWidth){
-			faceRight = -1;
-			x = window.innerWidth - event.pageX + 5 * faceRight;
-		} else {
-			faceRight = 1;
-			x = event.pageX + 5 * faceRight;		
-		}
-		y = event.pageY + 5;	
+		getCoord(event);
 	}
 	function mouseMove(event: MouseEvent) {
-		if(event.pageX + 200 > window.innerWidth){
-			faceRight = -1;
-			x = window.innerWidth - event.pageX + 5 * faceRight;
-		} else {
-			faceRight = 1;
-			x = event.pageX + 5 * faceRight;
-		}
-		y = event.pageY + 5;	
+		getCoord(event);	
 		
 	}
 	function mouseLeave() {
 		isHovered = false;
+	}
+	function getCoord(event:MouseEvent){
+		if(event.pageX + 200 > window.innerWidth){
+			faceRight = -1;
+			x = window.innerWidth - event.pageX;
+		} else {
+			faceRight = 1;
+			x = event.pageX + 15;		
+		}
+		if(event.pageY + 50 > window.innerHeight){
+			y = event.pageY - 35;
+		} else {
+			y = event.pageY + 15;
+		}
 	}
 </script>
 
@@ -37,9 +37,10 @@
 	<slot />
 </div>
 {#if isHovered}
-	<div style="top: {y}px;" 
-		style:left={faceRight == 1 ? `${(x + 10)}px` : ''}
-		style:right={faceRight == -1 ? `${(x - 10)}px` : ''}
+	<div 
+		style:left={faceRight == 1 ? `${x}px` : ''}
+		style:right={faceRight == -1 ? `${x}px` : ''}
+		style:top={`${y}px`}
 	class="tooltip">{@html title}</div>
 {/if}
 

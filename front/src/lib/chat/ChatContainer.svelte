@@ -156,7 +156,6 @@
 		z-index: 0;
 		background: var(--color-bg-3);
 		color:var(--color-fg-3);
-		width: 8rem;
 		height: calc(100% - 1em);
 		padding: 0.5em;
 		box-shadow: 4px 0px 4px black;
