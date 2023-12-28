@@ -6,7 +6,7 @@ export default async function upsertSchedule(
   socket: socketInterface,
   msg: string
 ) {
-  if (socket.accessLevel >= permissions.items["manageSchedule"]) {
+  if (socket.accessLevel >= permissions().items["manageSchedule"]) {
     try {
       await schedule.upsert(socket.username, msg);
       await getSchedule();

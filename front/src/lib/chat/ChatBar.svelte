@@ -9,12 +9,11 @@
 	import { tabText } from '$lib/stores/tabText';
 	import { afterUpdate, beforeUpdate } from 'svelte';
 	import {emotes} from '$lib/stores/emotes';
-	import { chatInput } from '$lib/stores/chat';
+	import { chatInput,chatEl } from '$lib/stores/chat';
 	import { presets } from '$lib/stores/presets';
 	import IconSelector from './IconSelector.svelte';
 	import EmoteSelector from './EmoteSelector.svelte';
 	let lastInput = '';
-	let input: HTMLInputElement;
 	let lastKey = '';
 	let tabIndex = 0;
 	let tabRegex = /([^ ]+)$/g;
@@ -26,9 +25,9 @@
 	let beforeInput:string;
 
 	beforeUpdate(() => {
-		if (input) {
+		if ($chatEl) {
 			//@ts-ignore
-			({ selectionStart, selectionEnd } = input);
+			({ selectionStart, selectionEnd } = $chatEl);
 		}
 		beforeInput = $chatInput;
 	});
@@ -41,16 +40,16 @@
 				selectionStart = selectionEnd;
 				selectionStart += 7;
 			}
-			input.setSelectionRange(selectionStart, selectionStart);			
+			$chatEl.setSelectionRange(selectionStart, selectionStart);			
 		}
 		if($chatInput.length >= 500){
-			input.style.outline = 'solid 2px red';
+			$chatEl.style.outline = 'solid 2px red';
 			$chatInput = $chatInput.substring(0,500);
 		} else {
-			input.style.outline = ''
+			$chatEl.style.outline = ''
 		}
 		if(beforeInput !== $chatInput)
-			input.focus();
+			$chatEl.focus();
 	});
 	const handleKeyDown = (e: KeyboardEvent) => {
 		if (e.key == 's' && e.ctrlKey == true) {
@@ -98,7 +97,7 @@
 		//console.log(e);
 		if (e.key == 's' && e.ctrlKey == true) {
 			spoilerMode = true;
-			const { selectionStart: start, selectionEnd: end } = input;
+			const { selectionStart: start, selectionEnd: end } = $chatEl;
 			//@ts-ignore
 			let spoileredText = `[s]${$chatInput.slice(start, end)}[/s]`;
 			//@ts-ignore
@@ -138,7 +137,7 @@
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
 	disabled={$blocker.login}
 	bind:value={$chatInput}
-	bind:this={input}
+	bind:this={$chatEl}
 	on:keydown={handleKeyDown}
 	on:keyup={handleKeyUp}
 	on:focus={handleFocus}

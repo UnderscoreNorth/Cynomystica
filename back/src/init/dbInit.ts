@@ -28,7 +28,7 @@ export default async function dbInit() {
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
 
   for (const table of tableList) {
-    const result = db
+    const result = await db
       .prepare(
         `SELECT COUNT(*) as 'count' FROM sqlite_master WHERE name='${table.tableName}'`
       )
@@ -36,7 +36,7 @@ export default async function dbInit() {
     if (result.count == 0) {
       try {
         await db.prepare(table.tableCreate).run();
-        if (table.init()) db.prepare(table.init()).run();
+        if (table.init()) await db.prepare(table.init()).run();
         console.log(table.tableName + " created");
       } catch (err) {
         console.log(table.tableName);

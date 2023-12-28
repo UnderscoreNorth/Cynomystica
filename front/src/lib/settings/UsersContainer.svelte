@@ -79,7 +79,7 @@
                             bind:group={user.accessLevel} 
                             value={parseInt(roleLvl)}
                             on:click={()=>updateUser(user,roleLvl)}
-                            disabled={user.username == $me.username || user.accessLevel >= $me.accessLevel}
+                            disabled={user.username == $me.username ||((user.accessLevel >= $me.accessLevel) || parseInt(roleLvl) > $me.accessLevel) && $me.accessLevel !== 5}
                             >
                         </td>
                     {/each}

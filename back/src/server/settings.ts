@@ -39,5 +39,10 @@ class Settings {
     this.enabledPresets = await presetsSQL.get();
   }
 }
-let settings = new Settings();
-export default settings;
+let settings: Settings;
+export function init() {
+  settings = new Settings();
+}
+export default function () {
+  return settings;
+}

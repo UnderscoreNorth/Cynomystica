@@ -24,7 +24,7 @@ export class Chat {
       IO().emit("alert", { type: "Reload" });
     } else {
       if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
-      if (!(socket.accessLevel >= permissions.items["postImage"]))
+      if (!(socket.accessLevel >= permissions().items["postImage"]))
         message.message = message.message.replace(/(http[^\s]+):pic/gim, "$1");
       message.message = messageFormatter(message.message);
       this.recentMsgs.push(message);

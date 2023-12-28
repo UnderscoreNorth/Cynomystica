@@ -69,8 +69,10 @@ export default class {
 
   static existsUser = (username: string) => {
     const results = db
-      .prepare(`SELECT COUNT(*) AS 'count' FROM users WHERE username=@username`)
-      .get({ username: username });
+      .prepare(
+        `SELECT COUNT(*) AS 'count' FROM users WHERE username=@username COLLATE NOCASE`
+      )
+      .get({ username });
     return results.count > 0;
   };
 
@@ -85,8 +87,7 @@ export default class {
     const results = db
       .prepare(`SELECT COUNT(*) AS 'count' FROM users`)
       .get({ username: username });
-    //const access = results.count > 0 ? 0 : 4;
-    const access = ["_North"].includes(username) ? 5 : 1;
+    const access = results.count > 0 ? 1 : 5;
     db.prepare(
       `
 			INSERT INTO users 

@@ -10,7 +10,7 @@
     "strict": false
   },
   "ts-node": {
-    "esm": true,
+    //"esm": true,
     "experimentalSpecifierResolution": "node"
   },
   "exclude": ["node_modules"]

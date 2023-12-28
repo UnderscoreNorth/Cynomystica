@@ -10,18 +10,7 @@ export default class {
         PRIMARY KEY ('id','preset')
     );`;
   static init = () => {
-    let icons = {};
-    let insertText =
-      "INSERT INTO icons (id, display, color, url,preset) VALUES";
-    let insertRows = [];
-    for (let preset in icons) {
-      for (let row of icons[preset]) {
-        insertRows.push(
-          `('${row[0]}','${row[0]}','${row[1]}','${row[2]}','${preset}') `
-        );
-      }
-    }
-    return insertText + insertRows.join(",");
+    return "";
   };
   static get = (preset: string | null = null) => {
     const results =

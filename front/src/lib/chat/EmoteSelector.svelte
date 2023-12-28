@@ -1,7 +1,7 @@
 <script lang='ts'>
     import { emotes } from "$lib/stores/emotes";
     import { presets } from "$lib/stores/presets";
-    import { chatInput } from "$lib/stores/chat";
+    import { chatInput,chatEl } from "$lib/stores/chat";
     //@ts-ignore
     import MdInsertEmoticon from 'svelte-icons/md/MdInsertEmoticon.svelte'
 	import Modal from "$lib/ui/modal.svelte";
@@ -14,7 +14,8 @@
 		e.stopPropagation();
 	};
 	const selectemote = (emote: any) => {
-		$chatInput += emote;        
+		$chatInput += emote; 
+		$chatEl.focus();       
 	};
 	const isSelected = (value:string,selected:string)=>{
 		if(value == selected) return 'selected'
@@ -38,8 +39,13 @@
 				{/each}
 			</div>
 			<div class='emoteList'>
-				{#each Object.values($emotes).filter((e)=>{return (e.preset == selectedPreset || selectedPreset == '') && (emoteSearch == '' || e.text.toLowerCase().includes(emoteSearch.toLowerCase()))}) as emote}
-					<div class='emoteItem'>
+				{#each Object.values($emotes).filter((e)=>{return (
+					(e.preset == selectedPreset || selectedPreset == '') 
+					&& (emoteSearch == '' || e.text.toLowerCase().includes(emoteSearch.toLowerCase()))
+					&& ($presets.emotes[e.preset] == true)
+					)}) as emote}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<div class='emoteItem' on:click={()=>selectemote(emote.text)}>
 						<img class='emote' src={emote.url} alt={emote.text}/> 
 						<span>{emote.text}</span>
 					</div>

@@ -46,9 +46,6 @@
 </div>
 {/each}
 <style>
-    h3{
-        min-width:10rem;
-    }
     .poll{
         border:solid 1px white;
         padding:5px;

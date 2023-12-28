@@ -6,7 +6,7 @@ export default function updatePlaylist(
   socket: socketInterface,
   sentPlaylist: PlaylistObj
 ) {
-  if (socket.accessLevel >= permissions.items["managePlaylist"]) {
+  if (socket.accessLevel >= permissions().items["managePlaylist"]) {
     let newPlaylist: PlaylistObj = [];
     let currentID = playlist.playlist[0].id;
     let newCurrentID = sentPlaylist[0].id;

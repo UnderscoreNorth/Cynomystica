@@ -6,7 +6,7 @@ export default async function upsertEmotes(
   socket: socketInterface,
   msg: string
 ) {
-  if (socket.accessLevel >= permissions.items["manageEmotes"]) {
+  if (socket.accessLevel >= permissions().items["manageEmotes"]) {
     try {
       await emotes.upsert(msg);
       sendEmotes(IO());

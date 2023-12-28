@@ -4,10 +4,10 @@ export default async function upsertPermissions(
   socket: socketInterface,
   msg: any
 ) {
-  if (socket.accessLevel >= permissions.items["managePermissions"]) {
+  if (socket.accessLevel >= permissions().items["managePermissions"]) {
     try {
-      await permissions.upsert(msg);
-      permissions.send(IO());
+      await permissions().upsert(msg);
+      permissions().send(IO());
     } catch (err) {
       console.log(err);
       socket.emit("alert", {

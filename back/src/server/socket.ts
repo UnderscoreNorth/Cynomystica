@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import chat from "./chat";
+
 const errorDelay = 100;
 
 export interface socketInterface extends Socket {
@@ -11,7 +12,7 @@ export interface socketInterface extends Socket {
   version: number;
 }
 
-let io: Server | undefined;
+let io: Server;
 
 export const init = (server: Server) => {
   //@ts-ignore

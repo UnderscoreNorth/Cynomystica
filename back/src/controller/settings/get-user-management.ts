@@ -5,7 +5,7 @@ export default async function getUserManagement(
   socket: socketInterface,
   msg: any
 ) {
-  if (socket.accessLevel >= permissions.items["manageUsers"]) {
+  if (socket.accessLevel >= permissions().items["manageUsers"]) {
     try {
       socket.emit("user-management", await users.getUsers());
     } catch (err) {

@@ -5,7 +5,7 @@ export default async function updateUserRole(
   socket: socketInterface,
   msg: any
 ) {
-  if (socket.accessLevel >= permissions.items["manageUsers"]) {
+  if (socket.accessLevel >= permissions().items["manageUsers"]) {
     try {
       await users.updateRole(msg.username, msg.accessLevel);
       let sockets = Object.values(await IO().sockets.fetchSockets());

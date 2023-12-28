@@ -6,7 +6,7 @@ export default async function upsertIcons(
   socket: socketInterface,
   msg: string
 ) {
-  if (socket.accessLevel >= permissions.items["manageIcons"]) {
+  if (socket.accessLevel >= permissions().items["manageIcons"]) {
     try {
       await icons.upsert(msg);
       sendIcons(IO());

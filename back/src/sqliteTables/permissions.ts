@@ -8,8 +8,8 @@ export default class {
   );`;
   static init = () => {
     let initPerms = {
-      toggleSpam: 3,
-      schedule: 3,
+      toggleSpam: 0,
+      schedule: 4,
       chat: 0,
       createPoll: 3,
       postImage: 2,
@@ -17,8 +17,16 @@ export default class {
       pm: 0,
       userMod: 3,
       queuePlaylist: 0,
-      managePlaylist: 3,
-      togglePlaylist: 3,
+      managePlaylist: 2,
+      togglePlaylist: 2,
+      manageSchedule: 4,
+      managePolls: 4,
+      manageEmotes: 4,
+      manageIcons: 4,
+      managePermissions: 5,
+      queueRaw: 1,
+      manageUsers: 4,
+      manageSettings: 5,
     };
     let insertArr = [];
     for (let p in initPerms) {

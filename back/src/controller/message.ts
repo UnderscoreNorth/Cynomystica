@@ -6,7 +6,7 @@ interface incomingMessage {
   msg: string;
 }
 export default function message(socket: socketInterface, obj: incomingMessage) {
-  if (socket.accessLevel >= permissions.items["chat"]) {
+  if (socket.accessLevel >= permissions().items["chat"]) {
     const messageObj = {
       username: socket.username,
       message: obj.msg.substring(0, 500),

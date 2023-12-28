@@ -4,15 +4,15 @@ import { default as IO, socketInterface } from "./socket";
 class Permissions {
   items: Record<string, number>;
   constructor() {
+    this.items = {};
     this.refresh();
   }
   send(socket: socketInterface | Server) {
     socket?.emit("permissions", this.items);
   }
-  refresh() {
-    permissionsSQL.getAll().then((v) => {
+  async refresh() {
+    await permissionsSQL.getAll().then((v) => {
       this.items = v;
-      this.send(IO());
     });
   }
   async upsert(permissions: Record<string, number>) {
@@ -20,7 +20,13 @@ class Permissions {
       await permissionsSQL.upsert(permission, permissions[permission]);
     }
     this.refresh();
+    this.send(IO());
   }
 }
-let permissions = new Permissions();
-export default permissions;
+let permissions: Permissions;
+export function init() {
+  permissions = new Permissions();
+}
+export default function () {
+  return permissions;
+}

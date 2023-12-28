@@ -161,7 +161,7 @@ class PlayList {
     if (socket) {
       if (
         parseRaw(new URL(mediaURL)).type == "raw" &&
-        !(socket.accessLevel >= permissions.items["queueRaw"])
+        !(socket.accessLevel >= permissions().items["queueRaw"])
       ) {
         socketError(`You don't have permission to queue raw videos`);
         return;

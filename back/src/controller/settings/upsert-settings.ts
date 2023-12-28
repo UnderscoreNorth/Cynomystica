@@ -5,9 +5,9 @@ export default async function upsertSettings(
   socket: socketInterface,
   msg: any
 ) {
-  if (socket.accessLevel >= permissions.items["manageSettings"]) {
+  if (socket.accessLevel >= permissions().items["manageSettings"]) {
     try {
-      settings.updateSettings(msg);
+      settings().updateSettings(msg);
     } catch (err) {
       console.log(err);
       socket.emit("alert", {
