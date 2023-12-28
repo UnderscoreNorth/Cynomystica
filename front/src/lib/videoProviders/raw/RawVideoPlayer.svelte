@@ -60,8 +60,8 @@
 	data-setup={`{}`}
 	autoplay
 	controls
+	src={src}
 >
-	<source src={src} type='video/mp4' />
 </video>
 {/key}
 
