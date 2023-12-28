@@ -14,7 +14,7 @@ export default class {
   static insert = async (username: string, action: string, byUser: string) => {
     await db
       .prepare(
-        `INSERT INTO userModeration (username, action, byUser) VALUES (@username,@action,@byUser)`
+        `INSERT OR IGNORE INTO userModeration (username, action, byUser) VALUES (@username,@action,@byUser)`
       )
       .run({
         username,
@@ -47,5 +47,15 @@ export default class {
     return await db
       .prepare(`SELECT * FROM userModeration WHERE action=@action`)
       .all({ action });
+  };
+  static getAll = async () => {
+    return await db.prepare(`SELECT * FROM userModeration`).all({});
+  };
+  static getIgnores = async (username: string) => {
+    return await db
+      .prepare(
+        `SELECT * FROM userModeration WHERE byUser=@username AND action='ignore'`
+      )
+      .all({ username });
   };
 }

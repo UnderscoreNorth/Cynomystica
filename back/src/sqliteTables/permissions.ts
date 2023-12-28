@@ -13,7 +13,6 @@ export default class {
       chat: 0,
       createPoll: 3,
       postImage: 2,
-      ignore: 0,
       pm: 0,
       userMod: 3,
       queuePlaylist: 0,

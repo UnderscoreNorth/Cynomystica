@@ -45,14 +45,6 @@
 	}
 		
 	const dummy = () => {};
-	/*
-	
-	<IconButton
-			Icon={MdSentimentVeryDissatisfied}
-			onClick={toggleModeration}
-			tooltip={'User Management'}
-		/>		
-	*/
 </script>
 
 <header>	
@@ -69,12 +61,11 @@
 		<nav>
 			<div id="siteName">Cynomystica |</div>
 			<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
-
 			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
-
 			<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
 			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
 			<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
+			<IconButton Icon={MdSentimentVeryDissatisfied} onClick={toggleModeration} tooltip={'User Management'}/>	
 			<div id="loginLi"><Login /></div>
 		</nav>
 	{/if}
@@ -90,7 +81,9 @@
 		</Modal>
 	{/if}
 	{#if moderationModalOpen}
-		<ModerationContainer closeModal={toggleModeration}/>
+		<Modal closeModal={toggleModeration} title='Moderation'>
+			<ModerationContainer closeModal={toggleModeration}/>
+		</Modal>
 	{/if}
 	{#if scheduleModalOpen}
 		<Modal closeModal={toggleSchedule} title={'Schedule'}>

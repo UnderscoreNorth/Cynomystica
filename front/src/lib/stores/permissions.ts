@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
 export interface Permissions {
-	ignore: number;
 	userMod: number;
 	queuePlaylist: number;
 	queueRaw: number;
@@ -15,7 +14,6 @@ export interface Permissions {
 	chat: number;
 }
 const permissionsObj: Permissions = {
-	ignore: 10,
 	userMod: 10,
 	queuePlaylist: 10,
 	queueRaw: 10,

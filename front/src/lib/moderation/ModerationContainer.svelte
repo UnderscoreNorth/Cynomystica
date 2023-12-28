@@ -1,78 +1,56 @@
 <script lang="ts">
-	export let closeModal: any;
 	import { user } from '$lib/stores/user';
-	interface viewType {
-		name: string;
-		minLevel: number;
-		function: string;
-	}
-	let views = [
-		{
-			name: 'Ignored Users',
-			minLevel: 1,
-			function: ''
-		},
-		{
-			name: 'Muted Users',
-			minLevel: 2,
-			function: ''
-		},
-		{
-			name: 'Shadowmuted Users',
-			minLevel: 2,
-			function: ''
-		}
-	];
-	let allowedViews: Array<viewType> = [];
-	let selectedView = 'Ignored Users';
-	user.subscribe((currentUser) => {
-		allowedViews = [];
-		for (let view of views) {
-			if (currentUser.accessLevel >= view.minLevel) allowedViews.push(view);
-		}
-	});
+	import { permissions } from '$lib/stores/permissions';
+	import { moderation } from '$lib/stores/moderation';
+	import { io } from '$lib/realtime';	
+	io.emit('get-moderation');
+	let filter = '';		
 </script>
-
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="modalbg" on:click={closeModal()}>
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<div id="moderationContainer">
-		<span
-			class="modal"
-			on:click={(e) => {
-				e.stopPropagation();
-			}}
-		>
-			{#if $user.accessLevel < 1}
-				<h3>A registered account is required</h3>
-			{:else}
-				<h3>
-					{#each allowedViews as view}
-						<span
-							on:click={() => {
-								selectedView = view.name;
-							}}
-							class="viewButton {view.name == selectedView && 'selected'}">{view.name}</span
-						>
-					{/each}
-				</h3>
-				<hr />
-				<button>Clear All</button>
-			{/if}
-		</span>
-	</div>
-</div>
-
+{#if $user.accessLevel >= $permissions.userMod}
+	Filter <select bind:value={filter}>
+		<option value=''>All</option>
+		<option value='ignored'>Ignored</option>
+		<option value='muted'>Muted</option>
+		<option value='shadowMuted'>Shadow Muted</option>
+		<option value='banned'>Banned</option>
+		<option value='ipBanned'>IP Banned</option>
+	</select>
+{/if}
+<table>	
+	<tr>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Date</th>
+		{#if $user.accessLevel >= $permissions.userMod}
+			<th>By</th>
+		{/if}
+	</tr>
+	{#each Object.keys($moderation).filter((x)=>{return filter == '' || filter == x}) as type}
+		{#each $moderation[type] as item}
+			<tr>
+				<td>{item.username}</td>
+				<td>{type}</td>
+				<td>{item.dateCreated}</td>
+				{#if $user.accessLevel >= $permissions.userMod}
+					<td>{item.byUser}</td>
+				{/if}
+			</tr>
+		{/each}
+	{/each}
+</table>
+<hr>
+<button>Clear All</button>
 <style>
-	#moderationContainer {
-		width: 80vw;
-		max-width: 80em;
-		margin-top: 2rem;
-	}
+	.tabHeader{
+        padding:0 5px;
+        cursor: pointer;
+    }
+    .tabHeader.selected{
+        cursor:default;
+        font-weight: bold;
+        border-radius: 2px 2px 0 0;
+    }
 	.viewButton {
 		cursor: pointer;
-	}
-	.selected {
-		text-decoration: underline;
 	}
 </style>
