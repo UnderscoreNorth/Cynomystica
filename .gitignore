@@ -16,3 +16,4 @@ front/src/lib/clientconfig.json
 back/logs
 back/node_modules
 back/config.json
+front/package-lock.json

@@ -1,4 +1,4 @@
-import { user } from './user';
+import { user, type userType } from './user';
 import { userSettings } from './userSettings';
 import { video } from './video';
 import type { videoType } from './video';
@@ -14,13 +14,17 @@ import { login } from '$lib/utilities/login';
 import { permissions } from './permissions';
 import { tabText } from './tabText';
 import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
-import { emotes } from './emotes';
+import { emotes, type Emote } from './emotes';
 import { polls, type Poll } from './polls';
 import { tempSettings } from './tempSettings';
-let userObj: any = {};
-let emoteObj: Record<string, string> = {};
+import { presets } from './presets';
+
+let userObj: userType;
+let emoteObj: Record<string, Emote> = {};
 let tempSettingObj: Record<string, any> = {};
 let userSettingsObj: Record<string, any> = {};
+let presetObj: Record<string, Record<string, boolean>> = {};
+let initPreset = true;
 user.subscribe((e) => {
 	userObj = e;
 });
@@ -32,6 +36,12 @@ tempSettings.subscribe((e) => {
 });
 userSettings.subscribe((e) => {
 	userSettingsObj = e;
+});
+presets.subscribe((e) => {
+	presetObj = e;
+	if (!initPreset) {
+		io.emit('upsert-presets', e);
+	}
 });
 
 const init = () => {
@@ -69,6 +79,12 @@ const init = () => {
 		});
 	});
 
+	io.on('presets', (e: Record<string, Record<string, boolean>>) => {
+		initPreset = true;
+		presets.set(e);
+		initPreset = false;
+	});
+
 	let currentChat: Array<object>;
 	chat.subscribe((value) => {
 		currentChat = value;
@@ -99,11 +115,12 @@ const init = () => {
 		chat.update((oldChat) => {
 			const pushMsg = (msg) => {
 				if (msg.message) {
-					for (const emoteName in emoteObj) {
-						const emoteURL = emoteObj[emoteName];
+					for (const emote of Object.values(emoteObj).filter(
+						(e) => presetObj.emotes[e.preset] == true
+					)) {
 						msg.message = msg.message.replaceAll(
-							emoteName,
-							`<img title='${emoteName}' class='emote' src='${emoteURL}'/>`
+							emote.text,
+							`<img title='${emote.text}' class='emote' src='${emote.url}'/>`
 						);
 					}
 					if (tempSettingObj.audio == true) {
@@ -120,6 +137,9 @@ const init = () => {
 							}
 						}
 					}
+					if (tempSettingObj.hideImage) {
+						msg.message = msg.message.replace(/<img[^>]*>/g, '');
+					}
 					msg.played = false;
 					oldChat.push(msg);
 					if (oldChat.length > userSettingsObj.chat.chatArray)
@@ -127,7 +147,7 @@ const init = () => {
 				}
 			};
 			if (e?.length > 0) {
-				for (let msg of e) {
+				for (const msg of e) {
 					pushMsg(msg);
 				}
 			} else {

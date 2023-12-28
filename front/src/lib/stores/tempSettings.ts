@@ -11,5 +11,6 @@ export const tempSettings = writable({
 	scrollLock: true,
 	videoVolume: 1,
 	hiddenPolls: new Set(),
-	scheduleView: 'calendar'
+	scheduleView: 'calendar',
+	hideImage: false
 });

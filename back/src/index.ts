@@ -37,6 +37,8 @@ import votePoll from "./controller/polls/vote-poll";
 import upsertIcons from "./controller/settings/upsert-icons";
 import getUserManagement from "./controller/settings/get-user-management";
 import updateUserRole from "./controller/settings/update-user-role";
+import upsertEmotes from "./controller/settings/upsert-emotes";
+import upsertPresets from "./controller/settings/upsert-presets";
 
 import permissions from "./server/permissions";
 import playlist from "./server/playlist";
@@ -45,6 +47,7 @@ import SyncPlay from "./server/syncplay";
 import sendEmotes from "./lib/sendEmotes";
 import polls from "./server/polls";
 import sendIcons from "./lib/sendIcons";
+import settings from "./server/settings";
 
 dbInit();
 const app = express();
@@ -80,6 +83,8 @@ const ioEvents = {
   "upsert-permissions": upsertPermissions,
   "get-user-management": getUserManagement,
   "update-user-role": updateUserRole,
+  "upsert-emotes": upsertEmotes,
+  "upsert-presets": upsertPresets,
 };
 io.on("connection", async (socket: socketInterface) => {
   socket.uuid = uuidv4();
@@ -116,6 +121,7 @@ io.on("connection", async (socket: socketInterface) => {
   polls().get(socket);
   sendIcons(socket);
   getSchedule(socket);
+  settings.sendPreset(socket);
 });
 
 server.listen(port, () => {

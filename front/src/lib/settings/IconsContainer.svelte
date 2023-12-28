@@ -5,6 +5,7 @@
     //@ts-ignore
     import MdDelete from 'svelte-icons/md/MdDelete.svelte'
     import Modal from "$lib/ui/modal.svelte";
+    import { presets } from "$lib/stores/presets";
 
     let iconsGrouped:Record<string, Record<string, Icon>> = {};
     let disableSave = false;
@@ -101,6 +102,9 @@
             <table bind:this={presetTblEl}>
                 {#each Object.keys(iconsGrouped) as preset}
                 <tr>
+                    <td>
+                        <input type='checkbox' style:width={'1rem'} bind:checked={$presets.icons[preset]}>
+                    </td>
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <td 
                         class={'preset' + (preset == selectedPreset ? ' selected' : '')}

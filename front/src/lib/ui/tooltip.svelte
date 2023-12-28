@@ -7,26 +7,24 @@
 
 	function mouseOver(event: MouseEvent) {
 		isHovered = true;
-		if(event.pageX + 50 > window.innerWidth){
+		if(event.pageX + 200 > window.innerWidth){
 			faceRight = -1;
 			x = window.innerWidth - event.pageX + 5 * faceRight;
-			y = event.pageY + 5 * faceRight;		
 		} else {
 			faceRight = 1;
-			x = event.pageX + 5 * faceRight;
-			y = event.pageY + 5 * faceRight;		
+			x = event.pageX + 5 * faceRight;		
 		}
+		y = event.pageY + 5;	
 	}
 	function mouseMove(event: MouseEvent) {
-		if(event.pageX + 50 > window.innerWidth){
+		if(event.pageX + 200 > window.innerWidth){
 			faceRight = -1;
 			x = window.innerWidth - event.pageX + 5 * faceRight;
-			y = event.pageY + 5 * faceRight;		
 		} else {
 			faceRight = 1;
 			x = event.pageX + 5 * faceRight;
-			y = event.pageY + 5 * faceRight;		
 		}
+		y = event.pageY + 5;	
 		
 	}
 	function mouseLeave() {

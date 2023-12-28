@@ -2,8 +2,6 @@
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
 	import { blocker } from '$lib/stores/blocker';
-	import { icons } from '$lib/stores/icons';
-	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { login } from '$lib/utilities/login';
 	import { users } from '$lib/stores/users';
@@ -12,8 +10,10 @@
 	import { afterUpdate, beforeUpdate } from 'svelte';
 	import {emotes} from '$lib/stores/emotes';
 	import { chatInput } from '$lib/stores/chat';
+	import { presets } from '$lib/stores/presets';
+	import IconSelector from './IconSelector.svelte';
+	import EmoteSelector from './EmoteSelector.svelte';
 	let lastInput = '';
-	let iconListOpen = false;
 	let input: HTMLInputElement;
 	let lastKey = '';
 	let tabIndex = 0;
@@ -23,7 +23,6 @@
 	let selectionStart = 0;
 	let selectionEnd = 0;
 	let spoilerMode = false;
-	let iconListEl;
 	let beforeInput:string;
 
 	beforeUpdate(() => {
@@ -66,7 +65,7 @@
 						return otherUser.username.toLowerCase().indexOf(tabWord) == 0;
 					})
 					.map((otherUser) => otherUser.username);
-				let matchedEmotes = Object.keys($emotes).filter((emote)=> emote.toLowerCase().indexOf(tabWord)==0)
+				let matchedEmotes = Object.values($emotes).filter((e)=>$presets.emotes[e.preset] == true).map((e)=>e.text).filter((e)=> e.toLowerCase().indexOf(tabWord)==0)
 				let matched = matchedUsers.concat(matchedEmotes);
 				if (matched.length) {
 					$chatInput = lastInput.replace(tabRegex, matched[tabIndex]);
@@ -126,63 +125,14 @@
 			sentIndex = -1;
 		}
 	};
-	const toggleIconList = (e: MouseEvent) => {
-		iconListOpen = !iconListOpen;
-		e.stopPropagation();
-	};
-	const selectIcon = (icon: any) => {
-		$userSettings.icon = icon;
-	};
+	
 	const handleFocus = () => {
 		$tabText = '';
 	};
-	onMount(() => {
-		if (browser) {
-			window.addEventListener('click', function (event) {
-				iconListOpen = false;
-			});
-		}
-	});
+	
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div id="iconSelect" on:click={toggleIconList} bind:this={iconListEl}>
-	{#if $userSettings.icon && $icons[$userSettings.icon]?.url}
-		<img src={$icons[$userSettings.icon].url} alt="icon" />
-	{/if}
-</div>
-{#if iconListOpen}
-	<div
-		id="iconList"
-		style={iconListEl?.getBoundingClientRect()?.top < 250 ? 'top:2rem;' : 'bottom:2rem'}
-	>
-		{#each Array.from(new Set(Object.values($icons).map((x) => x.preset))) as preset}
-			<div class="presetContainer">
-				<div>
-					<u>{preset}</u>
-				</div>
-				{#each Object.entries($icons) as [id, icon]}
-					{#if icon.preset == preset}
-						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<div
-							on:click={() => {
-								selectIcon(id);
-							}}
-							class="iconListItem"
-						>
-							{#if icon.url}
-								<img src={icon.url} alt="icon" />
-							{/if}
-							<span style:color={icon.color}>
-								{icon.display}
-							</span>
-						</div>
-					{/if}
-				{/each}
-			</div>
-		{/each}
-	</div>
-{/if}
+<IconSelector />
 <input
 	id="inputBar"
 	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
@@ -194,66 +144,12 @@
 	on:focus={handleFocus}
 	autocomplete="off"
 />
-
+<EmoteSelector />
 <style>	
-	#iconList {
-		position: absolute;
-		left: 0.5rem;
-		max-height: 70svh;
-		overflow-y: scroll;
-		background: var(--color-bg-3);
-		z-index: 2;
-		color: var(--color-fg-3);
-		box-shadow: 1px 1px 5px 0px black;
-		border: solid 1px black;
-		font-weight: bold;
-		width:max-content;
-		max-width: 90vw;
-		max-height: 20rem;
-	}
-	.presetContainer {
-		display: inline-block;
-		vertical-align: top;
-		padding:0 5px;
-	}
-	.iconListItem {
-		display: flex;
-		align-items: center;
-		height: 1.8rem;
-	}
-	.iconListItem img{
-		padding-right:2px;
-	}
-	.iconListItem:hover {
-		background-color: var(--color-bg-2);
-		color:var(--color-fg-2);
-	}	
-	.iconListItem img,
-	#iconSelect img {
-		height: 1.8rem;
-		width: 1.8rem;
-	}
-	#iconSelect {
-		position: absolute;
-		float: left;
-		left: 0.5rem;
-		width: 2rem;
-		height: calc(100% - 4px);
-		top: 2px;
-		z-index: 0;
-		border-right: solid 1px black;
-		display:flex;
-		justify-content: center;
-		align-items: center;
-	}
-	#iconSelect:hover {
-		background-color: #1e90ff;
-	}
 	#inputBar {
-		padding: 2px;
+		padding: 2px 2.8rem;
 		border: 0;
-		height: calc(100% - 4px);
-		padding-left: 2.8rem;
+		height: calc(100% - 4px);		
 		margin: 0;
 		flex-grow: 1;
 		flex-shrink: 1;

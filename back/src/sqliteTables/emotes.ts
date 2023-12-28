@@ -5,7 +5,7 @@ export default class {
         'text' varchar(20)  NOT NULL,
         'url' VARCHAR(512),
         'preset' VARCHAR(50),
-        PRIMARY KEY ('text')
+        PRIMARY KEY ('text','preset')
     );`;
   static init = () => {
     return "";
@@ -22,9 +22,34 @@ export default class {
     let obj = {};
     for (let row of Array.from(results) as any) {
       // @ts-ignore
-      obj[row.text] = row.url;
+      obj[row.preset + "-" + row.text] = row;
     }
     return obj;
   };
-  static upsert = async (username: string, obj: any) => {};
+  static upsert = async (obj: any) => {
+    if (obj.preset) {
+      //@ts-ignore
+      let preset = obj.preset;
+      await db
+        .prepare(
+          `
+            DELETE FROM emotes
+            WHERE preset=@preset`
+        )
+        .run({ preset });
+      for (let emoteID in obj.emotes) {
+        let emoteObj = obj.emotes[emoteID];
+        await db
+          .prepare(
+            `
+            INSERT INTO emotes
+            (text, url, preset) 
+            VALUES (@text,@url,@preset)
+            ON CONFLICT(text, preset) DO UPDATE SET
+                url=@url`
+          )
+          .run(emoteObj);
+      }
+    }
+  };
 }

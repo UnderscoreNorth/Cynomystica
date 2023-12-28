@@ -82,7 +82,7 @@
 	</tr>
 	<tr class='divider'></tr>
 	<tr>
-		<th rowspan=4>
+		<th rowspan=5>
 			Temporary<br>Settings
 		</th>
 		<th>Video Minimal</th>
@@ -109,6 +109,10 @@
 	<tr>
 		<th>Umineko SFX</th>
 		<td><input type='checkbox' bind:checked={$tempSettings.audio} /></td>
+	</tr>
+	<tr>
+		<th>Hide Images</th>
+		<td><input type='checkbox' bind:checked={$tempSettings.hideImage} /></td>
 	</tr>
 </table>
 

@@ -20,6 +20,7 @@
 	<li>Opacity setting on Video Minimal Mode</li>
 	<li>Scroll lock button</li>
 	<li>Refresh video button</li>
+	<li>Schedule List View</li>
 </ul>
 <b>Dec 21, 2023</b>
 <ul>

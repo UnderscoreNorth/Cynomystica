@@ -2,10 +2,15 @@
 	export let closeModal: Function;
 	export let title:string;
 	export let zIndex = 2;
+	export let align= 'baseline';
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="modalbg" style={`z-index:${zIndex}`} on:click={closeModal()}>
+<div class="modalbg" 
+	style:z-index={zIndex} 
+	style:align-items={align}
+	on:click={closeModal()}
+>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div
 		class="modal"
@@ -27,14 +32,17 @@
 </div>
 
 <style>
+	.modalbg{
+		padding:2em;
+	}
 	.modal {
 		width: fit-content;
 		max-width: 90vw;
-		margin-top: 2em;
 		color: white;
 		position: relative;
 		height: fit-content;
 		padding-top:0;
+		min-width:20rem;
 	}
 	.modalHeader{
 		display:flex;		
