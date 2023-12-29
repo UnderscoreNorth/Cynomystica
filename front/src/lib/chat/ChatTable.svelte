@@ -42,7 +42,7 @@
     bind:this={chatScroller} 
     class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}
     style:opacity={$tempSettings.minimize.toggle ? $tempSettings.minimize.opacity/100 : ''}
-    style:background-image={$settings.chatBG ? `url(${$settings.chatBG})` : ''}
+    style:background-image={$settings.chatBG && !$tempSettings.minimize.toggle ? `url(${$settings.chatBG})` : ''}
 >
     <table id="chatTable" class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}>
         <thead>
