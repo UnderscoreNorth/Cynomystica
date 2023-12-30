@@ -54,7 +54,9 @@
 	<main>
 		{#if $userSettings.display.video}<c
 				id="cVideo"
-				style:width={`calc(100% - ${$userSettings.chat.chatWidth}rem)`}>
+				style:width={`calc(100% - ${$userSettings.chat.chatWidth}rem)`}
+				style:--max-emote-height={$settings.maxEmoteHeight + 'px'}
+			>
 				<VideoContainer /></c
 			>{/if}
 		{#if $userSettings.display.chat !== 'none'}

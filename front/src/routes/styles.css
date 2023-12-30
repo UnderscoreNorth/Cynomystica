@@ -178,8 +178,7 @@ button:focus:not(:focus-visible) {
 	color: grey;
 }
 img.emote {
-	max-width: 2rem;
-	max-height: 2rem;
+	max-height: var(--max-emote-height);
 }
 ::-webkit-scrollbar {
 	width: 10px;

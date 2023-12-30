@@ -39,7 +39,7 @@
 
 <div 
 	id="videoContainer" style="width:100%" 
-	bind:clientHeight={videoHeight} 
+	bind:clientHeight={videoHeight} 	
 	style:background-image={$settings.videoBG ? `url(${$settings.videoBG})` : ''}
 ><Video /></div>
 

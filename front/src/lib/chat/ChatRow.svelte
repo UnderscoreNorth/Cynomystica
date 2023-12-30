@@ -7,6 +7,7 @@
 	import {chatInput, type messageType } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { moderation } from '$lib/stores/moderation';
+	import { settings } from '$lib/stores/settings';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -62,7 +63,7 @@
 						</span>
 					{/if}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<span class="chatMsg" on:click={clickMessage}>
+					<span class="chatMsg" on:click={clickMessage} style={`--max-height:${$settings.maxImageHeight}px;--max-emote-height:${$settings.maxEmoteHeight}px`}>
 						{@html message.message}
 					</span>
 				{/if}
@@ -99,7 +100,7 @@
 	}
 	:global(.chatMsg img) {
 		max-width: 100%;
-		max-height: 30svh;
+		max-height: var(--max-height);
 		vertical-align: middle;
 	}
 	.systemMsg{

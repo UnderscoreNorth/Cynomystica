@@ -20,6 +20,7 @@
             bind:value={settingsObj[setting]} 
             placeholder={placeholderText?.[setting] ?? ''} 
             type='number'
+            step=1
         />
         {:else}
         <input 

@@ -3,7 +3,7 @@ export const placeholderText = {
 	userCountText: '|n| connected user|s|',
 	maxTotalQueueLength: 'Minutes, 0 for unlimited'
 };
-export const numberTypes = ['maxTotalQueueLength'];
+export const numberTypes = ['maxTotalQueueLength', 'maxImageHeight', 'maxEmoteHeight'];
 export const settings = writable({
 	joinMessage: '',
 	chatBG: '',
@@ -11,5 +11,7 @@ export const settings = writable({
 	tabName: '',
 	tabIcon: '',
 	userCountText: '',
-	maxTotalQueueLength: 0
+	maxTotalQueueLength: 0,
+	maxImageHeight: 100,
+	maxEmoteHeight: 50
 } as Record<string, string | number>);
