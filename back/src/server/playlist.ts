@@ -286,6 +286,7 @@ class PlayList {
   };
   queuePlaylist = async (options: any) => {
     let items = await playlists.getPlaylist(options.playlist);
+    if (items.length == 0) return false;
     let maxTries = 1000;
     let tries = 0;
     let complete = false;
