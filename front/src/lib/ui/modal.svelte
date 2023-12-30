@@ -59,7 +59,7 @@
 		height: fit-content;
 	}
 	.modalContents{
-		max-height: calc(90svh - 4rem);
+		max-height: calc(90svh - 8rem);
 		overflow-y: auto;
 		overflow-x: hidden;
 	}

@@ -4,12 +4,14 @@
 	import { user } from '$lib/stores/user';
 	import { io } from '$lib/realtime';
 	import { moderation } from '$lib/stores/moderation';
+	
 	export let closeModal: any;
 	export let otherUser: otherUserType;
 	export let x:number;
 	export let y:number;
 	const userMod = (action: actionType) => {
-		if(otherUser[action.key]){
+		if($user.username !== otherUser.username){
+			if(otherUser[action.key]){
 			if($user.accessLevel > 0){
 				io.emit('undo-moderation',{
 					action:action.action ,username:otherUser.username,byUser:''
@@ -41,6 +43,7 @@
 			}
 		}
 		closeModal(null,null);
+		} 		
 	};
 	interface actionType {
 		action:string

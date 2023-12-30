@@ -14,6 +14,7 @@
 	import IconSelector from './IconSelector.svelte';
 	import EmoteSelector from './EmoteSelector.svelte';
 	import { permissions } from '$lib/stores/permissions';
+	import { icons } from '$lib/stores/icons';
 	let lastInput = '';
 	let lastKey = '';
 	let tabIndex = 0;
@@ -135,8 +136,9 @@
 	};
 	
 </script>
-
-<IconSelector />
+{#if Object.keys($icons).length}
+	<IconSelector />
+{/if}
 <input
 	id="inputBar"
 	placeholder={
@@ -146,8 +148,10 @@
 		$blocker.login 
 		|| ($user.accessLevel < $permissions.chat && $user.accessLevel >= 0)
 		|| $user.muted
-		|| io.disconnected
+		|| io.disconnected	
 	}
+	style:padding-right={Object.keys($emotes).length ? '2.8rem' : '10px'}
+	style:padding-left={Object.keys($icons).length ? '2.8rem' : '10px'}
 	bind:value={$chatInput}
 	bind:this={$chatEl}
 	on:keydown={handleKeyDown}
@@ -155,10 +159,13 @@
 	on:focus={handleFocus}
 	autocomplete="off"
 />
-<EmoteSelector />
+{#if Object.keys($emotes).length}
+	<EmoteSelector />
+{/if}
 <style>	
 	#inputBar {
-		padding: 2px 2.8rem;
+		padding-top: 2px;
+		padding-bottom: 2px;
 		border: 0;
 		height: calc(100% - 4px);		
 		margin: 0;

@@ -16,7 +16,8 @@ const selectOtherUser = (user: otherUser | null,e:PointerEvent | null) => {
 			x = e.pageX;
 			y = e.pageY;
 		}
-		selectedOtherUser = user;
+		if($user.username !== user?.username)
+			selectedOtherUser = user;
 	};
 </script>
 <div id="userList">
@@ -26,7 +27,7 @@ const selectOtherUser = (user: otherUser | null,e:PointerEvent | null) => {
         {#if userItem.accessLevel >= 0}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
-                class={"userListItem accessLevel" + userItem.accessLevel}									
+                class={"userListItem accessLevel-" + userItem.accessLevel}									
                 on:click={(e) => {
                     selectOtherUser(userItem,e);
                 }}
@@ -46,14 +47,14 @@ const selectOtherUser = (user: otherUser | null,e:PointerEvent | null) => {
     <OtherUserModal otherUser={selectedOtherUser} closeModal={selectOtherUser} x={x} y={y}/>
 {/if}
 <style>
-    .userListItem.accessLevel0 {
+    .userListItem.accessLevel-0 {
 		font-style: italic;
 	}
     #userList {
 		position: absolute;
 		top: 0;
 		left: 0;
-		z-index: 0;
+		z-index: 1;
 		background: var(--color-bg-3);
 		color:var(--color-fg-3);
 		height: calc(100% - 1em);

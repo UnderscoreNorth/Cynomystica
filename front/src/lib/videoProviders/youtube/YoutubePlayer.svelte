@@ -11,7 +11,7 @@
 	let debounced = false;
 	let lastSeek = 0;
 	let videoURL = '';
-	let syncInterval;
+	let syncInterval:ReturnType<typeof setInterval>;
 	onMount(() => {
 		player = youTubePlayer('player', {
 			videoId: $video.url

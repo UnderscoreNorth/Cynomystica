@@ -39,7 +39,7 @@
 	}
 </script>
 
-<div class="chatContainer" style="width:100%">
+<div class={'chatContainer' + ($tempSettings.minimize.toggle ? ' chatMinimal' : '')} style="width:100%">
 	{#if $tempSettings.minimize.toggle}
 		<ChatTable />
 	{:else}
@@ -105,6 +105,11 @@
 		display: inline-block;
 		vertical-align: top;
 	}
+	.chatContainer.chatMinimal{
+		display:flex;
+		height:100svh;
+		align-items: center;
+	}
 	#chatGrid {		
 		display: grid;
 		grid-template-columns: 1fr;
@@ -118,5 +123,6 @@
 		overflow-y: hidden;
 		order: 2;
 		height:100%;
+		width:inherit;
 	}		
 </style>

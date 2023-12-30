@@ -127,6 +127,10 @@
 		z-index: 2;
 		width:calc(100% - 1rem);
 		display:flex;
+		pointer-events: none;
+	}
+	#minimalHeader>*{
+		pointer-events: all;
 	}
 	#minimalSettings{
 		float:left;

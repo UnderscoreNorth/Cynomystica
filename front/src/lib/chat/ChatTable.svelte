@@ -71,8 +71,9 @@
     #chatScroller.chatMinimal{
         pointer-events: none;
         background:none;
-        margin: 10rem 4rem;
+        margin: 0 4rem;
         height:calc(100svh - 20rem);
+        min-height: 70svh;
         overflow-y: hidden;
         color:var(--color-fg-1);
         font-size: 1.5rem;

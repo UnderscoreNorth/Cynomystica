@@ -4,10 +4,12 @@
 	import Tooltip from '$lib/ui/tooltip.svelte';
 	//@ts-ignore
 	import MdRefresh from 'svelte-icons/md/MdRefresh.svelte'
+	import { onDestroy } from 'svelte';
 	let el:HTMLVideoElement;
 	let reset = 0;
 	let originalSrc = '';
 	let src = '';
+	let syncInterval:ReturnType<typeof setInterval>;
 	video.subscribe((e)=>{
 		if(e.url !== originalSrc){
 			originalSrc = e.url;
@@ -16,7 +18,7 @@
 	})
 	const initSyncTime = (e: any) => {
 		syncTime(e.target);
-		setInterval(function () {
+		syncInterval = setInterval(function () {
 			syncTime(e.target);
 		}, $userSettings.sync.threshold);
 	};
@@ -31,6 +33,9 @@
 		src = url;
 	}
 	const seekLeader = (e: Event) => {};
+	onDestroy(()=>{
+		clearInterval(syncInterval)
+	})
 </script>
 {#key reset}
 <div id='videoControlBar'>
