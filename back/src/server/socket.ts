@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import chat from "./chat";
+import moderation from "./moderation";
 
 const errorDelay = 100;
 
@@ -10,6 +11,7 @@ export interface socketInterface extends Socket {
   lastQueue: Date;
   lastMessage: Date;
   version: number;
+  muted: boolean;
 }
 
 let io: Server;
@@ -45,9 +47,22 @@ export const sendUserList = async () => {
   for (let socket of Object.values(
     await io.sockets.fetchSockets()
   ) as unknown as socketInterface[]) {
+    let actions = moderation().users[socket.username];
+    socket.muted = false;
+    if (typeof actions == "object") {
+      for (let action in actions) {
+        switch (action) {
+          case "Mute":
+            socket.muted = true;
+          default:
+            break;
+        }
+      }
+    }
     userList[socket.id] = {
       username: socket.username ?? socket.id,
       accessLevel: socket.accessLevel ?? -1,
+      muted: socket.muted,
     };
   }
   io.emit("connected-users", userList);

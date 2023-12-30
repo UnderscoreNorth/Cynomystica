@@ -5,7 +5,8 @@ export const userSettings = writable({
 	display: {
 		danmaku: 'none',
 		chat: 'left',
-		video: true
+		video: true,
+		hideImage: false
 	},
 	chat: {
 		chatWidth: 21,
@@ -13,5 +14,5 @@ export const userSettings = writable({
 	},
 	icon: '',
 	users: [],
-	blockSave: false
+	ready: false
 });

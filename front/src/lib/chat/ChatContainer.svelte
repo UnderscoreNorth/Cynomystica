@@ -2,25 +2,20 @@
 	import { userSettings } from '$lib/stores/userSettings';	
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { settings } from '$lib/stores/settings';
-	import { users } from '$lib/stores/users';
-	import { user } from '$lib/stores/user';
-	import type { usersType, otherUser } from '$lib/stores/users';
-	import ChatBar from './ChatBar.svelte';
-	import OtherUserModal from './OtherUserModal.svelte';
+	import { users } from '$lib/stores/users';	
+	import type { usersType} from '$lib/stores/users';
+	import ChatBar from './ChatBar.svelte';	
 	//@ts-ignore
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	//@ts-ignore
 	import MdLockOutline from 'svelte-icons/md/MdLockOutline.svelte'
 	//@ts-ignore
 	import MdLockOpen from 'svelte-icons/md/MdLockOpen.svelte'
-	
-	import { permissions } from '$lib/stores/permissions';
 	import ChatTable from './ChatTable.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
+	import UserList from './UserList.svelte';
 	let settingsObj: any;
 	let usersObj: usersType;
-	let selectedOtherUser: otherUser | null;
-	
 	$: userListOpen = false;
 	userSettings.subscribe((value) => {
 		settingsObj = value;
@@ -28,10 +23,7 @@
 	users.subscribe((value) => {
 		usersObj = value;
 	});
-
-	const selectOtherUser = (user: otherUser | null) => {
-		if ($user.accessLevel >= $permissions.userMod) selectedOtherUser = user;
-	};
+	
 	const toggleUserList = () => {
 		userListOpen = !userListOpen;
 	};
@@ -72,40 +64,19 @@
 			</div>
 			<div id="chatMessages">
 				{#if userListOpen}
-					<div id="userList">
-						Userlist
-						<hr />
-						{#each $users.users as userItem}
-							{#if userItem.accessLevel >= 0}
-								<!-- svelte-ignore a11y-click-events-have-key-events -->
-								<div
-									class={"userListItem accessLevel" + userItem.accessLevel}									
-									on:click={() => {
-										selectOtherUser(userItem);
-									}}
-								>
-									{userItem.username}
-								</div>
-							{/if}
-						{/each}
-					</div>
+					<UserList />
 				{/if}
 				<ChatTable />
 			</div>
 			<div id="chatBarContainer">
 				<ChatBar />
 			</div>
-			{#if selectedOtherUser}
-				<OtherUserModal otherUser={selectedOtherUser} closeModal={selectOtherUser} />
-			{/if}
+			
 		</div>
 	{/if}	
 </div>
 
-<style>
-	.userListItem.accessLevel0 {
-		font-style: italic;
-	}
+<style>	
 	#chatHeader {
 		display: flex;
 		line-height: 2em;
@@ -134,8 +105,7 @@
 		display: inline-block;
 		vertical-align: top;
 	}
-	#chatGrid {
-		
+	#chatGrid {		
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-template-rows: 2em 1fr 2em 5px;
@@ -148,18 +118,5 @@
 		overflow-y: hidden;
 		order: 2;
 		height:100%;
-	}	
-	#userList {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 0;
-		background: var(--color-bg-3);
-		color:var(--color-fg-3);
-		height: calc(100% - 1em);
-		padding: 0.5em;
-		box-shadow: 4px 0px 4px black;
-		overflow-y: auto;
-		opacity:0.9;
-	}	
+	}		
 </style>

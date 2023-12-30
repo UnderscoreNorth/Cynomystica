@@ -3,7 +3,7 @@ import { userSettings } from './userSettings';
 import { video } from './video';
 import type { videoType } from './video';
 import { playlist } from './playlist';
-import { chat } from './chat';
+import { chat, type messageType } from './chat';
 import { io } from '$lib/realtime';
 import { users, type otherUser } from './users';
 import { blocker } from './blocker';
@@ -19,6 +19,7 @@ import { polls, type Poll } from './polls';
 import { tempSettings } from './tempSettings';
 import { presets } from './presets';
 import { settings } from './settings';
+import { moderation, type Moderation } from './moderation';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
@@ -26,6 +27,10 @@ let tempSettingObj: Record<string, any> = {};
 let userSettingsObj: Record<string, any> = {};
 let presetObj: Record<string, Record<string, boolean>> = {};
 let settingsObj: Record<string, string> = {};
+let moderationObj: Moderation = {
+	ignored: [],
+	public: []
+};
 let initPreset = true;
 user.subscribe((e) => {
 	userObj = e;
@@ -45,12 +50,89 @@ presets.subscribe((e) => {
 		io.emit('upsert-presets', e);
 	}
 });
+moderation.subscribe((e) => {
+	moderationObj = e;
+	setTimeout(() => {
+		users.update((n) => {
+			for (const otherUser of n.users) {
+				const username = otherUser.username;
+				if (moderationObj.ignored.map((x) => x.username).includes(username)) {
+					otherUser.ignored = true;
+				} else {
+					otherUser.ignored = false;
+				}
+			}
+			return n;
+		});
+	}, 50);
+});
 settings.subscribe((e) => {
 	settingsObj = e;
 });
+const chatSFX = [
+	[`<span class='redtext'>`, '/redtruth.mp3'],
+	['ahaha.wav', '/ahaha.wav.mp3']
+];
+const pushToChat = (oldChat: Array<messageType>, e: any) => {
+	const pushMsg = (msg: messageType) => {
+		if (moderationObj.ignored.map((x) => x.username).includes(msg.username)) return;
+		if (msg.message) {
+			for (const emote of Object.values(emoteObj).filter(
+				(e) => presetObj.emotes[e.preset] == true
+			)) {
+				msg.message = msg.message.replaceAll(
+					emote.text,
+					`<img title='${emote.text}' class='emote' src='${emote.url}'/>`
+				);
+			}
+			if (tempSettingObj.audio == true) {
+				for (const sfx of chatSFX) {
+					if (msg.message.includes(sfx[0])) {
+						const audioElement = document.createElement('audio');
+						audioElement.autoplay = true;
+						audioElement.src = sfx[1];
+						const app = document.getElementById('app');
+						app?.append(audioElement);
+						setTimeout(() => {
+							app?.removeChild(audioElement);
+						}, 5000);
+					}
+				}
+			}
+			if (userSettingsObj.hideImage) {
+				msg.message = msg.message.replace(/<img[^>]*>/g, '');
+			}
+			msg.played = false;
+			oldChat.push(msg);
+			if (oldChat.length > userSettingsObj.chat.chatArray)
+				oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
+		}
+	};
+	if (e?.length > 0) {
+		for (const msg of e) {
+			pushMsg(msg);
+		}
+	} else {
+		if (e.message?.includes(userObj.username) && userObj.username) {
+			if (document.hidden == true) tabText.set(`*Pinged by ${e.username}*`);
+		}
+		pushMsg(e);
+	}
+	return oldChat;
+};
 
 const init = () => {
 	io.on('connected', (e) => {
+		chat.update((oldChat) => {
+			oldChat = pushToChat(oldChat, {
+				icon: '',
+				message: 'Connected',
+				time: new Date(),
+				username: 'SYSTEM',
+				type: 'system'
+			});
+			return oldChat;
+		});
 		io.emit('version', 1.05);
 		user.update((n) => {
 			n.uuid = e;
@@ -67,10 +149,17 @@ const init = () => {
 				icon: '',
 				accessToken: undefined,
 				refreshToken: undefined,
-				uuid: e
+				uuid: e,
+				muted: false
 			});
 			if (reload) location.reload();
 		}
+	});
+	io.on('ignores', (e) => {
+		moderation.update((n) => {
+			n.ignored = e;
+			return n;
+		});
 	});
 	io.on('poll', (e: Record<string, Poll>) => {
 		polls.update((n) => {
@@ -88,11 +177,6 @@ const init = () => {
 		initPreset = true;
 		presets.set(e);
 		initPreset = false;
-	});
-
-	let currentChat: Array<object>;
-	chat.subscribe((value) => {
-		currentChat = value;
 	});
 	let currentVideo: videoType;
 	video.subscribe((value) => {
@@ -112,56 +196,9 @@ const init = () => {
 			theThreeGuys.set(e.theThreeGuys);
 		}
 	});
-	const chatSFX = [
-		[`<span class='redtext'>`, '/redtruth.mp3'],
-		['ahaha.wav', '/ahaha.wav.mp3']
-	];
 	io.on('message', (e) => {
 		chat.update((oldChat) => {
-			const pushMsg = (msg) => {
-				if (msg.message) {
-					for (const emote of Object.values(emoteObj).filter(
-						(e) => presetObj.emotes[e.preset] == true
-					)) {
-						msg.message = msg.message.replaceAll(
-							emote.text,
-							`<img title='${emote.text}' class='emote' src='${emote.url}'/>`
-						);
-					}
-					if (tempSettingObj.audio == true) {
-						for (const sfx of chatSFX) {
-							if (msg.message.includes(sfx[0])) {
-								const audioElement = document.createElement('audio');
-								audioElement.autoplay = true;
-								audioElement.src = sfx[1];
-								const app = document.getElementById('app');
-								app?.append(audioElement);
-								setTimeout(() => {
-									app?.removeChild(audioElement);
-								}, 5000);
-							}
-						}
-					}
-					if (tempSettingObj.hideImage) {
-						msg.message = msg.message.replace(/<img[^>]*>/g, '');
-					}
-					msg.played = false;
-					oldChat.push(msg);
-					if (oldChat.length > userSettingsObj.chat.chatArray)
-						oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
-				}
-			};
-			if (e?.length > 0) {
-				for (const msg of e) {
-					pushMsg(msg);
-				}
-			} else {
-				if (e.message?.includes(userObj.username) && userObj.username) {
-					if (document.hidden == true) tabText.set(`*Pinged by ${e.username}*`);
-				}
-				pushMsg(e);
-			}
-
+			oldChat = pushToChat(oldChat, e);
 			return oldChat;
 		});
 	});
@@ -186,6 +223,21 @@ const init = () => {
 				if (a.username < b.username) return -1;
 				return 0;
 			});
+			for (const i of usersArr) {
+				const username = i.username;
+				if (username == userObj.username) {
+					user.update((n) => {
+						n.muted = i.muted;
+						return n;
+					});
+					break;
+				}
+				if (moderationObj.ignored.map((x) => x.username).includes(username)) {
+					i.ignored = true;
+				} else {
+					i.ignored = false;
+				}
+			}
 			n.connectedUsers = Object.values(e).length;
 			n.users = usersArr;
 			return n;
@@ -212,7 +264,8 @@ const init = () => {
 				icon: '',
 				accessToken: e.accessToken,
 				refreshToken: e.refreshToken,
-				uuid: n.uuid
+				uuid: n.uuid,
+				muted: false
 			};
 		});
 		if (e.accessLevel >= 1) {
@@ -236,7 +289,7 @@ const init = () => {
 			return n;
 		});
 	});
-	io.on('usersettings', (e) => {
+	/*io.on('usersettings', (e) => {
 		if (e) {
 			e.blockSave = true;
 			userSettings.set(e);
@@ -245,7 +298,7 @@ const init = () => {
 				userSettings.set(e);
 			}, 500);
 		}
-	});
+	});*/
 	io.on('emotes', (e) => {
 		emotes.set(e);
 	});
@@ -255,6 +308,30 @@ const init = () => {
 				if (e[prop] !== undefined) n[prop] = e[prop];
 			}
 			return n;
+		});
+	});
+	io.on('disconnect', () => {
+		chat.update((oldChat) => {
+			oldChat = pushToChat(oldChat, {
+				icon: '',
+				message: 'Disconnected',
+				time: new Date(),
+				username: 'SYSTEM',
+				type: 'system'
+			});
+			return oldChat;
+		});
+	});
+	io.on('reconnect_attempt', () => {
+		chat.update((oldChat) => {
+			oldChat = pushToChat(oldChat, {
+				icon: '',
+				message: 'Reconnecting',
+				time: new Date(),
+				username: 'SYSTEM',
+				type: 'system'
+			});
+			return oldChat;
 		});
 	});
 };

@@ -120,7 +120,7 @@ export default class {
     if (errors.length) {
       return { pass: false, message: errors.join("\n"), accessLevel: -1 };
     }
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(username + password, 10);
     return this.insertUser(username, passwordHash);
   };
 
@@ -150,7 +150,7 @@ export default class {
         )
         .get({ username: username });
       const passwordCheckResult = await this.passwordHashCheck(
-        password,
+        username + password,
         sqlResult?.passwordHash ?? ""
       );
       if (passwordCheckResult) {

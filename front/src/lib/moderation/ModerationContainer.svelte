@@ -1,56 +1,83 @@
 <script lang="ts">
 	import { user } from '$lib/stores/user';
 	import { permissions } from '$lib/stores/permissions';
-	import { moderation } from '$lib/stores/moderation';
-	import { io } from '$lib/realtime';	
+	import { moderation, type ModerationItem } from '$lib/stores/moderation';
+	import { io } from '$lib/realtime';
+	//@ts-ignore
+	import MdDelete from 'svelte-icons/md/MdDelete.svelte';
+	import moment from 'moment';
+	console.log($moderation)
 	io.emit('get-moderation');
-	let filter = '';		
+	io.on('moderation',(e)=>{
+		moderation.update((n)=>{
+			n.public = [];
+			for(let username in e){
+				for(let action in e[username]){
+					n.public.push(e[username][action])
+				}
+			}
+			return n;
+		})
+	})
+	let filter = '';	
+	const undoAction = (item:ModerationItem)=>{
+		io.emit('undo-moderation',item);
+		
+		if(item.action == 'Ignore'){
+			moderation.update((n)=>{
+				for(let i in n.ignored){
+					if(n.ignored[i].username == item.username)
+						n.ignored.splice(parseInt(i),1);
+				}
+				return n;
+			})
+		}
+	}
+	const clearAll = ()=>{
+		io.emit('undo-moderation',filter);
+	}
 </script>
-{#if $user.accessLevel >= $permissions.userMod}
-	Filter <select bind:value={filter}>
-		<option value=''>All</option>
-		<option value='ignored'>Ignored</option>
-		<option value='muted'>Muted</option>
-		<option value='shadowMuted'>Shadow Muted</option>
-		<option value='banned'>Banned</option>
-		<option value='ipBanned'>IP Banned</option>
-	</select>
-{/if}
-<table>	
+<table>		
 	<tr>
-		<th>Name</th>
-		<th>Type</th>
+		<th>Ignored</th>
 		<th>Date</th>
-		{#if $user.accessLevel >= $permissions.userMod}
-			<th>By</th>
-		{/if}
 	</tr>
-	{#each Object.keys($moderation).filter((x)=>{return filter == '' || filter == x}) as type}
-		{#each $moderation[type] as item}
+	{#each $moderation.ignored as item}
 			<tr>
 				<td>{item.username}</td>
-				<td>{type}</td>
-				<td>{item.dateCreated}</td>
-				{#if $user.accessLevel >= $permissions.userMod}
-					<td>{item.byUser}</td>
-				{/if}
+				<td>{moment.utc(item.dateCreated).local().format('YYYY-MM-DD HH:mm')}</td>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<td class='svgIcon' on:click={()=>undoAction(item)}><MdDelete /></td>
 			</tr>
-		{/each}
 	{/each}
 </table>
-<hr>
-<button>Clear All</button>
+{#if $user.accessLevel >= $permissions.userMod}
+	<hr/>
+	Filter <select bind:value={filter}>
+		<option value=''>All</option>
+		<option value='Mute'>Muted</option>
+		<option value='Ban'>Banned</option>
+		<option value='ipBanned'>IP Banned</option>
+	</select>
+	<table>	
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Date</th>
+			<th>By</th>
+		</tr>
+		{#each $moderation.public.filter((x)=>{return filter == '' || filter == x.action}) as item}
+			<tr>
+				<td>{item.username}</td>
+				<td>{item.action}</td>
+				<td>{moment.utc(item.dateCreated).local().format('YYYY-MM-DD HH:SS')}</td>
+				<td>{item.byUser}</td>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<td class='svgIcon' on:click={()=>undoAction(item)}><MdDelete /></td>
+			</tr>
+		{/each}
+	</table>
+{/if}
 <style>
-	.tabHeader{
-        padding:0 5px;
-        cursor: pointer;
-    }
-    .tabHeader.selected{
-        cursor:default;
-        font-weight: bold;
-        border-radius: 2px 2px 0 0;
-    }
-	.viewButton {
-		cursor: pointer;
-	}
+	
 </style>

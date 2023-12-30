@@ -125,6 +125,10 @@
 			sentIndex = -1;
 		}
 	};
+	user.subscribe((e)=>{
+		if($user.muted)
+			$chatInput = ''
+	})
 	
 	const handleFocus = () => {
 		$tabText = '';
@@ -135,8 +139,15 @@
 <IconSelector />
 <input
 	id="inputBar"
-	placeholder={$user.username ? '' : 'Enter a username (Guest)'}
-	disabled={$blocker.login || ($user.accessLevel < $permissions.chat && $user.accessLevel >= 0)}
+	placeholder={
+		!$user.username ? 'Enter a username (Guest)' 
+		: ($user.muted ? 'You are server muted' : '')}
+	disabled={
+		$blocker.login 
+		|| ($user.accessLevel < $permissions.chat && $user.accessLevel >= 0)
+		|| $user.muted
+		|| io.disconnected
+	}
 	bind:value={$chatInput}
 	bind:this={$chatEl}
 	on:keydown={handleKeyDown}

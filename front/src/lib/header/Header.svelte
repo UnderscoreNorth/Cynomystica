@@ -7,11 +7,17 @@
 	import Modal from '$lib/ui/modal.svelte';
 	
 	import IconButton from '$lib/ui/iconButton.svelte';
+	//@ts-ignore
 	import MdPoll from 'svelte-icons/md/MdPoll.svelte';
+	//@ts-ignore
 	import MdSettings from 'svelte-icons/md/MdSettings.svelte';
+	//@ts-ignore
 	import MdViewList from 'svelte-icons/md/MdViewList.svelte';
+	//@ts-ignore
 	import MdSentimentVeryDissatisfied from 'svelte-icons/md/MdSentimentVeryDissatisfied.svelte';
+	//@ts-ignore
 	import MdDateRange from 'svelte-icons/md/MdDateRange.svelte';
+	//@ts-ignore
 	import MdInfoOutline from 'svelte-icons/md/MdInfoOutline.svelte';
 	import InfoContainer from '$lib/information/infoContainer.svelte';
 	import PollModal from '$lib/polls/PollModal.svelte';
@@ -81,8 +87,8 @@
 		</Modal>
 	{/if}
 	{#if moderationModalOpen}
-		<Modal closeModal={toggleModeration} title='Moderation'>
-			<ModerationContainer closeModal={toggleModeration}/>
+		<Modal closeModal={toggleModeration} title='User Management'>
+			<ModerationContainer />
 		</Modal>
 	{/if}
 	{#if scheduleModalOpen}

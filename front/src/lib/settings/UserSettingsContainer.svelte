@@ -4,7 +4,7 @@
 </script>
 <table>
 	<tr>
-		<th rowspan="6">Display</th>		
+		<th rowspan="7">Display</th>		
 	</tr>
 	<tr>
 		<th>Chat</th>
@@ -74,6 +74,10 @@
 		<th>Max Chat Msgs</th>
 		<td><input type="number" step="10" min=0 max=500 bind:value={$userSettings.chat.chatArray} /></td>
 	</tr>
+	<tr>
+		<th>Hide Images</th>
+		<td><input type='checkbox' bind:checked={$userSettings.display.hideImage} /></td>
+	</tr>
 	<tr class='divider'></tr>
 	<tr>
 		<th>Sync</th>
@@ -82,7 +86,7 @@
 	</tr>
 	<tr class='divider'></tr>
 	<tr>
-		<th rowspan=5>
+		<th rowspan=4>
 			Temporary<br>Settings
 		</th>
 		<th>Video Minimal</th>
@@ -109,10 +113,6 @@
 	<tr>
 		<th>Umineko SFX</th>
 		<td><input type='checkbox' bind:checked={$tempSettings.audio} /></td>
-	</tr>
-	<tr>
-		<th>Hide Images</th>
-		<td><input type='checkbox' bind:checked={$tempSettings.hideImage} /></td>
 	</tr>
 </table>
 

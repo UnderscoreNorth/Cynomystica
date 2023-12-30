@@ -9,6 +9,7 @@ import {
   init as permissionsInit,
 } from "../server/permissions";
 import { default as settings, init as settingsInit } from "../server/settings";
+import { default as moderation, init as modInit } from "../server/moderation";
 
 import message from "../controller/message";
 import deleteItem from "../controller/delete-item";
@@ -16,13 +17,13 @@ import disconnect from "../controller/disconnect";
 import getPlaylist from "../controller/get-playlist";
 import loginGuest from "../controller/login-guest";
 import queueNext from "../controller/queue-next";
-import signIn from "../controller/sign-in";
+import signIn from "../controller/login-password";
 import signUp from "../controller/sign-up";
 import upsertSchedule from "../controller/upsert-schedule";
 import loginToken from "../controller/login-token";
 import getSchedule from "../controller/get-schedule";
 import upsertPermissions from "../controller/settings/upsert-permissions";
-import userMod from "../controller/user-mod";
+import userMod from "../controller/moderation/user-mod";
 import version from "../controller/version";
 import upsertUserSettings from "../controller/settings/upsert-usersettings";
 import closePoll from "../controller/polls/close-poll";
@@ -36,6 +37,8 @@ import upsertEmotes from "../controller/settings/upsert-emotes";
 import upsertPresets from "../controller/settings/upsert-presets";
 import upsertSettings from "../controller/settings/upsert-settings";
 import updatePlaylist from "../controller/update-playlist";
+import getModeration from "../controller/moderation/get-moderation";
+import undoModeration from "../controller/moderation/undo-moderation";
 
 import playlist from "../server/playlist";
 
@@ -47,6 +50,7 @@ import { Server } from "socket.io";
 export default function ioInit(io: Server) {
   settingsInit();
   permissionsInit();
+  modInit();
   const ioEvents = {
     "delete-item": deleteItem,
     disconnect: disconnect,
@@ -74,6 +78,8 @@ export default function ioInit(io: Server) {
     "upsert-emotes": upsertEmotes,
     "upsert-presets": upsertPresets,
     "upsert-settings": upsertSettings,
+    "get-moderation": getModeration,
+    "undo-moderation": undoModeration,
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();
@@ -82,7 +88,11 @@ export default function ioInit(io: Server) {
     );
     console.log("new connection", socket.handshake.headers["x-real-ip"]);
     if (!socket.request.headers["user-agent"]) socket.disconnect();
-    if ((await userModeration.getUser(socket.handshake["x-real-ip"])).length) {
+    if (
+      typeof moderation().users?.[
+        socket.handshake.headers["x-real-ip"].toString()
+      ]?.["IP Ban"] == "object"
+    ) {
       socket.emit("alert", {
         type: "IP banned",
         message: "This IP has been banned",

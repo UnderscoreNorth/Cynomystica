@@ -11,6 +11,7 @@ export interface userType {
 	accessToken: Token | undefined;
 	refreshToken: Token | undefined;
 	uuid: string;
+	muted: boolean;
 }
 export const user = writable({
 	username: '',

@@ -7,18 +7,21 @@
 	import type { blockerType } from '$lib/stores/blocker';
 	import { io } from '$lib/realtime';
 	import Modal from '$lib/ui/modal.svelte';
+	const clearLogin = ()=>{
+		localStorage.removeItem('accessToken');
+		localStorage.removeItem('accessTokenExpires');
+		localStorage.removeItem('refreshToken');
+		localStorage.removeItem('refreshTokenExpires');
+		localStorage.removeItem('username');
+	}
 	io.on('alert', (messageObj) => {
 		if (messageObj.type == 'login-token') {
-			localStorage.clear();
+			clearLogin();
 			return;
-		} else if (messageObj.type == 'banned') {
-			localStorage.clear();
+		} else if (messageObj.type == 'clearLogin') {
+			clearLogin();
+		} else if (messageObj.type == 'disconnect') {
 			io.disconnect();
-			return;
-		} else if (messageObj.type == 'IP banned') {
-			localStorage.clear();
-			io.disconnect();
-			return;
 		} else if (messageObj.type == 'Reload') {
 			location.reload();
 		}

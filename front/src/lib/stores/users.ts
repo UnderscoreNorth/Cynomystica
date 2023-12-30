@@ -3,6 +3,8 @@ export interface otherUser {
 	username: string;
 	ignored: boolean;
 	accessLevel: number;
+	muted: boolean;
+	banned: boolean;
 }
 const usersObj: usersType = {
 	connectedUsers: 0,

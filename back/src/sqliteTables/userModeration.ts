@@ -1,4 +1,11 @@
 import { db } from "../sqliteDB";
+export type actionTypes = "Ignore" | "Ban" | "" | "Mute" | "IP Ban";
+export type moderationItem = {
+  action: actionTypes;
+  byUser: string;
+  dateCreated: string;
+  username: string;
+};
 export default class {
   static tableName = "userModeration";
   static tableCreate = `CREATE TABLE 'userModeration' (
@@ -11,7 +18,11 @@ export default class {
   static init = () => {
     return "";
   };
-  static insert = async (username: string, action: string, byUser: string) => {
+  static insert = async (
+    username: string,
+    action: actionTypes,
+    byUser: string
+  ) => {
     await db
       .prepare(
         `INSERT OR IGNORE INTO userModeration (username, action, byUser) VALUES (@username,@action,@byUser)`
@@ -22,16 +33,43 @@ export default class {
         byUser,
       });
   };
-  static delete = async (username: string, action: string, byUser: string) => {
+  static delete = async (
+    username: string,
+    action: actionTypes,
+    byUser: string
+  ) => {
     await db
       .prepare(
-        `DELETE FROM userModeration WHERE username=@username AND action=@action AND byUser=@byUser`
+        `DELETE FROM userModeration WHERE 
+        username=@username AND action=@action 
+        AND byUser= CASE WHEN @byUser = '' THEN byUser ELSE @byUser END`
       )
       .run({
         username,
         action,
         byUser,
       });
+  };
+  static clear = async (action: actionTypes, byUser = "") => {
+    if (byUser.length > 0) {
+      await db
+        .prepare(
+          `DELETE FROM userModeration WHERE action = 'Ignored' AND byUser=@byUser`
+        )
+        .run({ byUser });
+    } else {
+      if (action == "") {
+        await db
+          .prepare(`DELETE FROM userModeration WHERE action != 'Ignored'`)
+          .run({});
+      } else {
+        await db
+          .prepare(`DELETE FROM userModeration WHERE action=@action`)
+          .run({
+            action,
+          });
+      }
+    }
   };
   static getUser = async (username: string) => {
     return await db
@@ -43,18 +81,33 @@ export default class {
       .prepare(`SELECT * FROM userModeration WHERE byUser=@byUser`)
       .all({ byUser });
   };
-  static getAction = async (action: string) => {
+  static getAction = async (action: actionTypes) => {
     return await db
       .prepare(`SELECT * FROM userModeration WHERE action=@action`)
       .all({ action });
+  };
+  static getByUserAction = async (username: string, action: actionTypes) => {
+    return await db
+      .prepare(
+        `SELECT * FROM userModeration WHERE username=@username AND action=@action`
+      )
+      .all({ username, action });
   };
   static getAll = async () => {
     return await db.prepare(`SELECT * FROM userModeration`).all({});
   };
   static getIgnores = async (username: string) => {
+    console.log(
+      await db
+        .prepare(
+          `SELECT * FROM userModeration WHERE byUser=@username AND action='Ignore'`
+        )
+        .all({ username }),
+      username
+    );
     return await db
       .prepare(
-        `SELECT * FROM userModeration WHERE byUser=@username AND action='ignore'`
+        `SELECT * FROM userModeration WHERE byUser=@username AND action='Ignore'`
       )
       .all({ username });
   };

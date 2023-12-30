@@ -23,8 +23,16 @@
 				tabName = $settings.tabName;
 			}
 		}, 1000);
+		const local = JSON.parse(localStorage.getItem('userSettings') ?? '{}');
+		if (Object.keys(local).length > 0) {
+			local.ready = true;
+			$userSettings = local;
+		} else {
+			$userSettings.ready = true;
+		}
 		userSettings.subscribe((e) => {
-			if (!$userSettings.blockSave && $user.username) io.emit('upsert-usersettings', $userSettings);
+			if(e.ready)
+				localStorage.setItem('userSettings',JSON.stringify($userSettings))
 		});
 	});
 </script>

@@ -15,6 +15,11 @@
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>
+<b>Dec 30, 2023</b>
+<ul>
+	<li>User management, can ignore, mute, ban, etc</li>
+	<li>User settings now saved in local storage</li>
+</ul>
 <b>Dec 27, 2023</b>
 <ul>
 	<li>Video server selection support, use ???streamurl??? to seperate links to the same video</li>
