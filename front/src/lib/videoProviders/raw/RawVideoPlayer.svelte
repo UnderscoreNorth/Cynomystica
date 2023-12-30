@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { video } from '$lib/stores/video';
 	import { userSettings } from '$lib/stores/userSettings';
-	import { tempSettings} from '$lib/stores/tempSettings';
 	import Tooltip from '$lib/ui/tooltip.svelte';
 	//@ts-ignore
 	import MdRefresh from 'svelte-icons/md/MdRefresh.svelte'
@@ -50,8 +49,8 @@
 </div>
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
-	bind:volume={$tempSettings.videoVolume}
-	bind:muted={$tempSettings.muted}
+	bind:volume={$userSettings.videoVolume}
+	bind:muted={$userSettings.muted}
 	bind:this={el}
 	on:loadedmetadata={initSyncTime}
 	on:seeked={seekLeader}

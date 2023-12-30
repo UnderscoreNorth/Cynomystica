@@ -14,5 +14,7 @@ export const userSettings = writable({
 	},
 	icon: '',
 	users: [],
-	ready: false
+	ready: false,
+	muted: false,
+	videoVolume: 1
 });

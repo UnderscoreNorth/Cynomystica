@@ -8,8 +8,6 @@ export const tempSettings = writable({
 		opacity: 50
 	},
 	scrollLock: true,
-	videoVolume: 1,
 	hiddenPolls: new Set(),
-	scheduleView: 'calendar',
-	muted: false
+	scheduleView: 'calendar'
 });
