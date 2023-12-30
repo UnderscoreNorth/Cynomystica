@@ -18,6 +18,7 @@
 <b>Dec 30, 2023</b>
 <ul>
 	<li>User management, can ignore, mute, ban, etc</li>
+	<li>Actual queue next</li>
 	<li>User settings now saved in local storage</li>
 </ul>
 <b>Dec 27, 2023</b>

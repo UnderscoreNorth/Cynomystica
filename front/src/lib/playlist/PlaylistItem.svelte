@@ -30,6 +30,7 @@
 		>
 		<br />
 		{secondsToTime(item.duration)} - {item.username}
+		<span style:float='right'>{new Date(item.endDate).toLocaleTimeString()}</span>
 	</td>
 {:else}
 	<td>

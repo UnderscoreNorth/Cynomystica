@@ -60,27 +60,36 @@
 				<th style="width:5rem">Added By</th>
 			</tr>
 		{/if}
-		{#each $playlist as item, i}
-			{#if $user.accessLevel >= $permissions.managePlaylist}
-				<SortableItems
-					class={`dragRows ${hoverIndex === i ? 'classHovered' : ''}`}
-					propItemNumber={i}
-					bind:propData={$playlist}
-					bind:propHoveredItemNumber={hoverIndex}
-					dropCallback={() => {
-						updatePlaylist();
-					}}
-				>
-					<PlaylistItem {item} {deleteItem} />
-				</SortableItems>
-			{:else}
-				<tr><PlaylistItem {item} {deleteItem} /></tr>
-			{/if}
-		{/each}
+		<tbody id='playlistBody'>
+			{#each $playlist as item, i}
+				{#if $user.accessLevel >= $permissions.managePlaylist}
+					<SortableItems
+						class={`dragRows ${hoverIndex === i ? 'classHovered' : ''}`}
+						propItemNumber={i}
+						bind:propData={$playlist}
+						bind:propHoveredItemNumber={hoverIndex}
+						dropCallback={() => {
+							updatePlaylist();
+						}}
+					>
+						<PlaylistItem {item} {deleteItem} />
+					</SortableItems>
+				{:else}
+					<tr><PlaylistItem {item} {deleteItem} /></tr>
+				{/if}
+			{/each}
+		</tbody>
+		
 	</table>
 </div>
 
 <style>
+	:global(#playlistBody>*:nth-child(2n)){
+		background:rgba(0,0,0,0.3)
+	}
+	:global(.dragRows) {
+		display: table-row;
+	}
 	:global(.dragRows) {
 		display: table-row;
 	}
