@@ -12,7 +12,25 @@ export interface Permissions {
 	manageUsers: number;
 	manageSettings: number;
 	chat: number;
+	bypassQueueLimit: number;
+	postImage: number;
 }
+export const permissionGrouping = {
+	userMod: 'Moderation',
+	queuePlaylist: 'Playlist',
+	queueRaw: 'Playlist',
+	managePlaylist: 'Playlist',
+	manageSchedule: 'Playlist',
+	managePolls: 'General',
+	manageEmotes: 'General',
+	manageIcons: 'General',
+	managePermissions: 'General',
+	manageUsers: 'General',
+	manageSettings: 'General',
+	chat: 'Chat',
+	bypassQueueLimit: 'Playlist',
+	postImage: 'Chat'
+};
 const permissionsObj: Permissions = {
 	userMod: 10,
 	queuePlaylist: 10,
@@ -25,6 +43,8 @@ const permissionsObj: Permissions = {
 	managePermissions: 10,
 	manageUsers: 10,
 	manageSettings: 10,
-	chat: 10
+	chat: 10,
+	bypassQueueLimit: 10,
+	postImage: 10
 };
 export const permissions = writable(permissionsObj);

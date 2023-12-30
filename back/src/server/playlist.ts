@@ -7,6 +7,7 @@ import moment from "moment";
 import playlists from "../sqliteTables/playlists";
 import { writeToLog } from "../lib/logger";
 import permissions from "./permissions";
+import settings from "./settings";
 
 export type PlaylistOrder = Array<number>;
 export type PlaylistObj = Array<PlaylistItem>;
@@ -173,13 +174,24 @@ class PlayList {
         playlistItem.username = username;
         let currentLen = 0;
         if (socket) {
-          if (socket.accessLevel < 2) {
+          console.log(
+            permissions().items["bypassQueueLimit"],
+            settings().settings["bypassQueueLimit"]
+          );
+          if (
+            socket.accessLevel < permissions().items["bypassQueueLimit"] &&
+            settings().settings["maxTotalQueueLength"] > 0
+          ) {
             for (let i of this.playlist) {
               if (i.username == username) currentLen += i.duration;
             }
             currentLen += playlistItem.duration;
-            if (currentLen > 900) {
-              socketError(`Can not have more than 15 min queued`);
+            if (currentLen / 60 > settings().settings["maxTotalQueueLength"]) {
+              socketError(
+                `Can not have more than ${
+                  settings().settings["maxTotalQueueLength"]
+                } min queued`
+              );
               return;
             }
           }

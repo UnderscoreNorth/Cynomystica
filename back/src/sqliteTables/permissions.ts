@@ -11,13 +11,10 @@ export default class {
       toggleSpam: 0,
       schedule: 4,
       chat: 0,
-      createPoll: 3,
       postImage: 2,
-      pm: 0,
       userMod: 3,
       queuePlaylist: 0,
       managePlaylist: 2,
-      togglePlaylist: 2,
       manageSchedule: 4,
       managePolls: 4,
       manageEmotes: 4,
@@ -26,6 +23,7 @@ export default class {
       queueRaw: 1,
       manageUsers: 4,
       manageSettings: 5,
+      bypassQueueLimit: 3,
     };
     let insertArr = [];
     for (let p in initPerms) {
