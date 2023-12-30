@@ -15,6 +15,8 @@
 	let id: string;
 	let loading = false;
 	let newEntry = false;
+	let bulkMode = false;
+	let freq=1440;
 	if (selectedID?.id) {
 		newEntry = false;
 		url = selectedID.url;
@@ -41,11 +43,28 @@
 			playlist,
 			selection
 		};
+		if(bulkMode){
+			sendObj.freq = freq >= 1 ? freq : 1;
+			sendObj.dow = daysOfWeek
+		}
 		io.emit('upsert-schedule', sendObj);
 		changeSelectedID(undefined);
 	};
 	const deleteItem = ()=>{
 		io.emit('delete-schedule',{id})
+		changeSelectedID(undefined);
+	}
+	let daysOfWeek = {
+		0:['Sun',true],
+		1:['Mon',true],
+		2:['Tue',true],
+		3:['Wed',true],
+		4:['Thu',true],
+		5:['Fri',true],
+		6:['Sat',true],
+	}
+	const checkDays = (daysOfWeek)=>{
+		return Object.values(daysOfWeek).every((x)=>x[1] == false)
 	}
 </script>
 
@@ -63,21 +82,60 @@
 			e.stopPropagation();
 		}}
 	>
+		{#if !selectedID?.id}
 		<tr>
-			<th>URL</th><td><input bind:value={url} disabled={loading} /></td>
+			<th>Bulk Mode</th>
+			<td><input type='checkbox' bind:checked={bulkMode} /></td>
+		</tr>
+		{/if}
+		<tr>
+			{#if bulkMode}
+				<th>URLs (Seperate by<br>line and/or comma) </th>
+				<td><textarea bind:value={url} disabled={loading} /></td>
+			{:else}
+				<th>URL</th>
+				<td><input bind:value={url} disabled={loading} /></td>
+			{/if}
 		</tr>
 		<tr>
-			<th>Title</th><td><input bind:value={title} disabled={loading} /></td>
+			<th>Title</th><td>
+				<input bind:value={title} disabled={loading} 
+				placeholder={bulkMode ? 'use |n| for episode #' : 'Override title'}
+				/></td>
 		</tr>
 		<tr>
-			<th>Playtime</th>
+			<th>{bulkMode ? 'First Ep': 'Playtime'}</th>
 			<td><input type="datetime-local" bind:value={playtime} disabled={loading} /></td>
 		</tr>
+		{#if !bulkMode}
 		<tr>
 			<th>Finish time</th><td><input type="datetime-local" disabled bind:value={finishtime} /></td>
-		</tr>		
+		</tr>
+		{:else}	
 		<tr>
-			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled=true /></td>
+			<th>Ep Frequency (Min)<br>1440 Min = 1 Day</th>
+			<td><input type="number" min=1 bind:value={freq} placeholder={'1440 = 1 day'}/></td>
+		</tr>
+		<tr>
+			<th>Days of week</th>
+			<td>
+				<table>
+					<tr>
+					{#each Object.keys(daysOfWeek) as day}
+						<td>{daysOfWeek[day][0]}</td>
+					{/each}
+					</tr>
+					<tr>
+						{#each Object.keys(daysOfWeek) as day}
+							<td><input type='checkbox' bind:checked={daysOfWeek[day][1]} /></td>
+						{/each}
+						</tr>
+				</table>
+			</td>
+		</tr>
+		{/if}	
+		<tr>
+			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled={true} /></td>
 		</tr>
 		<tr>
 			<td colspan=2>
@@ -105,7 +163,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<button on:click={upsert}>{newEntry ? 'Add' : 'Edit'}</button>
+				<button disabled={(checkDays(daysOfWeek) && bulkMode) || !playtime} on:click={upsert}>{newEntry ? 'Add' : 'Edit'}</button>
 				{#if !newEntry}
 				<button on:click={deleteItem}>Delete</button>
 				{/if}

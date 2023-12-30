@@ -304,7 +304,7 @@ const init = () => {
 			return oldChat;
 		});
 	});
-	io.on('reconnect_attempt', () => {
+	io.on('reconnect', () => {
 		chat.update((oldChat) => {
 			oldChat = pushToChat(oldChat, {
 				icon: '',

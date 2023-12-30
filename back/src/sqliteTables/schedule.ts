@@ -48,25 +48,58 @@ export default class {
       });
     return results as Array<ScheduleItem>;
   };
-  static upsert = async (username: string, obj: any) => {
-    if (obj.url.includes(" ")) return;
-    if (!obj.url) return;
-
-    await parseURL(obj.url).then((playlistItem) => {
-      obj.title = obj.title || playlistItem.name;
-      obj.duration = Math.ceil(playlistItem.duration);
-    });
-
-    obj.username = username ?? "SCHEDULER";
-    obj.id = obj.id ?? uuidv4();
-    obj.visible = obj.visible ? 1 : 0;
-    obj.startTime = formatDate(new Date(obj.playtime));
-    obj.finishTime = formatDate(
-      new Date(new Date(obj.playtime).getTime() + obj.duration * 1000)
-    );
-    let conflict = await db
+  static delete = async (id: string) => {
+    await db
       .prepare(
         `
+              DELETE FROM schedule 
+              WHERE id=@id`
+      )
+      .run({ id });
+  };
+  static upsert = async (username: string, obj: any) => {
+    if (obj.url.includes(" ")) return;
+    if (!obj.playtime) return;
+    if (!obj.url) return;
+    if (obj.freq >= 1) {
+      let urls = obj.url.split(/,|\n/g);
+      let placeholder = obj.title;
+      let num = 1;
+      for (let url of urls) {
+        if (url.trim().length == 0) continue;
+        obj.url = url.trim();
+        obj.id = uuidv4();
+        obj.title = "";
+        if (placeholder) {
+          obj.title = placeholder.replace(/\|n\|/g, num);
+        }
+        await subSert(obj);
+        do {
+          obj.playtime = new Date(
+            new Date(obj.playtime).getTime() + obj.freq * 1000 * 60
+          ).toString();
+        } while (!obj.dow[new Date(obj.playtime).getDay()][1]);
+        num++;
+      }
+    } else {
+      await subSert(obj);
+    }
+    async function subSert(obj: any) {
+      await parseURL(obj.url).then((playlistItem) => {
+        obj.title = obj.title || playlistItem.name;
+        obj.duration = Math.ceil(playlistItem.duration);
+      });
+
+      obj.username = username ?? "SCHEDULER";
+      obj.id = obj.id ?? uuidv4();
+      obj.visible = obj.visible ? 1 : 0;
+      obj.startTime = formatDate(new Date(obj.playtime));
+      obj.finishTime = formatDate(
+        new Date(new Date(obj.playtime).getTime() + obj.duration * 1000)
+      );
+      let conflict = await db
+        .prepare(
+          `
     SELECT 
       COUNT(*) AS c 
     FROM 
@@ -75,12 +108,12 @@ export default class {
       (@start >= playTimeUTC AND @start <= finishTimeUTC)
       OR
       (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
-      )
-      .get({ start: obj.startTime, finish: obj.finishTime });
-    if (conflict.c >= 0) {
-      await db
-        .prepare(
-          `
+        )
+        .get({ start: obj.startTime, finish: obj.finishTime });
+      if (conflict.c >= 0) {
+        await db
+          .prepare(
+            `
               INSERT INTO schedule 
               (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,minutes,playlist,selection) 
               VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@minutes,@playlist,@selection)
@@ -93,10 +126,11 @@ export default class {
                   minutes=@minutes,
                   selection=@selection,
                   playlist=@playlist`
-        )
-        .run(obj);
-    } else {
-      console.log(obj.title, conflict.c);
+          )
+          .run(obj);
+      } else {
+        console.log(obj.title, conflict.c);
+      }
     }
   };
 }

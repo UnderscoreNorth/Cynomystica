@@ -40,6 +40,7 @@ import updatePlaylist from "../controller/update-playlist";
 import getModeration from "../controller/moderation/get-moderation";
 import undoModeration from "../controller/moderation/undo-moderation";
 import queueLast from "../controller/queue-last";
+import deleteSchedule from "../controller/delete-schedule";
 
 import playlist from "../server/playlist";
 
@@ -82,6 +83,7 @@ export default function ioInit(io: Server) {
     "get-moderation": getModeration,
     "undo-moderation": undoModeration,
     "queue-last": queueLast,
+    "delete-schedule": deleteSchedule,
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();

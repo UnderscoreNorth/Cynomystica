@@ -143,7 +143,6 @@ class PlayList {
     last = false
   ) => {
     const id: number = Math.random();
-    console.log(mediaURL);
     const socketError = (message: string) => {
       if (socket) {
         socket.emit("alert", {
