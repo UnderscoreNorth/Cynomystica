@@ -129,7 +129,7 @@ class PlayList {
       }
       lastEndDate = item.endDate;
     }
-    if (change) playlist.send(IO());
+    if (change) this.send(null);
     IO().emit("seek-update", {
       status: "success",
       seekTime: this.currentSeekTime,
@@ -139,7 +139,8 @@ class PlayList {
     mediaURL: string,
     username: string,
     socket: socketInterface,
-    scheduleID: number | null = null
+    scheduleID: number | null = null,
+    last = false
   ) => {
     const id: number = Math.random();
     console.log(mediaURL);
@@ -197,21 +198,19 @@ class PlayList {
           }
         }
 
-        if (this.playlist.length) {
-          let lastItem = this.playlist[this.playlist.length - 1];
-          playlistItem.startDate = lastItem.endDate;
-          playlistItem.endDate = new Date(
-            playlistItem.startDate.getTime() + playlistItem.duration * 1000
-          );
-        } else {
+        if (!this.playlist.length) {
           playlistItem.startDate = new Date();
           playlistItem.endDate = new Date(
             Date.now() + playlistItem.duration * 1000
           );
         }
         playlistItem.scheduledID = scheduleID;
-        this.playlist.push(playlistItem);
-        this.send(null);
+        if (last) {
+          this.playlist.push(playlistItem);
+        } else {
+          this.playlist.splice(1, 0, playlistItem);
+        }
+        this.updateDates();
       })
       .catch(() => {
         socketError(`Video type not supported`);

@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
 export interface Permissions {
 	userMod: number;
-	queuePlaylist: number;
+	queueNext: number;
+	queueLast: number;
 	queueRaw: number;
 	managePlaylist: number;
 	manageSchedule: number;
@@ -17,7 +18,8 @@ export interface Permissions {
 }
 export const permissionGrouping = {
 	userMod: 'Moderation',
-	queuePlaylist: 'Playlist',
+	queueNext: 'Playlist',
+	queueLast: 'Playlist',
 	queueRaw: 'Playlist',
 	managePlaylist: 'Playlist',
 	manageSchedule: 'Playlist',
@@ -33,7 +35,8 @@ export const permissionGrouping = {
 };
 const permissionsObj: Permissions = {
 	userMod: 10,
-	queuePlaylist: 10,
+	queueNext: 10,
+	queueLast: 10,
 	queueRaw: 10,
 	managePlaylist: 10,
 	manageSchedule: 10,

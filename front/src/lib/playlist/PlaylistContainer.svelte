@@ -10,9 +10,13 @@
 	let hoverIndex: number;
 	const queueNext = async () => {
 		if (mediaURL) {
-			let duration: number = 0;
 			io.emit('queue-next', mediaURL);
-			//queueNextDisabled = true;
+			mediaURL = '';
+		}
+	};
+	const queueLast = async () => {
+		if (mediaURL) {
+			io.emit('queue-last', mediaURL);
 			mediaURL = '';
 		}
 	};
@@ -36,9 +40,14 @@
 	/>
 	<button
 		on:click={queueNext}
-		disabled={queueNextDisabled || $user.accessLevel < $permissions.queuePlaylist}
+		disabled={queueNextDisabled || $user.accessLevel < $permissions.queueNext}
 		>Queue Next</button
 	>
+	<button
+	on:click={queueLast}
+	disabled={$user.accessLevel < $permissions.queueLast}
+	>Queue Last</button
+>
 <div id="tableContainer">
 	<table>
 		{#if innerWidth > 768}
