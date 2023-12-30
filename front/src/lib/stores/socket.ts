@@ -69,10 +69,6 @@ moderation.subscribe((e) => {
 settings.subscribe((e) => {
 	settingsObj = e;
 });
-const chatSFX = [
-	[`<span class='redtext'>`, '/redtruth.mp3'],
-	['ahaha.wav', '/ahaha.wav.mp3']
-];
 const pushToChat = (oldChat: Array<messageType>, e: any) => {
 	const pushMsg = (msg: messageType) => {
 		if (moderationObj.ignored.map((x) => x.username).includes(msg.username)) return;
@@ -84,20 +80,6 @@ const pushToChat = (oldChat: Array<messageType>, e: any) => {
 					emote.text,
 					`<img title='${emote.text}' class='emote' src='${emote.url}'/>`
 				);
-			}
-			if (tempSettingObj.audio == true) {
-				for (const sfx of chatSFX) {
-					if (msg.message.includes(sfx[0])) {
-						const audioElement = document.createElement('audio');
-						audioElement.autoplay = true;
-						audioElement.src = sfx[1];
-						const app = document.getElementById('app');
-						app?.append(audioElement);
-						setTimeout(() => {
-							app?.removeChild(audioElement);
-						}, 5000);
-					}
-				}
 			}
 			if (userSettingsObj.hideImage) {
 				msg.message = msg.message.replace(/<img[^>]*>/g, '');

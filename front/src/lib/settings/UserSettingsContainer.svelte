@@ -86,7 +86,7 @@
 	</tr>
 	<tr class='divider'></tr>
 	<tr>
-		<th rowspan=4>
+		<th rowspan=3>
 			Temporary<br>Settings
 		</th>
 		<th>Video Minimal</th>
@@ -109,10 +109,6 @@
 				bind:value={$tempSettings.snow}
 			/>
 		</td>
-	</tr>
-	<tr>
-		<th>Umineko SFX</th>
-		<td><input type='checkbox' bind:checked={$tempSettings.audio} /></td>
 	</tr>
 </table>
 

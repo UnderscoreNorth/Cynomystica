@@ -11,6 +11,8 @@ front/.output
 front/vite.config.js.timestamp-*
 front/vite.config.ts.timestamp-*
 front/src/lib/server/config.json
+front/static/*
+!front/static/robots.txt
 back/sqlite.db*
 front/src/lib/clientconfig.json
 back/logs

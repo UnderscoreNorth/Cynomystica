@@ -7,7 +7,6 @@ export const tempSettings = writable({
 		toggle: false,
 		opacity: 50
 	},
-	audio: false,
 	scrollLock: true,
 	videoVolume: 1,
 	hiddenPolls: new Set(),
