@@ -37,11 +37,12 @@ export default class {
   static init = () => {
     return `DELETE FROM schedule`;
   };
-  static getAll = (date = new Date()) => {
+  static getAll = async (date = new Date()) => {
     let dateString = formatDate(date);
-    const results = db
+    const results = await db
       .prepare(
-        `SELECT * FROM schedule WHERE playTimeUTC > @date ORDER BY playTimeUTC ASC`
+        `SELECT * FROM schedule WHERE         
+        playTimeUTC > @date ORDER BY playTimeUTC ASC`
       )
       .all({
         date: dateString,
@@ -74,11 +75,17 @@ export default class {
           obj.title = placeholder.replace(/\|n\|/g, num);
         }
         await subSert(obj);
+        let attempts = 0;
         do {
           obj.playtime = new Date(
             new Date(obj.playtime).getTime() + obj.freq * 1000 * 60
           ).toString();
-        } while (!obj.dow[new Date(obj.playtime).getDay()][1]);
+          attempts++;
+        } while (
+          !obj.dow[new Date(obj.playtime).getDay()][1] &&
+          attempts < 1000
+        );
+        if (attempts == 1000) return;
         num++;
       }
     } else {

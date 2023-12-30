@@ -9,7 +9,7 @@ export default async function deleteSchedule(
   if (socket.accessLevel >= permissions().items["manageSchedule"]) {
     try {
       await schedule.delete(msg.id);
-      await getSchedule();
+      await getSchedule(null);
     } catch (err) {
       console.log(err);
       socket.emit("alert", {

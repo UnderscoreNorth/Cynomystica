@@ -12,6 +12,7 @@ export interface ScheduleItem {
 	minutes: number;
 	selection: string;
 	playlist: string;
+	visible: boolean;
 }
 export type Schedule = Array<ScheduleItem>;
 export const schedule = writable(scheduleObj);

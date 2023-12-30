@@ -84,8 +84,8 @@
 		{#each scheduleArray as item}		
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
-			class="scheduleItem"
-			style={`grid-area:${item.gridArea}`}
+			class={!item.visible ? 'scheduleItem hidden' : 'scheduleItem'}
+			style={`grid-area:${item.gridArea}`}			
 			on:click={() => changeSelectedID(item)}
 			>
 				{item.title}
@@ -170,5 +170,15 @@
 	}
 	.scheduleItem {
 		background: rgba(0, 0, 0, 0.05);
+	}
+	.scheduleItem.hidden{
+		background: repeating-linear-gradient(
+		45deg,
+		rgba(0, 0, 0, 0.05),
+		rgba(0, 0, 0, 0.05) 10px,
+		rgba(0, 0, 0, 0.1) 10px,
+		rgba(0, 0, 0, 0.1) 20px
+		);
+		border: 1px dashed!important;
 	}
 </style>

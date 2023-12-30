@@ -9,7 +9,7 @@ export default async function upsertSchedule(
   if (socket.accessLevel >= permissions().items["manageSchedule"]) {
     try {
       await schedule.upsert(socket.username, msg);
-      await getSchedule();
+      await getSchedule(null);
     } catch (err) {
       console.log(err);
       socket.emit("alert", {

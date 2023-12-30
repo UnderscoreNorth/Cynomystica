@@ -26,7 +26,8 @@
 		id = selectedID.id;
 		selection = selectedID.selection;
 		playlist = selectedID.playlist;
-		minutes = selectedID.minutes
+		minutes = selectedID.minutes;
+		visible = selectedID.visible;
 	} else {
 		newEntry = true;
 		loading = false;
@@ -135,14 +136,14 @@
 		</tr>
 		{/if}	
 		<tr>
-			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled={true} /></td>
+			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled={loading} /></td>
 		</tr>
 		<tr>
 			<td colspan=2>
 				<hr>Filler - Queues items from a playlist to fill
 				<br>the gap between scheduled items if the gap
 				<br>to the previous item is below the minutes
-				<br>threshold<hr></td>
+				<br>threshold (Not enabled yet)<hr></td>
 		</tr>		
 		<tr>
 			<th>Playlist</th>

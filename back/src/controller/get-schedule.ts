@@ -1,8 +1,5 @@
 import { socketInterface } from "../server/socket";
-import schedule from "../sqliteTables/schedule";
+import { getSchedule as get } from "../server/schedule";
 export default async function getSchedule(socket: socketInterface) {
-  socket.emit("schedule", {
-    status: "success",
-    schedule: await schedule.getAll(new Date("Jan 1 2000")),
-  });
+  get(socket);
 }
