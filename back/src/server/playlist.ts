@@ -20,7 +20,7 @@ export interface PlaylistItem {
   username: string;
   duration: number;
   type: string;
-  scheduledID: number | null;
+  scheduledID: string | null;
 }
 
 let theThreeGuys = [];
@@ -139,7 +139,7 @@ class PlayList {
     mediaURL: string,
     username: string,
     socket: socketInterface,
-    scheduleID: number | null = null,
+    scheduleID: string | null = null,
     last = false
   ) => {
     const id: number = Math.random();
@@ -249,14 +249,22 @@ class PlayList {
                 moment.utc(item.playTimeUTC).diff(moment(lastItem.endDate)) /
                 1000;
               let scheduledIDs = this.playlist.map((x) => x.scheduledID);
-              if (diff <= 300 && diff > 0 && !scheduledIDs.includes(item.id)) {
-                await this.queuePlaylist({
-                  mode: "weighted",
-                  playlist: "Commercials",
+              if (
+                diff <= item.minutes * 60 &&
+                item.playlist !== "" &&
+                diff > 0 &&
+                !scheduledIDs.includes(item.id)
+              ) {
+                let fillAttempt = await this.queuePlaylist({
+                  mode: item.selection,
+                  playlist: item.playlist,
                   duration: diff,
-                  leeWayAfter: item.leeWayAfter,
                 });
-                await this.queueVideo(item.url, item.username, null, item.id);
+                if (fillAttempt) {
+                  await this.queueVideo(item.url, item.username, null, item.id);
+                } else {
+                  break;
+                }
               } else {
                 let diff = moment.utc(item.playTimeUTC).diff(moment()) / 1000;
                 if (diff <= 0 && !scheduledIDs.includes(item.id)) {
@@ -307,6 +315,7 @@ class PlayList {
       tries++;
       shuffleArray(items);
     } while (tries < maxTries && !complete);
+    return complete;
     function shuffleArray(array: any) {
       for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));

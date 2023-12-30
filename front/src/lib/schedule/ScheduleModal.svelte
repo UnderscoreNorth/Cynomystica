@@ -7,8 +7,11 @@
 	let url: String;
 	let title: String;
 	let playtime: String | null = null;
-	let visible: boolean;
+	let visible = true;
 	let finishtime: String | null = null;
+	let minutes = 5;
+	let selection = 'Random';
+	let playlist = '';
 	let id: string;
 	let loading = false;
 	let newEntry = false;
@@ -19,6 +22,9 @@
 		finishtime = moment.utc(selectedID.finishTimeUTC).local().format('YYYY-MM-DD HH:mm:ss');
 		playtime = moment.utc(selectedID.playTimeUTC).local().format('YYYY-MM-DD HH:mm:ss');
 		id = selectedID.id;
+		selection = selectedID.selection;
+		playlist = selectedID.playlist;
+		minutes = selectedID.minutes
 	} else {
 		newEntry = true;
 		loading = false;
@@ -30,7 +36,10 @@
 			title,
 			playtime,
 			visible,
-			selectedID
+			selectedID,
+			minutes,
+			playlist,
+			selection
 		};
 		io.emit('upsert-schedule', sendObj);
 		changeSelectedID(undefined);
@@ -61,15 +70,38 @@
 			<th>Title</th><td><input bind:value={title} disabled={loading} /></td>
 		</tr>
 		<tr>
-			<th>Playtime</th><td
-				><input type="datetime-local" bind:value={playtime} disabled={loading} /></td
-			>
+			<th>Playtime</th>
+			<td><input type="datetime-local" bind:value={playtime} disabled={loading} /></td>
 		</tr>
 		<tr>
 			<th>Finish time</th><td><input type="datetime-local" disabled bind:value={finishtime} /></td>
+		</tr>		
+		<tr>
+			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled=true /></td>
 		</tr>
 		<tr>
-			<th>Visible</th><td><input type="checkbox" bind:checked={visible} disabled={loading} /></td>
+			<td colspan=2>
+				<hr>Filler - Queues items from a playlist to fill
+				<br>the gap between scheduled items if the gap
+				<br>to the previous item is below the minutes
+				<br>threshold<hr></td>
+		</tr>		
+		<tr>
+			<th>Playlist</th>
+			<td><select bind:value={playlist}>
+				<option value=''>None</option>
+			</select></td>
+		</tr>
+		<tr>
+			<th>Minutes</th>
+			<td><input type='number' step=1 bind:value={minutes} disabled={playlist == ''}></td>
+		</tr>
+		<tr>
+			<th>Selection</th>
+			<td><select bind:value={selection} disabled={playlist == ''}>
+				<option>Random</option>
+				<option>Weighted</option>
+			</select></td>
 		</tr>
 		<tr>
 			<td colspan="2">

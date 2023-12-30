@@ -3,6 +3,21 @@ import { v4 as uuidv4 } from "uuid";
 import formatDate from "../lib/formatDate";
 import parseURL from "../lib/parseURL";
 
+export interface ScheduleItem {
+  id: string;
+  username: string;
+  title: string;
+  url: string;
+  playTimeUTC: string;
+  finishTimeUTC: string;
+  visible: boolean;
+  duration: number;
+  minutes: number;
+  playlist: string;
+  selection: string;
+  dateCreated: string;
+}
+
 export default class {
   static tableName = "schedule";
   static tableCreate = `CREATE TABLE 'schedule' (
@@ -12,10 +27,11 @@ export default class {
         'url' VARCHAR(512),
         'playTimeUTC' DATETIME(20),
         'finishTimeUTC' DATETIME(20),
-        'leeWayBefore' INT,
-        'leeWayAfter' INT,
         'visible' INT,
         'duration' INT,
+        'minutes' INT,
+			  'playlist' VARCHAR(512),
+			  'selection' VARCHAR(20),
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
   static init = () => {
@@ -30,7 +46,7 @@ export default class {
       .all({
         date: dateString,
       });
-    return results;
+    return results as Array<ScheduleItem>;
   };
   static upsert = async (username: string, obj: any) => {
     if (obj.url.includes(" ")) return;
@@ -41,9 +57,7 @@ export default class {
       obj.duration = Math.ceil(playlistItem.duration);
     });
 
-    obj.username = username ?? "_North";
-    obj.leewayBefore = obj.leewayBefore ?? 0;
-    obj.leewayAfter = obj.leewayAfter ?? 15;
+    obj.username = username ?? "SCHEDULER";
     obj.id = obj.id ?? uuidv4();
     obj.visible = obj.visible ? 1 : 0;
     obj.startTime = formatDate(new Date(obj.playtime));
@@ -68,16 +82,17 @@ export default class {
         .prepare(
           `
               INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,leeWayBefore,leeWayAfter,visible,finishTimeUTC,duration) 
-              VALUES (@id,@username,@title,@url,@startTime,@leewayBefore,@leewayAfter,@visible,@finishTime,@duration)
+              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,minutes,playlist,selection) 
+              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@minutes,@playlist,@selection)
               ON CONFLICT(id) DO UPDATE SET
                   url=@url,
                   playTimeUTC = @startTime, 
                   finishTimeUTC=@finishTime, 
                   title=@title,
-                  leeWayBefore=@leewayBefore,
-                  leeWayAfter=@leewayAfter,
-                  duration=@duration`
+                  duration=@duration,
+                  minutes=@minutes,
+                  selection=@selection,
+                  playlist=@playlist`
         )
         .run(obj);
     } else {

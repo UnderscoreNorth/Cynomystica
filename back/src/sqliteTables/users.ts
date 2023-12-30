@@ -73,7 +73,11 @@ export default class {
         `SELECT COUNT(*) AS 'count' FROM users WHERE username=@username COLLATE NOCASE`
       )
       .get({ username });
-    return results.count > 0;
+    return (
+      results.count > 0 ||
+      username.toLowerCase() == "system" ||
+      username.toLowerCase() == "scheduler"
+    );
   };
 
   static insertUser = (username: string, passwordHash: string) => {

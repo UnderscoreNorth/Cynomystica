@@ -9,6 +9,9 @@ export interface ScheduleItem {
 	playTimeUTC: Date;
 	finishTimeUTC: Date;
 	gridArea?: string;
+	minutes: number;
+	selection: string;
+	playlist: string;
 }
 export type Schedule = Array<ScheduleItem>;
 export const schedule = writable(scheduleObj);
