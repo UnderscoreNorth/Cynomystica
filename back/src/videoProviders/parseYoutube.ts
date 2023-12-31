@@ -1,5 +1,5 @@
-import config from "../../../config.json";
-import { PlaylistItem } from "../../server/playlist";
+import config from "../../config.json";
+import { PlaylistItem } from "../server/playlist";
 
 const parseYoutube = (mediaURL: string) => {
   return new Promise<PlaylistItem>((resolve, reject) => {

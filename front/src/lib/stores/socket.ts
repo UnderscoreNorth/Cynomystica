@@ -169,7 +169,7 @@ const init = () => {
 		if (e.status == 'success') {
 			playlist.set(e.playlist);
 			if (!e.playlist.length) {
-				video.set({ id: '', url: '', seekTime: 0, type: '' });
+				video.set({ id: '', url: '', seekTime: 0, type: '', duration: 0 });
 			} else {
 				if (e.playlist[e.playlistIndex].id !== currentVideo.id) {
 					video.set(e.playlist[e.playlistIndex]);

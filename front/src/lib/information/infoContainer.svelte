@@ -15,6 +15,11 @@
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 <h4>Update Log</h4>
+<b>Dec 31, 2023</b>
+<ul>
+	<li>Twitch live support (No vods yet)</li>
+	<li>Mp3 live support</li>
+</ul>
 <b>Dec 30, 2023</b>
 <ul>
 	<li>User management, can ignore, mute, ban, etc</li>

@@ -25,7 +25,7 @@
 	const syncTime = (e: any) => {
 		let clientTime = e.currentTime;
 		let serverTime = $video.seekTime;
-		if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 && el.paused == false) {
+		if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 && el.paused == false && $video.duration > 0) {
 			e.currentTime = serverTime;
 		}
 	};
