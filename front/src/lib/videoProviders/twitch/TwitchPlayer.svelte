@@ -5,7 +5,7 @@
 </script>
 
 <iframe
-    src={`https://player.twitch.tv?${type == 'live' ? 'channel=' : 'video=v'}${$video.url}&parent=${CONFIG.SERVER_URL.replace('http://','')}&autoplay=true`}
+    src={`https://player.twitch.tv?${type == 'live' ? 'channel=' : 'video=v'}${$video.url}&parent=${CONFIG.SERVER_URL.replace('^.+\/\/','')}&autoplay=true`}
     title='Twitch Player'
 >
     

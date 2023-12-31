@@ -10,6 +10,14 @@
 	export let item: any;
 	export let deleteItem: Function;
 	let innerWidth = 0;
+	const getURL = (type:string, url:string)=>{
+		let provider = '';
+		if(type == 'yt')
+			provider = 'https://youtube.com/watch?v=';
+		if(type == 'tw_live')
+			provider = 'https://twitch.tv/';
+		return provider + url;
+	}
 </script>
 
 <svelte:window bind:innerWidth />
@@ -24,7 +32,7 @@
 	</td>
 	<td colspan="4">
 		<a
-			href={(item.type == 'yt' ? `https://youtube.com/watch?v=` : ``) + item.url}
+			href={getURL(item.type,item.url)}
 			target="_blank"
 			rel="noreferrer">{item.name}</a
 		>
@@ -43,7 +51,7 @@
 	</td>
 	<td
 		><a
-			href={((item.type == 'yt' || item.type == 'ytlive' ) ? `https://youtube.com/watch?v=` : ``) + item.url}
+			href={getURL(item.type,item.url)}
 			target="_blank"
 			rel="noreferrer">{item.name}</a 
 		></td
