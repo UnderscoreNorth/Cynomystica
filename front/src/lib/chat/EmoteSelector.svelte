@@ -2,6 +2,7 @@
     import { emotes } from "$lib/stores/emotes";
     import { presets } from "$lib/stores/presets";
     import { chatInput,chatEl } from "$lib/stores/chat";
+	import { settings } from "$lib/stores/settings";
     //@ts-ignore
     import MdInsertEmoticon from 'svelte-icons/md/MdInsertEmoticon.svelte'
 	import Modal from "$lib/ui/modal.svelte";
@@ -38,18 +39,20 @@
 					<div on:click={()=>selectedPreset=preset} class={isSelected(preset,selectedPreset)}>{preset}</div>
 				{/each}
 			</div>
-			<div class='emoteList'>
+			<div class='emoteList'  style:--max-emote-height={$settings.maxEmoteHeight + 'px'}>
+				<table style:border-collapse='collapse'>
 				{#each Object.values($emotes).filter((e)=>{return (
 					(e.preset == selectedPreset || selectedPreset == '') 
 					&& (emoteSearch == '' || e.text.toLowerCase().includes(emoteSearch.toLowerCase()))
 					&& ($presets.emotes[e.preset] == true)
 					)}) as emote}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<div class='emoteItem' on:click={()=>selectemote(emote.text)}>
-						<img class='emote' src={emote.url} alt={emote.text}/> 
-						<span>{emote.text}</span>
-					</div>
+					<tr class='emoteItem' on:click={()=>selectemote(emote.text)}>
+						<td  style:text-align='center'><img class='emote' src={emote.url} alt={emote.text}/> </td>
+						<td>{emote.text}</td>
+					</tr>
 				{/each}
+			</table>
 			</div>
 		</div>
 		
@@ -92,8 +95,6 @@
 		padding:0.5rem;
 	}
 	.emoteItem{
-		display: flex;
-		align-items: center;
 		margin:2px;
 		padding:2px;
 	}

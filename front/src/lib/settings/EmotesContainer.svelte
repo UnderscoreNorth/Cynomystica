@@ -129,7 +129,7 @@
                     </tr>
                     {#each Object.keys(emotesGrouped?.[selectedPreset] ?? {}) as emote}
                         <tr>
-                            <td>
+                            <td  style:text-align='center'>
                                 {#if emotesGrouped[selectedPreset][emote].url}
                                     <img 
                                         src={emotesGrouped[selectedPreset][emote].url} 
