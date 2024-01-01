@@ -68,7 +68,7 @@
 		text-align: left;
 		white-space: nowrap;
 	}
-	:global(.bulletText img){
+	:global(.bulletText img, .bulletText video){
 		max-height:50svh;
 	}
 	@keyframes textScrollAnim {

@@ -98,7 +98,7 @@
 	.userHighlighted {
 		color: white;
 	}
-	:global(.chatMsg img) {
+	:global(.chatMsg img, .chatMsg video) {
 		max-width: 100%;
 		max-height: var(--max-height);
 		vertical-align: middle;

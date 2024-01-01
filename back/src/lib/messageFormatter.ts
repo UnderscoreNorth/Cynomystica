@@ -13,6 +13,11 @@ export default function messageFormatter(msg: string) {
       matchRegex: /(http[^\s]+:pic)/,
       replaceRegex: /(http[^\s]+):pic/,
     },
+    {
+      type: "vid",
+      matchRegex: /(http[^\s]+:vid)/,
+      replaceRegex: /(http[^\s]+):vid/,
+    },
     { type: "link", matchRegex: /(http[^\s]+)/, replaceRegex: /(http[^\s]+)/ },
     {
       type: "strong",
@@ -68,6 +73,8 @@ export default function messageFormatter(msg: string) {
       formattedMsg += `<span class='spoilertext'>${msgPart.content}</span>`;
     } else if (msgPart.type == "pic") {
       formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer"><img src=${msgPart.content} /></a>`;
+    } else if (msgPart.type == "vid") {
+      formattedMsg += `<video autoplay loop controls muted src=${msgPart.content} />`;
     } else if (msgPart.type == "link") {
       formattedMsg += `<a href=${msgPart.content} target='_blank' rel="noreferrer">${msgPart.content}</a>`;
     } else {

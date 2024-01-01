@@ -84,6 +84,7 @@ const pushToChat = (oldChat: Array<messageType>, e: any) => {
 			}
 			if (userSettingsObj.hideImage) {
 				msg.message = msg.message.replace(/<img[^>]*>/g, '');
+				msg.message = msg.message.replace(/<video[^>]*>/g, '');
 			}
 			msg.played = false;
 			oldChat.push(msg);
