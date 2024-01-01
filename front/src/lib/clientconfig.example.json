@@ -1,4 +1,5 @@
 {
 	"SERVER_URL": "",
-	"SERVER_PORT": ""
+	"SERVER_PORT": "",
+	"SOCKET_PATH": ""
 }

@@ -3,7 +3,7 @@ import CONFIG from './clientconfig.json';
 const ENDPOINT = `${CONFIG.SERVER_URL}${CONFIG.SERVER_PORT ? `:${CONFIG.SERVER_PORT}` : ''}/`;
 //console.log({ ENDPOINT });
 const socket = ioClient(ENDPOINT, {
-	path: 'ws',
+	path: CONFIG.SOCKET_PATH,
 	transports: ['websocket'],
 	upgrade: false
 });
