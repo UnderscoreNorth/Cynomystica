@@ -64,9 +64,7 @@
 		io.emit('update-info',infoEl.value);
 	}
 </script>
-{@html $info}
 {#if $user.accessLevel >= $permissions.manageInfoModal }
-<hr>
 <div id='infoEditContainer'>
 	<textarea 
 		id='infoEditText'
@@ -81,8 +79,9 @@
 		<button id='infoEditSave' on:click={()=>saveEdit()}>Save</button>
 	</span>
 </div>
+<hr>
 {/if}
-
+{@html $info}
 <style>
 	#infoEditContainer{
 		display: flex;		
