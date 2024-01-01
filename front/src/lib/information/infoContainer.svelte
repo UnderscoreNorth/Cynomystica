@@ -37,6 +37,7 @@
 			'h3',
 			'h4',
 			'h5',
+			'h6',
 			'a',
 			'p',
 			'i',
@@ -45,7 +46,8 @@
 			'video',
 			'ol',
 			'ul',
-			'li'
+			'li',
+			'center'
 		]
 		if(liveEdit){
 			let tempHTML = infoEl.value.replace(/</g,'&lt;');
