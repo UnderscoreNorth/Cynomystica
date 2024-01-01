@@ -85,7 +85,7 @@ class Settings {
       let regex = new RegExp(`&lt;` + el, "gi");
       html = html.replace(regex, "<" + el);
       regex = new RegExp(`&lt;\/` + el, "gi");
-      html = html.replace(regex, "<" + el);
+      html = html.replace(regex, "</" + el);
     }
     writeFileSync(infoPath, html);
     this.info = html;

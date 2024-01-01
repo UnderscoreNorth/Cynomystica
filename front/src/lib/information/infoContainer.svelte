@@ -52,8 +52,8 @@
 			for(let el of allowedEl){
 				let regex = new RegExp(`&lt;` + el,'gi');
 				tempHTML = tempHTML.replace(regex,'<' + el);
-				regex = new RegExp(`&lt;\/` + el,'gi');
-				tempHTML = tempHTML.replace(regex,'<' + el);
+				regex = new RegExp(`&lt;/` + el,'gi');
+				tempHTML = tempHTML.replace(regex,'</' + el);
 			}
 			$info = tempHTML;
 		}
