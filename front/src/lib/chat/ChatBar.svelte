@@ -25,6 +25,7 @@
 	let selectionEnd = 0;
 	let spoilerMode = false;
 	let beforeInput:string;
+	let tabComplete = 0;
 
 	beforeUpdate(() => {
 		if ($chatEl) {
@@ -44,6 +45,11 @@
 			}
 			$chatEl.setSelectionRange(selectionStart, selectionStart);			
 		}
+		if(tabComplete){
+			$chatEl.setSelectionRange(tabComplete,tabComplete);			
+			tabComplete = 0;
+			$chatEl.focus();
+		}
 		if($chatInput.length >= 500){
 			$chatEl.style.outline = 'solid 2px red';
 			$chatInput = $chatInput.substring(0,500);
@@ -59,19 +65,39 @@
 		}
 		if (e.key == 'Tab') {
 			e.preventDefault();
-			let tabWord = lastInput.match(tabRegex)?.[0].toLowerCase() ?? '';
-			if (tabWord?.length) {
-				let matchedUsers = $users.users
-					.filter((otherUser) => {
-						return otherUser.username.toLowerCase().indexOf(tabWord) == 0;
-					})
-					.map((otherUser) => otherUser.username);
-				let matchedEmotes = Object.values($emotes).filter((e)=>$presets.emotes[e.preset] == true).map((e)=>e.text).filter((e)=> e.toLowerCase().indexOf(tabWord)==0)
-				let matched = matchedUsers.concat(matchedEmotes);
-				if (matched.length) {
-					$chatInput = lastInput.replace(tabRegex, matched[tabIndex]);
-					tabIndex++;
-					if (tabIndex >= matched.length) tabIndex = 0;
+			let selStart = $chatEl.selectionStart ?? 0;
+			if(selStart > 0){
+				while(![undefined,' '].includes(lastInput[selStart]) && selStart < lastInput.length){
+					selStart++;
+				}
+				let beforeSelTxt = lastInput.substring(0,selStart);
+				let afterSelTxt = lastInput.substring(selStart);
+				let beforeSelArr = beforeSelTxt.split(' ');
+				let tabWordOriginal = beforeSelArr.splice(beforeSelArr.length - 1,1)[0];
+				let tabWord = tabWordOriginal.toLowerCase();
+				if (tabWord?.length) {
+					let matchedUsers = $users.users
+						.filter((otherUser) => {
+							return otherUser.username.toLowerCase().indexOf(tabWord) == 0;
+						})
+						.map((otherUser) => otherUser.username);
+					let matchedEmotes = Object.values($emotes).filter((e)=>$presets.emotes[e.preset] == true).map((e)=>e.text).filter((e)=> e.toLowerCase().indexOf(tabWord)==0)
+					let matchedFilters = [];
+					if($user.accessLevel >= $permissions.postMedia){
+						let filterMatch = tabWord.match(/\S+\.\S+/);
+						if(filterMatch){
+							matchedFilters.push(tabWordOriginal + ':pic');
+							matchedFilters.push(tabWordOriginal + ':vid');
+						}
+					}
+					let matched = matchedUsers.concat(matchedEmotes,matchedFilters);
+					if (matched.length) {
+						beforeSelTxt = beforeSelArr.join(' ') + matched[tabIndex];
+						tabComplete = beforeSelTxt.length;
+						$chatInput = beforeSelTxt + afterSelTxt;
+						tabIndex++;
+						if (tabIndex >= matched.length) tabIndex = 0;
+					}
 				}
 			}
 		} else {

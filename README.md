@@ -18,7 +18,7 @@ Cynomystica is named after the prairie dog.
 	<tr><td>/me text</td><td><span class="actiontext">Username text</span></td></tr>
 	<tr><td>link:pic</td><td>Image (Requires permissions)</td></tr>
 	<tr><td>link:vid</td><td>Video (Requires permissions)</td></tr>
-	<tr><td>TAB</td><td>autocompletes username/emote<br />tab again to cycle</td></tr>
+	<tr><td>TAB</td><td>autocompletes username/emote/media suffix<br />tab again to cycle</td></tr>
 	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
 </table>
 
