@@ -50,10 +50,12 @@
 		background: var(--color-bg-4);
 		opacity: 0.85;
 		padding: 4px;
-		position: absolute;
+		position: fixed;
 		z-index: 10;
 		color: var(--color-fg-4);
 		line-height: 1rem;
 		font-size: 1rem;
+		max-width: 10rem;
+		overflow-wrap:anywhere;
 	}
 </style>

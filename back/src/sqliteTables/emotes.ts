@@ -39,16 +39,17 @@ export default class {
         .run({ preset });
       for (let emoteID in obj.emotes) {
         let emoteObj = obj.emotes[emoteID];
-        await db
-          .prepare(
-            `
-            INSERT INTO emotes
-            (text, url, preset) 
-            VALUES (@text,@url,@preset)
-            ON CONFLICT(text, preset) DO UPDATE SET
-                url=@url`
-          )
-          .run(emoteObj);
+        if (emoteObj.text.trim().length)
+          await db
+            .prepare(
+              `
+              INSERT INTO emotes
+              (text, url, preset) 
+              VALUES (@text,@url,@preset)
+              ON CONFLICT(text, preset) DO UPDATE SET
+                  url=@url`
+            )
+            .run(emoteObj);
       }
     }
   };

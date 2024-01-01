@@ -49,8 +49,9 @@ export default async function parseURL(url: string) {
 }
 
 export const parseRaw = (text: string) => {
-  if (isValidUrl(text)) {
-    let url = new URL(text);
+  let url: URL;
+  try {
+    url = new URL(text);
     switch (url.hostname.replace("www.", "")) {
       case "youtube.com":
         if (url.pathname == "/watch") {
@@ -90,7 +91,7 @@ export const parseRaw = (text: string) => {
           return { type: "not supported" };
         }
     }
-  } else {
+  } catch {
     let iframe = text.match(/<iframe .*<\/iframe>/)?.[0];
     if (iframe) {
       return { type: "iframe", id: iframe };

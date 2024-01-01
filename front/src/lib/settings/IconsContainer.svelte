@@ -214,8 +214,7 @@
         width:10rem
     }
     .iconList img{
-        height:1.8rem;
-        width:1.8rem;
+        max-height:1.8rem;
         max-width: 1.8rem;
     }
     .iconList td{

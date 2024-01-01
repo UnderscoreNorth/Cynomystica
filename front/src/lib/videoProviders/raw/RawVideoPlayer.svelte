@@ -39,9 +39,9 @@
 </script>
 {#key reset}
 <div id='videoControlBar'>
-	{#if $video.url.split('???streamurl???').length > 1}
-		{#each $video.url.split('???streamurl???') as url,index}
-			<Tooltip title='Select server {index+1}'>
+	{#if $video.url.split('????').length > 1}
+		{#each $video.url.split('????') as url,index}
+			<Tooltip title={$video.url.split('????')[index]}>
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class='svgIcon' on:click={()=>changeSrc(url)}>{index+1}</div>
 			</Tooltip>		

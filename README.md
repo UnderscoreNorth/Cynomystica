@@ -29,6 +29,10 @@ Cynomystica is named after the prairie dog.
 - Iframe embeds
 - Raw mp4 and mp3 (including streaming mp3)
 
+### Multiple Sources
+
+When queuing raw mp4s, you can combine differents links together with ????, for example, https://source1.com/DSADSA.mp4????https://source2.com/265654.mp4????https://source3.com/dsa80AD.mp4, and it will give users the options to pick between the servers
+
 ### Update Log
 
 #### Dec 31, 2023
@@ -38,6 +42,7 @@ Cynomystica is named after the prairie dog.
 - Iframe embeds
 - Permanent playlist items
 - Custom info page
+- Posting videos in chat
 
 #### Dec 30, 2023
 
