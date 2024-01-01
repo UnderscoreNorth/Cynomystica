@@ -19,6 +19,7 @@ export default async function parseTwitch(id: string, type: "vod" | "live") {
         duration: duration,
         type: "tw_" + type,
         scheduledID: null,
+        permanent: false,
       });
     } catch (err) {
       console.log(err);

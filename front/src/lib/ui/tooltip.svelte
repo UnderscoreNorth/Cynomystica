@@ -33,9 +33,9 @@
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-<div on:mouseover={mouseOver} on:mouseleave={mouseLeave} on:mousemove={mouseMove}>
+<span on:mouseover={mouseOver} on:mouseleave={mouseLeave} on:mousemove={mouseMove}>
 	<slot />
-</div>
+</span>
 {#if isHovered}
 	<div 
 		style:left={faceRight == 1 ? `${x}px` : ''}

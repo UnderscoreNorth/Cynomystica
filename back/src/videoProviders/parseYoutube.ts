@@ -33,6 +33,7 @@ const parseYoutube = (mediaURL: string) => {
           duration: duration,
           scheduledID: null,
           type: "yt",
+          permanent: false,
         };
         if (duration > 0) {
           resolve(resolveObj);

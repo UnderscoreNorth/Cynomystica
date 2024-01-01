@@ -6,6 +6,7 @@ interface playlistItem {
 	url: string;
 	username: string;
 	duration: string;
+	permanent: boolean;
 }
 export type playlistType = Array<playlistItem>;
 export const playlist = writable(playlistObj);

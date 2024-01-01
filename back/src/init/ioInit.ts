@@ -41,6 +41,7 @@ import getModeration from "../controller/moderation/get-moderation";
 import undoModeration from "../controller/moderation/undo-moderation";
 import queueLast from "../controller/queue-last";
 import deleteSchedule from "../controller/delete-schedule";
+import updateInfo from "../controller/settings/update-info";
 
 import playlist from "../server/playlist";
 
@@ -84,6 +85,7 @@ export default function ioInit(io: Server) {
     "undo-moderation": undoModeration,
     "queue-last": queueLast,
     "delete-schedule": deleteSchedule,
+    "update-info": updateInfo,
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();
@@ -126,5 +128,6 @@ export default function ioInit(io: Server) {
     getSchedule(socket);
     settings().sendPreset(socket);
     settings().sendSettings(socket);
+    settings().sendInfo(socket);
   });
 }

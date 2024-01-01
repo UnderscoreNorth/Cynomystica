@@ -1,82 +1,92 @@
-<a target="_blank" rel="noreferrer" href="https://github.com/UnderscoreNorth/Cynomystica"
-	>Github</a
->
-<h4>Chat Commands</h4>
-<table>
-	<tr><td>*text*</td><td><b>text</b></td></tr>
-	<tr><td>_text_</td><td><em>text</em></td></tr>
-	<tr><td>CTRL+S</td><td>inserts or wraps selected<br />text in [s][/s] tags</td></tr>
-	<tr><td>[s]text[/s]</td><td><span class="spoilertext">text</span></td></tr>
-	<tr><td>red: text</td><td><span class="redtext">text</span></td></tr>
-	<tr><td>blue: text</td><td><span class="bluetext">text</span></td></tr>
-	<tr><td>>text</td><td><span class="greentext">>text</span></td></tr>
-	<tr><td>/me text</td><td><span class="actiontext">Username text</span></td></tr>
-	<tr><td>TAB</td><td>autocompletes username/emote<br />tab again to cycle</td></tr>
-	<tr><td>↑/↓</td><td>Cycles through previous<br />sent messages</td></tr>
-</table>
-<h4>Update Log</h4>
-<b>Dec 31, 2023</b>
-<ul>
-	<li>Twitch live support (No vods yet)</li>
-	<li>Mp3 live support</li>
-</ul>
-<b>Dec 30, 2023</b>
-<ul>
-	<li>User management, can ignore, mute, ban, etc</li>
-	<li>Actual queue next</li>
-	<li>User settings now saved in local storage</li>
-</ul>
-<b>Dec 27, 2023</b>
-<ul>
-	<li>Video server selection support, use ???streamurl??? to seperate links to the same video</li>
-	<li>Modal to view and select emotes</li>
-	<li>Ability to hide images posted in chat</li>
-</ul>
-<b>Dec 26, 2023</b>
-<ul>
-	<li>Opacity setting on Video Minimal Mode</li>
-	<li>Scroll lock button</li>
-	<li>Refresh video button</li>
-	<li>Schedule List View</li>
-</ul>
-<b>Dec 21, 2023</b>
-<ul>
-	<li>Youtube livestream support</li>
-	<li>Max chat size user setting</li>
-	<li>Optional SFX on chat trigger</li>
-	<li>Video Minimal mode</li>
-</ul>
-<b>Dec 19, 2023</b>
-<ul>
-	<li>Added a single emote</li>
-	<li>Polls/Pinned Messages</li>
-</ul>
-<b>Dec 18, 2023</b>
-<ul>
-	<li>The Three Guys</li>
-	<li>Close button on modals</li>
-	<li>Anonymous chat</li>
-</ul>
-<b>Dec 17, 2023</b>
-<ul>
-	<li>Persistent user settings</li>
-	<li>Can move chat window to the right side</li>
-	<li>Vertical mode applies if height is greater than width of screen</li>
-	<li>Danmaku text shouldn't wrap anymore</li>
-	<li>Danmaku transparency option</li>
-	<li>Text formatting on danmaku</li>
-	<li>Red,blue, /me, and spoiler text filters</li>
-	<li>Chat bar moved to top of chat window in vertical mode</li>
-</ul>
+<script lang='ts'>
+	import { permissions } from "$lib/stores/permissions";
+	import { info } from "$lib/stores/info";
+	import { user } from "$lib/stores/user";
+	import { io } from "$lib/realtime";
+	import { onMount } from "svelte";
+	let infoEl:HTMLTextAreaElement;
+	let liveEdit = false;
+	onMount(()=>{
+		if(infoEl)
+			infoEl.value = $info.replace(/&lt;/g,'<');
+	})
+	const handleKeyDown = (e:KeyboardEvent) =>{
+		if(e.key == 'Tab'){
+			e.preventDefault();
+			let start = infoEl.selectionStart;
+    		let end = infoEl.selectionEnd;
+			infoEl.value = infoEl.value.substring(0, start) + "\t" + infoEl.value.substring(end);
+			infoEl.selectionStart = infoEl.selectionEnd = start + 1;
+		}
+	}
+	const infoChange = ()=>{
+		let allowedEl = [
+			'div',
+			'style',
+			'span',
+			'table',
+			'thead',
+			'tbody',
+			'tr',
+			'td',
+			'th',
+			'b',
+			'hr',
+			'h1',
+			'h2',
+			'h3',
+			'h4',
+			'h5',
+			'a',
+			'p',
+			'i',
+			'u',
+			'img',
+			'video',
+			'ol',
+			'ul',
+			'li'
+		]
+		if(liveEdit){
+			let tempHTML = infoEl.value.replace(/</g,'&lt;');
+			for(let el of allowedEl){
+				let regex = new RegExp(`&lt;` + el,'gi');
+				tempHTML = tempHTML.replace(regex,'<' + el);
+				regex = new RegExp(`&lt;\/` + el,'gi');
+				tempHTML = tempHTML.replace(regex,'<' + el);
+			}
+			$info = tempHTML;
+		}
+	}
+	const saveEdit = ()=>{
+		io.emit('update-info',infoEl.value);
+	}
+</script>
+{@html $info}
+{#if $user.accessLevel >= $permissions.manageInfoModal }
+<hr>
+<div id='infoEditContainer'>
+	<textarea 
+		id='infoEditText'
+		bind:this={infoEl}
+		on:keydown={handleKeyDown} 
+		contenteditable=true 
+		on:paste={()=>infoChange()}
+		on:keyup={()=>infoChange()}
+	/>
+	<span id='infoEditControls'>
+		<input type='checkbox' bind:checked={liveEdit}> Live Edit<br>
+		<button id='infoEditSave' on:click={()=>saveEdit()}>Save</button>
+	</span>
+</div>
+{/if}
 
 <style>
-	table td {
-		padding: 2px 5px;
+	#infoEditContainer{
+		display: flex;		
 	}
-	table {
-		border-collapse: collapse;
-	}
-	table td {
-		border: solid 1px;
+	#infoEditText {flex-grow:1}
+	#infoEditSave{
+		width:100%
 	}
 </style>

@@ -20,6 +20,7 @@ import { tempSettings } from './tempSettings';
 import { presets } from './presets';
 import { settings } from './settings';
 import { moderation, type Moderation } from './moderation';
+import { info } from './info';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
@@ -315,6 +316,9 @@ const init = () => {
 			});
 			return oldChat;
 		});
+	});
+	io.on('info', (e) => {
+		info.set(e);
 	});
 };
 export default init;

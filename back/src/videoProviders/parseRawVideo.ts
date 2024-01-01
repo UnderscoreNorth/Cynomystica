@@ -22,6 +22,7 @@ const parseRawVideo = (mediaURL: string) => {
             duration: duration,
             type: "raw",
             scheduledID: null,
+            permanent: false,
           });
         })
         .catch((err) => {
@@ -40,6 +41,7 @@ const parseRawVideo = (mediaURL: string) => {
               duration: -1,
               type: "raw",
               scheduledID: null,
+              permanent: false,
             });
           } else {
             reject(err);

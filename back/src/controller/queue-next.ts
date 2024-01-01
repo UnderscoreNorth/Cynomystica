@@ -2,7 +2,7 @@ import { socketInterface } from "../server/socket";
 import { default as playlist } from "../server/playlist";
 export default async function queueNext(socket: socketInterface, message: any) {
   if (socket.lastQueue) {
-    if (new Date().getTime() - socket.lastQueue.getTime() < 2000) {
+    if (new Date().getTime() - socket.lastQueue.getTime() < 500) {
       console.log(socket.username, "spamming");
       return;
     }

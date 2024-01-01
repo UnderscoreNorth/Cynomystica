@@ -11,6 +11,8 @@
 	export let deleteItem: Function;
 	let innerWidth = 0;
 	const getURL = (type:string, url:string)=>{
+		if(type =='iframe')
+			return '';
 		let provider = '';
 		if(type == 'yt')
 			provider = 'https://youtube.com/watch?v=';
@@ -31,11 +33,15 @@
 		{/if}
 	</td>
 	<td colspan="4">
-		<a
-			href={getURL(item.type,item.url)}
-			target="_blank"
-			rel="noreferrer">{item.name}</a
-		>
+		{#if getURL(item.type,item.url)}
+			<a
+				href={getURL(item.type,item.url)}
+				target="_blank"
+				rel="noreferrer">{item.name}</a
+			>
+		{:else}
+			{item.name}
+		{/if}
 		<br />
 		{secondsToTime(item.duration)} - {item.username}
 		<span style:float='right'>{new Date(item.endDate).toLocaleTimeString()}</span>
@@ -49,12 +55,15 @@
 			</div>
 		{/if}
 	</td>
-	<td
-		><a
-			href={getURL(item.type,item.url)}
+	<td>
+		{#if getURL(item.type,item.url)}
+		<a href={getURL(item.type,item.url)}
 			target="_blank"
-			rel="noreferrer">{item.name}</a 
-		></td
+			rel="noreferrer">{item.name}
+		</a>
+	{:else}
+		{item.name}
+	{/if}</td
 	>
 	<td class="t-right">{new Date(item.startDate).toLocaleTimeString()}</td>
 	<td class="t-right">{new Date(item.endDate).toLocaleTimeString()}</td>

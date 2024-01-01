@@ -85,8 +85,8 @@
 		padding-left: 2px;
 	}
 	.chatIcon img {
-		height: 1.25rem;
-		width: 1.25rem;
+		max-height: 1.25rem;
+		max-width: 1.25rem;
 		margin-bottom: -0.125rem;
 	}
 	.chatTime {
