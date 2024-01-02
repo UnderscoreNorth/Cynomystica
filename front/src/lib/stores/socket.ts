@@ -87,6 +87,7 @@ const pushToChat = (oldChat: Array<messageType>, e: any) => {
 				msg.message = msg.message.replace(/<video[^>]*>/g, '');
 			}
 			msg.played = false;
+			msg.id = Math.random().toString();
 			oldChat.push(msg);
 			if (oldChat.length > userSettingsObj.chat.chatArray)
 				oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
@@ -320,6 +321,9 @@ const init = () => {
 	});
 	io.on('info', (e) => {
 		info.set(e);
+	});
+	io.on('clear-chat', () => {
+		chat.set([]);
 	});
 };
 export default init;

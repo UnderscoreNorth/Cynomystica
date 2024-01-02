@@ -14,7 +14,7 @@
 		if(type =='iframe')
 			return '';
 		let provider = '';
-		if(type == 'yt')
+		if(type == 'yt' || type=='ytlive')
 			provider = 'https://youtube.com/watch?v=';
 		if(type == 'tw_live')
 			provider = 'https://twitch.tv/';
@@ -47,7 +47,7 @@
 		<span style:float='right'>{new Date(item.endDate).toLocaleTimeString()}</span>
 	</td>
 {:else}
-	<td>
+	<td class='t-mid'>
 		{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={deleteItem(item)}>
@@ -76,7 +76,13 @@
 		line-height: 2rem;
 		color: var(--color-text-dark-1);
 	}
+	.t-mid{
+		text-align: center;
+	}
 	.t-right {
 		text-align: right;
+	}
+	.svgIcon{
+		display:inline-block;
 	}
 </style>

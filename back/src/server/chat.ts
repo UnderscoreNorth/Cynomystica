@@ -22,6 +22,11 @@ export class Chat {
   message(message: Message, socket: socketInterface) {
     if (message.message == "/reload" && socket.accessLevel >= 4) {
       IO().emit("alert", { type: "Reload" });
+    } else if (
+      message.message == "/clear" &&
+      socket.accessLevel >= permissions().items["clearChat"]
+    ) {
+      this.clear();
     } else {
       if (this.recentMsgs.length > 500) this.recentMsgs.splice(0, 1);
       if (!(socket.accessLevel >= permissions().items["postMedia"])) {
@@ -39,6 +44,10 @@ export class Chat {
   }
   logMessages() {
     writeToLog("chat", this.unloggedMsgs);
+  }
+  clear() {
+    this.recentMsgs = [];
+    IO().emit("clear-chat");
   }
   async getFromLog() {
     this.recentMsgs = await getFromLog("chat");

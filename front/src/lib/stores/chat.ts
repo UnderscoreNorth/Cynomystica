@@ -3,10 +3,11 @@ import { browser } from '$app/environment';
 export interface messageType {
 	icon: string;
 	message: string;
-	played: boolean;
 	time: string;
 	username: string;
 	type?: string;
+	played?: boolean;
+	id?: string;
 }
 const chatObj: Array<messageType> = [];
 export const chat = writable(chatObj);

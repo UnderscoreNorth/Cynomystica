@@ -29,6 +29,12 @@
         chat.subscribe((e)=>{
             if ($tempSettings.minimize.toggle || $tempSettings.scrollLock){
                 setTimeout(()=>{
+                    if('maxTouchPoints' in navigator){
+                        if(navigator.maxTouchPoints > 1){
+                            chatScroller.scrollTop = chatScroller.scrollHeight;
+                            return;
+                        }
+                    }
                     chatScroller?.lastElementChild?.lastElementChild?.lastElementChild?.scrollIntoView();
                 },50);
             }
@@ -61,7 +67,7 @@
             {/key}
         </thead>
         <tbody>
-            {#each $chat as message}
+            {#each $chat as message (message.id)}
                 <ChatRow {message} />
             {/each}
         </tbody>

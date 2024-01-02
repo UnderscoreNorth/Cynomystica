@@ -25,6 +25,7 @@ export default class {
       manageSettings: 5,
       bypassQueueLimit: 3,
       manageInfoModal: 4,
+      clearChat: 3,
     };
     let insertArr = [];
     for (let p in initPerms) {

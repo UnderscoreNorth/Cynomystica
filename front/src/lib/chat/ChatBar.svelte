@@ -92,7 +92,7 @@
 					}
 					let matched = matchedUsers.concat(matchedEmotes,matchedFilters);
 					if (matched.length) {
-						beforeSelTxt = beforeSelArr.join(' ') + matched[tabIndex];
+						beforeSelTxt = beforeSelArr.join(' ') + " " + matched[tabIndex] + " ";
 						tabComplete = beforeSelTxt.length;
 						$chatInput = beforeSelTxt + afterSelTxt;
 						tabIndex++;

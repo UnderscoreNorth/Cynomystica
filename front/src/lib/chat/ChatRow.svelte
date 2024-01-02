@@ -4,7 +4,7 @@
 	import { bulletMode } from '$lib/stores/bulletmode';
 	import { user } from '$lib/stores/user';
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
-	import {chatInput, type messageType } from '$lib/stores/chat';
+	import {chatInput, chatEl, type messageType } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { moderation } from '$lib/stores/moderation';
 	import { settings } from '$lib/stores/settings';
@@ -29,9 +29,10 @@
 		if ($tempSettings.anonymous) username = '';
 		return username;
 	};
-	function clickMessage(e:PointerEvent){
+	function clickMessage(e:MouseEvent){
 		if(e.target?.classList?.contains('emote')){
 			$chatInput += e.target?.title;
+			$chatEl.focus();
 		}
 	}
 </script>
