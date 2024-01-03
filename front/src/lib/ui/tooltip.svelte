@@ -33,7 +33,12 @@
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-<span on:mouseover={mouseOver} on:mouseleave={mouseLeave} on:mousemove={mouseMove}>
+<span 
+	on:mouseover={mouseOver} 
+	on:mouseleave={mouseLeave} 
+	on:mousemove={mouseMove}
+	on:touchend={mouseLeave}
+>
 	<slot />
 </span>
 {#if isHovered}
