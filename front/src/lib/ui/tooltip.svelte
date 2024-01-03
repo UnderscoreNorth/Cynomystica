@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from "svelte/transition";
 	export let title = '';
 	let isHovered = false;
 	let x: number;
@@ -30,6 +31,11 @@
 			y = event.pageY + 15;
 		}
 	}
+	function touchStart(){
+		setTimeout(()=>{
+			isHovered = false;
+		},1000)
+	}
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -37,12 +43,13 @@
 	on:mouseover={mouseOver} 
 	on:mouseleave={mouseLeave} 
 	on:mousemove={mouseMove}
-	on:touchend={mouseLeave}
+	on:touchstart={touchStart}	
 >
 	<slot />
 </span>
 {#if isHovered}
 	<div 
+		transition:fade={{duration:100}}
 		style:left={faceRight == 1 ? `${x}px` : ''}
 		style:right={faceRight == -1 ? `${x}px` : ''}
 		style:top={`${y}px`}
