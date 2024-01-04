@@ -204,8 +204,8 @@ const init = () => {
 			usersArr.sort((a, b) => {
 				if (a.accessLevel < b.accessLevel) return 1;
 				if (a.accessLevel > b.accessLevel) return -1;
-				if (a.username > b.username) return 1;
-				if (a.username < b.username) return -1;
+				if (a.username.toLowerCase() > b.username.toLowerCase()) return 1;
+				if (a.username.toLowerCase() < b.username.toLowerCase()) return -1;
 				return 0;
 			});
 			for (const i of usersArr) {

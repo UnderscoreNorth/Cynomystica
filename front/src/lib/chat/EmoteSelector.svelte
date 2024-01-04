@@ -6,6 +6,7 @@
     //@ts-ignore
     import MdInsertEmoticon from 'svelte-icons/md/MdInsertEmoticon.svelte'
 	import Modal from "$lib/ui/modal.svelte";
+	import { onMount } from "svelte";
     let emoteListEl;
     let emoteListOpen = false;
 	let emoteSearch = '';
@@ -28,10 +29,10 @@
 	<MdInsertEmoticon />
 </div>
 {#if emoteListOpen}
-    <Modal title='Emotes' closeModal={()=>emoteListOpen=false} align='center'>
-		<input placeholder='Search' bind:value={emoteSearch}><br>
-		<div style:display='flex' style:margin-top='5px'>
+    <Modal title='Emotes' closeModal={()=>emoteListOpen=false} align='center'>		
+		<div style:display='flex' style:margin-top='5px' style:height='100%'>
 			<div class='emotePresetList'>
+				<input placeholder='Search' bind:value={emoteSearch}><br>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div on:click={()=>selectedPreset=''} class={isSelected('',selectedPreset)}>All</div>
 				{#each Array.from(new Set(Object.values($emotes).map((x) => x.preset))).filter(x=>$presets.emotes[x] == true) as preset}
@@ -39,13 +40,19 @@
 					<div on:click={()=>selectedPreset=preset} class={isSelected(preset,selectedPreset)}>{preset}</div>
 				{/each}
 			</div>
-			<div class='emoteList'  style:--max-emote-height={$settings.maxEmoteHeight + 'px'}>
+			<div class='emoteList' 
+				 style:--max-emote-height={$settings.maxEmoteHeight + 'px'}
+				 style:height='100%'
+				 style:overflow-y='auto'
+			>
 				<table style:border-collapse='collapse'>
 				{#each Object.values($emotes).filter((e)=>{return (
 					(e.preset == selectedPreset || selectedPreset == '') 
 					&& (emoteSearch == '' || e.text.toLowerCase().includes(emoteSearch.toLowerCase()))
 					&& ($presets.emotes[e.preset] == true)
-					)}) as emote}
+					)}).sort((a,b)=>{
+						return a.text.toLowerCase() > b.text.toLowerCase() ? 1 : -1;
+					}) as emote}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<tr class='emoteItem' on:click={()=>selectemote(emote.text)}>
 						<td  style:text-align='center'><img class='emote' src={emote.url} alt={emote.text}/> </td>
@@ -101,5 +108,8 @@
 	.emoteItem:hover{
 		background:var(--color-bg-2);
 		cursor: pointer;
+	}
+	input{
+		width:8rem;
 	}
 </style>

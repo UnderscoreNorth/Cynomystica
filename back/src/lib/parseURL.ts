@@ -60,9 +60,13 @@ export const parseRaw = (text: string) => {
         if (url.pathname.startsWith("/shorts/")) {
           return { type: "yt", id: url.pathname.slice(8, 19) || "" };
         }
+        if (url.pathname.startsWith("/live/")) {
+          return { type: "yt", id: url.pathname.substring(6) || "" };
+        }
         if (url.pathname == "/playlist") {
           return { type: "yp", id: url.searchParams.get("list") || "" };
         }
+        break;
       // eslint-disable-next-line no-fallthrough
       case "youtu.be":
         return { type: "yt", id: url.pathname.slice(1) || "" };
@@ -85,11 +89,12 @@ export const parseRaw = (text: string) => {
           id: `<iframe title="Player" width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" allow="autoplay; fullscreen" allowtransparency="true" allowfullscreen="" src="${url.toString()}" scrolling="no" seamless=""></iframe>`,
         };
       default:
-        if (url.href.match(/^.*\.mp4$/) || url.href.match(/^.*\.mp3$/)) {
-          return { type: "raw", id: url.toString() || "" };
-        } else {
-          return { type: "not supported" };
-        }
+        break;
+    }
+    if (url.href.match(/^.*\.mp4$/) || url.href.match(/^.*\.mp3$/)) {
+      return { type: "raw", id: url.toString() || "" };
+    } else {
+      return { type: "not supported" };
     }
   } catch {
     let iframe = text.match(/<iframe .*<\/iframe>/)?.[0];
