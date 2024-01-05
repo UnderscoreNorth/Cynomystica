@@ -120,7 +120,7 @@ class PlayList {
     if (!this.playing && this.playlist.length) {
       this.playing = true;
       this.currentSeekTime = 0;
-      this.leaderSeekTime = 0;
+      this.leaderSeekTime = -1;
       this.playlist[0].startDate = new Date();
       writeToLog("playlist", [
         {
