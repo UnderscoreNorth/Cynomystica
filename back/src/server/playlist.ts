@@ -31,11 +31,13 @@ class PlayList {
   currentSeekTime: number;
   playing: boolean;
   scheduleCheck: boolean;
+  leaderSeekTime: number;
   constructor() {
     this.playlist = [];
     this.currentSeekTime = 0;
     this.playing = false;
     this.scheduleCheck = false;
+    this.leaderSeekTime = -1;
     console.log("Playlist Initialized");
   }
   async send(socket: Server | socketInterface | null) {
@@ -82,17 +84,24 @@ class PlayList {
       theThreeGuys,
     });
   }
+
   updateDates() {
     if (!this.playlist.length) {
       this.currentSeekTime = 0;
+      this.leaderSeekTime = -1;
       this.playing = false;
       return;
     }
     let change = false;
     if (this.playing) {
+      if (this.leaderSeekTime >= 0)
+        this.playlist[0].startDate = new Date(
+          (new Date().getTime() / 1000 - this.leaderSeekTime) * 1000
+        );
       this.currentSeekTime =
         Math.abs(new Date().getTime() - this.playlist[0].startDate.getTime()) /
         1000;
+
       if (
         this.currentSeekTime > this.playlist[0].duration &&
         this.playlist[0].duration > 0
@@ -101,6 +110,7 @@ class PlayList {
           this.deleteVideo(this.playlist[0].id);
         } else {
           this.currentSeekTime = 0;
+          this.leaderSeekTime = -1;
           this.playlist.push(this.playlist.splice(0, 1)[0]);
         }
         this.playing = false;
@@ -110,6 +120,7 @@ class PlayList {
     if (!this.playing && this.playlist.length) {
       this.playing = true;
       this.currentSeekTime = 0;
+      this.leaderSeekTime = 0;
       this.playlist[0].startDate = new Date();
       writeToLog("playlist", [
         {
@@ -235,6 +246,7 @@ class PlayList {
         this.playlist.splice(parseInt(index), 1);
         if (parseInt(index) == 0) {
           this.currentSeekTime = 0;
+          this.leaderSeekTime = -1;
           this.playing = false;
         }
       }

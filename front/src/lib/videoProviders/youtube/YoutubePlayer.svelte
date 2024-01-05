@@ -6,6 +6,7 @@
 	import type { YouTubePlayer } from 'youtube-player/dist/types';
 	import { user } from '$lib/stores/user';
 	import { io } from '$lib/realtime';
+	import { leader } from '$lib/stores/video';
 	let player: YouTubePlayer | null;
 	const debounceDuration = 100;
 	let debounced = false;
@@ -24,9 +25,16 @@
 				const syncTime = async () => {
 					let clientTime = await player.getCurrentTime();
 					let serverTime = $video.seekTime;
-					if (Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 && $video.type == 'yt') {
+					if 
+						(Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 
+						&& $video.type == 'yt'
+						&& !($user.username == $leader && $leader !== '')
+						) {
 						console.log('Syncing');
 						player.seekTo(serverTime, true);
+					}
+					if ($user.username == $leader && $leader !== ''){			
+						io.emit('leader-sync',clientTime);
 					}
 				};
 				const initSyncTime = () => {

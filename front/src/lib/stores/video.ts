@@ -4,7 +4,8 @@ const videoObj: videoType = {
 	url: '',
 	seekTime: 0,
 	type: '',
-	duration: 0
+	duration: 0,
+	src: ''
 };
 export interface videoType {
 	id: string;
@@ -12,5 +13,7 @@ export interface videoType {
 	seekTime: number;
 	type: string;
 	duration: number;
+	src?: string;
 }
 export const video = writable(videoObj);
+export const leader = writable('');

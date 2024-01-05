@@ -3,11 +3,13 @@ import { default as IO, socketInterface } from "./socket";
 import settingsSQL from "../sqliteTables/settings";
 import presetsSQL from "../sqliteTables/presets";
 import { readFileSync, writeFileSync, existsSync } from "fs";
+import playlist from "./playlist";
 const infoPath = "./logs/info.html";
 class Settings {
   settings: Record<string, any>;
   enabledPresets: Record<string, Record<string, boolean>>;
   info: string;
+  leader: string;
   constructor() {
     this.enabledPresets = {
       emotes: {},
@@ -15,6 +17,7 @@ class Settings {
     };
     this.settings = {};
     this.info = "";
+    this.leader = "";
     this.refreshSettings();
     this.refreshPresets();
     this.refreshInfo();
@@ -45,6 +48,14 @@ class Settings {
   }
   async refreshPresets() {
     this.enabledPresets = await presetsSQL.get();
+  }
+  setLeader(username: string) {
+    this.leader = username;
+    if (this.leader == "") playlist.leaderSeekTime = -1;
+    this.sendLeader(IO());
+  }
+  sendLeader(socket: socketInterface | Server) {
+    socket.emit("leader", this.leader);
   }
   async refreshInfo() {
     if (!existsSync(infoPath)) {

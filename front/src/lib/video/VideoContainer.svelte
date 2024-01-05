@@ -4,9 +4,19 @@
 	import { browser } from '$app/environment';
 	import { chat } from '$lib/stores/chat';
 	import { settings } from '$lib/stores/settings';
+	import { permissions } from '$lib/stores/permissions';
+	import { video } from '$lib/stores/video';
+	import { leader } from '$lib/stores/video';
+	import { user } from '$lib/stores/user';
+	import { io } from '$lib/realtime';
+	import MdStar from 'svelte-icons/md/MdStar.svelte'
+	import MdStarBorder from 'svelte-icons/md/MdStarBorder.svelte'
+	import MdRefresh from 'svelte-icons/md/MdRefresh.svelte'
+	import Tooltip from '$lib/ui/tooltip.svelte';
 	let chatMessageElem: HTMLElement | null;
 	let videoHeight:number;
 	let bulletHeight = 40;
+	let reset = 0;
 	if (browser) chatMessageElem = document.getElementById('cVideo');
 	chat.subscribe((value) => {
 		for (let message of value) {
@@ -35,14 +45,53 @@
 			}
 		}
 	});
+	const changeLeader = () =>{
+		if($user.accessLevel >= $permissions.leader){
+			io.emit('set-leader');
+		}
+	}
+	const changeSrc = (url:string)=>{
+		$video.src = url;
+	}
 </script>
 
 <div 
 	id="videoContainer" style="width:100%" 
 	bind:clientHeight={videoHeight} 	
 	style:background-image={$settings.videoBG ? `url(${$settings.videoBG})` : ''}
-><Video /></div>
-
+>
+	{#key reset}<Video />{/key}
+	<div id='videoControls' style={($userSettings.display.chat == 'left' ? 'right' : 'left') + ':4rem;'}>		
+		{#if $video.type == 'raw'}
+			{#if $video.url.split('????').length > 1}
+				{#each $video.url.split('????') as url,index}
+					<Tooltip title={$video.url.split('????')[index]}>
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<div class='svgIcon' on:click={()=>changeSrc($video.url.split('????')[index])} >{index+1}</div>
+					</Tooltip>		
+				{/each}
+			{/if}
+		{/if}
+		<Tooltip title='Reset video player'>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div id='refreshIcon' class='svgIcon' on:click={()=>reset++}>
+				<MdRefresh />
+			</div>
+		</Tooltip>
+		<Tooltip title={$leader ? `Leader: ${$leader}` : 'No Leader'}>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div class='svgIcon' 
+				on:click={changeLeader}
+				style:cursor={$user.accessLevel >= $permissions.leader ? '' : 'default'}>
+				{#if $leader !== ''}
+				<MdStar />
+				{:else}
+				<MdStarBorder />
+				{/if}
+			</div>
+		</Tooltip>
+	</div>
+</div>
 <style>
 	#videoContainer {
 		background: black;
@@ -53,7 +102,23 @@
 		float: left;
 		position: relative;
 	}
-
+	#videoControls{
+		position: absolute;
+		top:4rem;
+		opacity: 0;
+		display:flex;
+		flex-direction: column;
+	}
+	.svgIcon{
+		background:var(--color-bg-3);
+		border-radius: 5px;
+		vertical-align: middle;
+		line-height: 1.5rem;
+		text-align: center;
+	}
+	:global(*:has(#refreshIcon):hover > #videoControls){
+		opacity: 0.75;
+	}
 	:global(.bulletText) {
 		animation: textScrollAnim 30s linear 1;
 		animation-fill-mode: forwards;
@@ -67,6 +132,7 @@
 		width: 100%;
 		text-align: left;
 		white-space: nowrap;
+		pointer-events: none;
 	}
 	:global(.bulletText img, .bulletText video){
 		max-height:50svh;

@@ -1,6 +1,6 @@
 import { user, type userType } from './user';
 import { userSettings } from './userSettings';
-import { video } from './video';
+import { leader, video } from './video';
 import type { videoType } from './video';
 import { playlist } from './playlist';
 import { chat, type messageType } from './chat';
@@ -175,6 +175,7 @@ const init = () => {
 				video.set({ id: '', url: '', seekTime: 0, type: '', duration: 0 });
 			} else {
 				if (e.playlist[e.playlistIndex].id !== currentVideo.id) {
+					e.playlist[e.playlistIndex].src = e.playlist[e.playlistIndex].url;
 					video.set(e.playlist[e.playlistIndex]);
 				}
 			}
@@ -273,6 +274,9 @@ const init = () => {
 			Object.assign(n, e);
 			return n;
 		});
+	});
+	io.on('leader', (e) => {
+		leader.set(e);
 	});
 	/*io.on('usersettings', (e) => {
 		if (e) {

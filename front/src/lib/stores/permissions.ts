@@ -18,6 +18,7 @@ export interface Permissions {
 	bypassQueueLimit: number;
 	postMedia: number;
 	clearChat: number;
+	leader: number;
 }
 export const permissionGrouping = {
 	userMod: 'Moderation',
@@ -37,7 +38,8 @@ export const permissionGrouping = {
 	chat: 'Chat',
 	bypassQueueLimit: 'Playlist',
 	postMedia: 'Chat',
-	clearChat: 'Moderation'
+	clearChat: 'Moderation',
+	leader: 'Playlist'
 };
 const permissionsObj: Permissions = {
 	chat: 10,
@@ -57,6 +59,7 @@ const permissionsObj: Permissions = {
 	manageSettings: 10,
 	bypassQueueLimit: 10,
 	manageInfoModal: 10,
-	clearChat: 10
+	clearChat: 10,
+	leader: 10
 };
 export const permissions = writable(permissionsObj);
