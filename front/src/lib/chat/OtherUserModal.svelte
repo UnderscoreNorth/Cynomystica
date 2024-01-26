@@ -9,6 +9,9 @@
 	export let otherUser: otherUserType;
 	export let x:number;
 	export let y:number;
+	if(y + 175 > window.innerHeight){
+		y -= y + 175 - window.innerHeight;
+	}
 	const userMod = (action: actionType) => {
 		if($user.username !== otherUser.username){
 			if(otherUser[action.key]){
