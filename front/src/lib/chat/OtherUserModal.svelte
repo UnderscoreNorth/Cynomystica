@@ -48,12 +48,13 @@
 	interface actionType {
 		action:string
 		access:'' | 'userMod'
-		key:'ignored' | 'banned' | 'muted'
+		key:'ignored' | 'banned' | 'muted' | 'ipbanned';
 	}
 	const actions = [
 		{ action: 'Ignore', access: '',key:'ignored' },
 		{ action: 'Ban', access: 'userMod',key:'banned' },
-		{ action: 'Mute', access: 'userMod', key:'muted' }
+		{ action: 'Mute', access: 'userMod', key:'muted' },
+		{ action: 'IP Ban', access: 'userMod', key:'ipbanned' }
 	] as Array<actionType>;
 </script>
 
