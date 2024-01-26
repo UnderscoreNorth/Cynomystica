@@ -1,4 +1,4 @@
 {
-	"SERVER_URL": "",
-	"SERVER_PORT": ""
+	"SOCKET_URL": "",
+	"WEBSITE_URL": ""
 }

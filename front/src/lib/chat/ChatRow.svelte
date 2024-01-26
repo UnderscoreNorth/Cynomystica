@@ -4,7 +4,7 @@
 	import { bulletMode } from '$lib/stores/bulletmode';
 	import { user } from '$lib/stores/user';
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
-	import {chatInput, type messageType } from '$lib/stores/chat';
+	import {chatInput, chatEl, type messageType } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { moderation } from '$lib/stores/moderation';
 	import { settings } from '$lib/stores/settings';
@@ -29,9 +29,10 @@
 		if ($tempSettings.anonymous) username = '';
 		return username;
 	};
-	function clickMessage(e:PointerEvent){
+	function clickMessage(e:MouseEvent){
 		if(e.target?.classList?.contains('emote')){
 			$chatInput += e.target?.title;
+			$chatEl.focus();
 		}
 	}
 </script>
@@ -85,8 +86,8 @@
 		padding-left: 2px;
 	}
 	.chatIcon img {
-		height: 1.25rem;
-		width: 1.25rem;
+		max-height: 1.25rem;
+		max-width: 1.25rem;
 		margin-bottom: -0.125rem;
 	}
 	.chatTime {
@@ -98,7 +99,7 @@
 	.userHighlighted {
 		color: white;
 	}
-	:global(.chatMsg img) {
+	:global(.chatMsg img, .chatMsg video) {
 		max-width: 100%;
 		max-height: var(--max-height);
 		vertical-align: middle;

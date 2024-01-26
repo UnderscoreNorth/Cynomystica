@@ -1,7 +1,8 @@
 <script lang="ts">
     import { user as me } from "$lib/stores/user";
     import { io } from "$lib/realtime";
-    import SortArrow from "$lib/ui/sortArrow.svelte";    
+    import SortArrow from "$lib/ui/sortArrow.svelte";  
+    import moment from "moment";  
     let users:Array<any>;
     let sortBy = 'username';
     let sortDir = 1;
@@ -83,7 +84,7 @@
                             >
                         </td>
                     {/each}
-                    <td>{user.lastLogin}</td>
+                    <td>{moment.utc(user.lastLogin).local().format('YYYY-MM-DD HH:mm')}</td>
                 </tr>
             {/each}
             {/key}

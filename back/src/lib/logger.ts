@@ -9,10 +9,8 @@ export const writeToLog = (type: string, messages: any) => {
     const fileName = `${date.getDate()}.csv`;
     createFolder(path);
     csv.stringify(messages, { header: false }, (err, output) => {
-      fs.appendFile(path + fileName, output, (err) => {
-        if (err) throw err;
-        messages.splice(0, messages.length);
-      });
+      fs.appendFileSync(path + fileName, output);
+      messages.splice(0, messages.length);
     });
   }
 };

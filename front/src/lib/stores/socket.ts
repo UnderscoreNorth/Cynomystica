@@ -1,6 +1,6 @@
 import { user, type userType } from './user';
 import { userSettings } from './userSettings';
-import { video } from './video';
+import { leader, video } from './video';
 import type { videoType } from './video';
 import { playlist } from './playlist';
 import { chat, type messageType } from './chat';
@@ -20,6 +20,7 @@ import { tempSettings } from './tempSettings';
 import { presets } from './presets';
 import { settings } from './settings';
 import { moderation, type Moderation } from './moderation';
+import { info } from './info';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
@@ -83,8 +84,10 @@ const pushToChat = (oldChat: Array<messageType>, e: any) => {
 			}
 			if (userSettingsObj.hideImage) {
 				msg.message = msg.message.replace(/<img[^>]*>/g, '');
+				msg.message = msg.message.replace(/<video[^>]*>/g, '');
 			}
 			msg.played = false;
+			msg.id = Math.random().toString();
 			oldChat.push(msg);
 			if (oldChat.length > userSettingsObj.chat.chatArray)
 				oldChat.splice(0, oldChat.length - userSettingsObj.chat.chatArray);
@@ -169,9 +172,10 @@ const init = () => {
 		if (e.status == 'success') {
 			playlist.set(e.playlist);
 			if (!e.playlist.length) {
-				video.set({ id: '', url: '', seekTime: 0, type: '' });
+				video.set({ id: '', url: '', seekTime: 0, type: '', duration: 0 });
 			} else {
 				if (e.playlist[e.playlistIndex].id !== currentVideo.id) {
+					e.playlist[e.playlistIndex].src = e.playlist[e.playlistIndex].url;
 					video.set(e.playlist[e.playlistIndex]);
 				}
 			}
@@ -201,8 +205,8 @@ const init = () => {
 			usersArr.sort((a, b) => {
 				if (a.accessLevel < b.accessLevel) return 1;
 				if (a.accessLevel > b.accessLevel) return -1;
-				if (a.username > b.username) return 1;
-				if (a.username < b.username) return -1;
+				if (a.username.toLowerCase() > b.username.toLowerCase()) return 1;
+				if (a.username.toLowerCase() < b.username.toLowerCase()) return -1;
 				return 0;
 			});
 			for (const i of usersArr) {
@@ -271,6 +275,9 @@ const init = () => {
 			return n;
 		});
 	});
+	io.on('leader', (e) => {
+		leader.set(e);
+	});
 	/*io.on('usersettings', (e) => {
 		if (e) {
 			e.blockSave = true;
@@ -315,6 +322,12 @@ const init = () => {
 			});
 			return oldChat;
 		});
+	});
+	io.on('info', (e) => {
+		info.set(e);
+	});
+	io.on('clear-chat', () => {
+		chat.set([]);
 	});
 };
 export default init;

@@ -1,9 +1,9 @@
 import ioClient from 'socket.io-client';
 import CONFIG from './clientconfig.json';
-const ENDPOINT = `${CONFIG.SERVER_URL}${CONFIG.SERVER_PORT ? `:${CONFIG.SERVER_PORT}` : ''}`;
-//console.log({ ENDPOINT });
-const socket = ioClient(ENDPOINT, {
-	path: '/ws',
+const endPoint = CONFIG.SOCKET_URL.match(/^.+\/\/.+\//g)?.[0] ?? '';
+const path = CONFIG.SOCKET_URL.substring(endPoint.length);
+const socket = ioClient(endPoint, {
+	path: `/${path}`,
 	transports: ['websocket'],
 	upgrade: false
 });

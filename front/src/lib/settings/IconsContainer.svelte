@@ -133,7 +133,7 @@
                     </tr>
                     {#each Object.keys(iconsGrouped?.[selectedPreset] ?? {}) as icon}
                         <tr>
-                            <td>
+                            <td  style:text-align='center'> 
                                 {#if iconsGrouped[selectedPreset][icon].url}
                                     <img 
                                         src={iconsGrouped[selectedPreset][icon].url} 
@@ -152,7 +152,7 @@
                             </td>
                             <td>
                                 <input style:max-width={'5rem'} 
-                                bind:value={iconsGrouped[selectedPreset][icon].color} >
+                                bind:value={iconsGrouped[selectedPreset][icon].color} placeholder="#000000" >
                             </td>
                             <td 
                                 style:background={iconsGrouped[selectedPreset][icon].color} 
@@ -214,8 +214,7 @@
         width:10rem
     }
     .iconList img{
-        height:1.8rem;
-        width:1.8rem;
+        max-height:1.8rem;
         max-width: 1.8rem;
     }
     .iconList td{

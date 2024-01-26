@@ -23,7 +23,7 @@
             <td><input bind:value={title}></td>
         </tr>
         <tr>
-            <th>Duration</th>
+            <th>Duration (sec)</th>
             <td><input bind:value={duration} type="number" step="1" placeholder='Blank for no expiry'></td>            
         </tr>
         <tr>

@@ -37,24 +37,28 @@
 				<div>
 					<u>{preset}</u>
 				</div>
+				<table style:border-collapse='collapse'>
 				{#each Object.entries($icons) as [id, icon]}
 					{#if icon.preset == preset}
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<div
+						<tr
 							on:click={() => {
 								selectIcon(id);
 							}}
 							class="iconListItem"
 						>
+							<td style:text-align='center'>
 							{#if icon.url}
 								<img src={icon.url} alt="icon" />
 							{/if}
-							<span style:color={icon.color}>
+						</td>
+							<td style:color={icon.color}>
 								{icon.display}
-							</span>
-						</div>
+							</td>
+						</tr>
 					{/if}
 				{/each}
+				</table>
 			</div>
 		{/each}
 	</div>
@@ -81,8 +85,6 @@
 		padding:0 5px;
 	}
 	.iconListItem {
-		display: flex;
-		align-items: center;
 		height: 1.8rem;
 	}
 	.iconListItem img{
@@ -91,11 +93,12 @@
 	.iconListItem:hover {
 		background-color: var(--color-bg-2);
 		color:var(--color-fg-2);
+		cursor: pointer;
 	}	
 	.iconListItem img,
 	#iconSelect img {
-		height: 1.8rem;
-		width: 1.8rem;
+		max-height: 1.8rem;
+		max-width: 1.8rem;
 	}
 	#iconSelect {
 		position: absolute;
@@ -112,5 +115,6 @@
 	}
 	#iconSelect:hover {
 		background-color: #1e90ff;
+		cursor: pointer;
 	}
 </style>

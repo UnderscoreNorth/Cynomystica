@@ -132,11 +132,12 @@ export default class {
                   duration=@duration,
                   minutes=@minutes,
                   selection=@selection,
-                  playlist=@playlist`
+                  playlist=@playlist,
+                  visible=@visible`
           )
           .run(obj);
       } else {
-        console.log(obj.title, conflict.c);
+        //console.log(obj.title, conflict.c);
       }
     }
   };

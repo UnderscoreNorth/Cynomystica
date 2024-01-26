@@ -1,5 +1,5 @@
-import config from "../../../config.json";
-import { PlaylistItem } from "../../server/playlist";
+import config from "../../config.json";
+import { PlaylistItem } from "../server/playlist";
 
 const parseYoutube = (mediaURL: string) => {
   return new Promise<PlaylistItem>((resolve, reject) => {
@@ -33,6 +33,7 @@ const parseYoutube = (mediaURL: string) => {
           duration: duration,
           scheduledID: null,
           type: "yt",
+          permanent: false,
         };
         if (duration > 0) {
           resolve(resolveObj);

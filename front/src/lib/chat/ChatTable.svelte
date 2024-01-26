@@ -11,24 +11,16 @@
         $tempSettings.hiddenPolls = $tempSettings.hiddenPolls.add(pollID)
 	}
     $tempSettings.scrollLock = true;    
-    let debounce = false;
-    const scrollEvent = (e)=>{
-        if(!debounce){
-            debounce = true;
-            if(chatScroller.scrollTop + chatScroller.offsetHeight + 25 > chatScroller.scrollHeight){
-                $tempSettings.scrollLock = true;
-            } else {
-                $tempSettings.scrollLock = false;
-            }                
-            setTimeout(()=>{
-                debounce = false;
-            },100);
-        }
-    }
     onMount(()=>{
         chat.subscribe((e)=>{
             if ($tempSettings.minimize.toggle || $tempSettings.scrollLock){
                 setTimeout(()=>{
+                    if('maxTouchPoints' in navigator){
+                        if(navigator.maxTouchPoints > 1){
+                            chatScroller.scrollTop = chatScroller.scrollHeight;
+                            return;
+                        }
+                    }
                     chatScroller?.lastElementChild?.lastElementChild?.lastElementChild?.scrollIntoView();
                 },50);
             }
@@ -38,7 +30,6 @@
     
 </script>
 <div id="chatScroller" 
-    on:scroll={scrollEvent} 
     bind:this={chatScroller} 
     class={$tempSettings.minimize.toggle ? 'chatMinimal' : ''}
     style:opacity={$tempSettings.minimize.toggle ? $tempSettings.minimize.opacity/100 : ''}
@@ -61,7 +52,7 @@
             {/key}
         </thead>
         <tbody>
-            {#each $chat as message}
+            {#each $chat as message (message.id)}
                 <ChatRow {message} />
             {/each}
         </tbody>

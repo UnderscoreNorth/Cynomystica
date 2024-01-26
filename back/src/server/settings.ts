@@ -2,17 +2,25 @@ import { Server } from "socket.io";
 import { default as IO, socketInterface } from "./socket";
 import settingsSQL from "../sqliteTables/settings";
 import presetsSQL from "../sqliteTables/presets";
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import playlist from "./playlist";
+const infoPath = "./logs/info.html";
 class Settings {
   settings: Record<string, any>;
   enabledPresets: Record<string, Record<string, boolean>>;
+  info: string;
+  leader: string;
   constructor() {
     this.enabledPresets = {
       emotes: {},
       icons: {},
     };
     this.settings = {};
+    this.info = "";
+    this.leader = "";
     this.refreshSettings();
     this.refreshPresets();
+    this.refreshInfo();
   }
   sendPreset(socket: socketInterface | Server) {
     socket?.emit("presets", this.enabledPresets);
@@ -32,11 +40,69 @@ class Settings {
   sendSettings(socket: socketInterface | Server) {
     socket?.emit("settings", this.settings);
   }
+  sendInfo(socket: socketInterface | Server) {
+    socket?.emit("info", this.info);
+  }
   async refreshSettings() {
     this.settings = await settingsSQL.get();
   }
   async refreshPresets() {
     this.enabledPresets = await presetsSQL.get();
+  }
+  setLeader(username: string) {
+    this.leader = username;
+    if (this.leader == "") playlist.leaderSeekTime = -1;
+    this.sendLeader(IO());
+  }
+  sendLeader(socket: socketInterface | Server) {
+    socket.emit("leader", this.leader);
+  }
+  async refreshInfo() {
+    if (!existsSync(infoPath)) {
+      writeFileSync(infoPath, "");
+    }
+    this.info = readFileSync(infoPath).toString();
+  }
+  async updateInfo(html: string) {
+    let allowedEl = [
+      "div",
+      "style",
+      "span",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "td",
+      "th",
+      "b",
+      "hr",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "a",
+      "p",
+      "i",
+      "u",
+      "img",
+      "video",
+      "ol",
+      "ul",
+      "li",
+      "center",
+    ];
+    html = html.replace(/</g, "&lt;");
+    for (let el of allowedEl) {
+      let regex = new RegExp(`&lt;` + el, "gi");
+      html = html.replace(regex, "<" + el);
+      regex = new RegExp(`&lt;\/` + el, "gi");
+      html = html.replace(regex, "</" + el);
+    }
+    writeFileSync(infoPath, html);
+    this.info = html;
+    this.sendInfo(IO());
   }
 }
 let settings: Settings;

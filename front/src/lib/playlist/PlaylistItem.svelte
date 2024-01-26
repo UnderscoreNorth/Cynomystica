@@ -10,6 +10,16 @@
 	export let item: any;
 	export let deleteItem: Function;
 	let innerWidth = 0;
+	const getURL = (type:string, url:string)=>{
+		if(type =='iframe')
+			return '';
+		let provider = '';
+		if(type == 'yt' || type=='ytlive')
+			provider = 'https://youtube.com/watch?v=';
+		if(type == 'tw_live')
+			provider = 'https://twitch.tv/';
+		return provider + url;
+	}
 </script>
 
 <svelte:window bind:innerWidth />
@@ -23,17 +33,21 @@
 		{/if}
 	</td>
 	<td colspan="4">
-		<a
-			href={(item.type == 'yt' ? `https://youtube.com/watch?v=` : ``) + item.url}
-			target="_blank"
-			rel="noreferrer">{item.name}</a
-		>
+		{#if getURL(item.type,item.url)}
+			<a
+				href={getURL(item.type,item.url)}
+				target="_blank"
+				rel="noreferrer">{item.name}</a
+			>
+		{:else}
+			{item.name}
+		{/if}
 		<br />
 		{secondsToTime(item.duration)} - {item.username}
 		<span style:float='right'>{new Date(item.endDate).toLocaleTimeString()}</span>
 	</td>
 {:else}
-	<td>
+	<td class='t-mid'>
 		{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={deleteItem(item)}>
@@ -41,12 +55,15 @@
 			</div>
 		{/if}
 	</td>
-	<td
-		><a
-			href={((item.type == 'yt' || item.type == 'ytlive' ) ? `https://youtube.com/watch?v=` : ``) + item.url}
+	<td>
+		{#if getURL(item.type,item.url)}
+		<a href={getURL(item.type,item.url)}
 			target="_blank"
-			rel="noreferrer">{item.name}</a 
-		></td
+			rel="noreferrer">{item.name}
+		</a>
+	{:else}
+		{item.name}
+	{/if}</td
 	>
 	<td class="t-right">{new Date(item.startDate).toLocaleTimeString()}</td>
 	<td class="t-right">{new Date(item.endDate).toLocaleTimeString()}</td>
@@ -59,7 +76,13 @@
 		line-height: 2rem;
 		color: var(--color-text-dark-1);
 	}
+	.t-mid{
+		text-align: center;
+	}
 	.t-right {
 		text-align: right;
+	}
+	.svgIcon{
+		display:inline-block;
 	}
 </style>

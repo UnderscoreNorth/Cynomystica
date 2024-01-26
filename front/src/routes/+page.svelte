@@ -12,9 +12,11 @@
 	import Snow from '$lib/special/snow/Snow.svelte';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { settings } from '$lib/stores/settings';
+	import { page } from '$app/stores';
 	let tabName = $settings.tabName;
 
 	onMount(() => {
+		if(!$page.url.search.includes('debug')) window.console.log = ()=>{}
 		init();
 		setInterval(() => {
 			if ($tabText && tabName !== $tabText) {

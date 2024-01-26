@@ -24,6 +24,7 @@
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import ChatBar from '$lib/chat/ChatBar.svelte';
 	import SettingsModal from '$lib/settings/SettingsModal.svelte';
+	import Tooltip from '$lib/ui/tooltip.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -65,11 +66,12 @@
 		</div>
 	{:else}
 		<nav>
-			<div id="siteName">Cynomystica |</div>
+			<div id="siteName">
+				<a target="_blank" rel="noreferrer" href="https://github.com/UnderscoreNorth/Cynomystica"><Tooltip title='Github/Documentation'>Cynomystica</Tooltip></a> |</div>
 			<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
 			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
 			<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
-			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info/Updates'} />
+			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info'} />
 			<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
 			<IconButton Icon={MdSentimentVeryDissatisfied} onClick={toggleModeration} tooltip={'User Management'}/>	
 			<div id="loginLi"><Login /></div>
@@ -97,7 +99,7 @@
 		</Modal>
 	{/if}
 	{#if infoModalOpen}
-		<Modal closeModal={toggleInfo} title='Info/Updates'>
+		<Modal closeModal={toggleInfo} title='Info'>
 			<InfoContainer />
 		</Modal>
 	{/if}

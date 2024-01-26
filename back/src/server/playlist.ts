@@ -21,6 +21,7 @@ export interface PlaylistItem {
   duration: number;
   type: string;
   scheduledID: string | null;
+  permanent: boolean;
 }
 
 let theThreeGuys = [];
@@ -30,11 +31,13 @@ class PlayList {
   currentSeekTime: number;
   playing: boolean;
   scheduleCheck: boolean;
+  leaderSeekTime: number;
   constructor() {
     this.playlist = [];
     this.currentSeekTime = 0;
     this.playing = false;
     this.scheduleCheck = false;
+    this.leaderSeekTime = -1;
     console.log("Playlist Initialized");
   }
   async send(socket: Server | socketInterface | null) {
@@ -81,22 +84,35 @@ class PlayList {
       theThreeGuys,
     });
   }
+
   updateDates() {
     if (!this.playlist.length) {
       this.currentSeekTime = 0;
+      this.leaderSeekTime = -1;
       this.playing = false;
       return;
     }
     let change = false;
     if (this.playing) {
+      if (this.leaderSeekTime >= 0)
+        this.playlist[0].startDate = new Date(
+          (new Date().getTime() / 1000 - this.leaderSeekTime) * 1000
+        );
       this.currentSeekTime =
         Math.abs(new Date().getTime() - this.playlist[0].startDate.getTime()) /
         1000;
+
       if (
         this.currentSeekTime > this.playlist[0].duration &&
         this.playlist[0].duration > 0
       ) {
-        this.deleteVideo(this.playlist[0].id);
+        if (!this.playlist[0].permanent) {
+          this.deleteVideo(this.playlist[0].id);
+        } else {
+          this.currentSeekTime = 0;
+          this.leaderSeekTime = -1;
+          this.playlist.push(this.playlist.splice(0, 1)[0]);
+        }
         this.playing = false;
         change = true;
       }
@@ -104,6 +120,7 @@ class PlayList {
     if (!this.playing && this.playlist.length) {
       this.playing = true;
       this.currentSeekTime = 0;
+      this.leaderSeekTime = -1;
       this.playlist[0].startDate = new Date();
       writeToLog("playlist", [
         {
@@ -136,7 +153,7 @@ class PlayList {
     });
   }
   queueVideo = async (
-    mediaURL: string,
+    item: { mediaURL: string; permanent?: boolean; title?: string },
     username: string,
     socket: socketInterface,
     scheduleID: string | null = null,
@@ -151,33 +168,41 @@ class PlayList {
         });
       }
     };
-    if (mediaURL.includes(" ")) {
+    /*if (item.mediaURL.includes(" ")) {
       socketError("Invalid link");
       return;
-    }
-    if (!mediaURL) {
+    }*/
+    if (!item?.mediaURL) {
       socketError("Empty link");
       return;
     }
     if (socket) {
       if (
-        parseRaw(new URL(mediaURL)).type == "raw" &&
+        parseRaw(item.mediaURL).type == "raw" &&
         !(socket.accessLevel >= permissions().items["queueRaw"])
       ) {
         socketError(`You don't have permission to queue raw videos`);
         return;
       }
     }
-    await parseURL(mediaURL)
+    await parseURL(item.mediaURL)
       .then((playlistItem) => {
         playlistItem.id = id;
         playlistItem.username = username;
+        if (item.title) playlistItem.name = item.title;
+        if (item.permanent) playlistItem.permanent = true;
         let currentLen = 0;
         if (socket) {
-          console.log(
-            permissions().items["bypassQueueLimit"],
-            settings().settings["bypassQueueLimit"]
-          );
+          if (
+            socket.accessLevel < permissions().items["queueLive"] &&
+            playlistItem.duration == -1
+          ) {
+            socketError(
+              `You do not have permission to queue live videos/iframes`
+            );
+            return;
+          }
+
           if (
             socket.accessLevel < permissions().items["bypassQueueLimit"] &&
             settings().settings["maxTotalQueueLength"] > 0
@@ -221,6 +246,7 @@ class PlayList {
         this.playlist.splice(parseInt(index), 1);
         if (parseInt(index) == 0) {
           this.currentSeekTime = 0;
+          this.leaderSeekTime = -1;
           this.playing = false;
         }
       }
@@ -238,7 +264,12 @@ class PlayList {
           for (let item of scheduled) {
             if (this.playlist.length == 0) {
               if (moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 5) {
-                await this.queueVideo(item.url, item.username, null, item.id);
+                await this.queueVideo(
+                  { mediaURL: item.url },
+                  item.username,
+                  null,
+                  item.id
+                );
               } else {
                 break;
               }
@@ -260,7 +291,12 @@ class PlayList {
                   duration: diff,
                 });
                 if (fillAttempt) {
-                  await this.queueVideo(item.url, item.username, null, item.id);
+                  await this.queueVideo(
+                    { mediaURL: item.url },
+                    item.username,
+                    null,
+                    item.id
+                  );
                 } else {
                   break;
                 }
@@ -269,7 +305,12 @@ class PlayList {
                 if (diff <= 0 && !scheduledIDs.includes(item.id)) {
                   tempPlaylist = structuredClone(this.playlist);
                   this.playlist = [];
-                  await this.queueVideo(item.url, item.username, null, item.id);
+                  await this.queueVideo(
+                    { mediaURL: item.url },
+                    item.username,
+                    null,
+                    item.id
+                  );
                 } else {
                   break;
                 }
