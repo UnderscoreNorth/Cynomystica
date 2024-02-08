@@ -49,7 +49,7 @@ export class Polls {
     let updated = false;
     for (let pollID in this.polls) {
       let poll = this.polls[pollID];
-      if (poll.duration > 0) {
+      if (!poll.dateClose && poll.duration > 0) {
         if ((now - poll.dateCreate.getTime()) / 1000 > poll.duration) {
           updated = true;
           poll.dateClose = new Date();
