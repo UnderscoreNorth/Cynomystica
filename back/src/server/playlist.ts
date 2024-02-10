@@ -5,9 +5,11 @@ import { cycle } from "./cycle";
 import schedule from "../sqliteTables/schedule";
 import moment from "moment";
 import playlists from "../sqliteTables/playlists";
+import playlistItems from "../sqliteTables/playlistItems";
 import { writeToLog } from "../lib/logger";
 import permissions from "./permissions";
 import settings from "./settings";
+import { Moment } from "moment";
 
 export type PlaylistOrder = Array<number>;
 export type PlaylistObj = Array<PlaylistItem>;
@@ -15,8 +17,8 @@ export interface PlaylistItem {
   id: number;
   name: string;
   url: string;
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: Moment | null;
+  endDate: Moment | null;
   username: string;
   duration: number;
   type: string;
@@ -59,7 +61,7 @@ class PlayList {
         theThreeGuys = theThreeGuys
           .sort(
             (a: socketInterface, b: socketInterface) =>
-              b?.lastMessage?.getTime() ?? 0 - a?.lastMessage?.getTime() ?? 0
+              b?.lastMessage?.unix() ?? 0 - a?.lastMessage?.unix() ?? 0
           )
           .slice(0, 10);
         console.log(
@@ -95,12 +97,13 @@ class PlayList {
     let change = false;
     if (this.playing) {
       if (this.leaderSeekTime >= 0)
-        this.playlist[0].startDate = new Date(
-          (new Date().getTime() / 1000 - this.leaderSeekTime) * 1000
-        );
-      this.currentSeekTime =
-        Math.abs(new Date().getTime() - this.playlist[0].startDate.getTime()) /
-        1000;
+        this.playlist[0].startDate = moment
+          .utc()
+          .subtract(this.leaderSeekTime, "seconds");
+
+      this.currentSeekTime = Math.abs(
+        moment.utc().diff(this.playlist[0].startDate) / 1000
+      );
 
       if (
         this.currentSeekTime > this.playlist[0].duration &&
@@ -121,13 +124,13 @@ class PlayList {
       this.playing = true;
       this.currentSeekTime = 0;
       this.leaderSeekTime = -1;
-      this.playlist[0].startDate = new Date();
+      this.playlist[0].startDate = moment.utc();
       writeToLog("playlist", [
         {
           url: this.playlist[0].url,
           title: this.playlist[0].name,
           username: this.playlist[0].username,
-          time: new Date(),
+          time: moment.utc(),
         },
       ]);
       change = true;
@@ -140,7 +143,7 @@ class PlayList {
         item.startDate = lastEndDate;
       }
       if (item.duration == 0) break;
-      item.endDate = new Date(item.startDate.getTime() + item.duration * 1000);
+      item.endDate = item.startDate.add(item.duration, "seconds");
       if (item.duration == -1) {
         item.endDate = item.startDate;
       }
@@ -223,10 +226,10 @@ class PlayList {
         }
 
         if (!this.playlist.length) {
-          playlistItem.startDate = new Date();
-          playlistItem.endDate = new Date(
-            Date.now() + playlistItem.duration * 1000
-          );
+          playlistItem.startDate = moment.utc();
+          playlistItem.endDate = moment
+            .utc()
+            .add(playlistItem.duration, "seconds");
         }
         playlistItem.scheduledID = scheduleID;
         if (last) {
@@ -257,7 +260,9 @@ class PlayList {
     if (!this.scheduleCheck) {
       this.scheduleCheck = true;
       try {
-        let scheduled = await schedule.getAll(new Date(Date.now() - 5000));
+        let scheduled = await schedule.getAll(
+          moment.utc().subtract(5, "seconds")
+        );
         let nextScheduled = scheduled[0];
         if (nextScheduled) {
           let tempPlaylist = [];
@@ -280,13 +285,12 @@ class PlayList {
                 1000;
               let scheduledIDs = this.playlist.map((x) => x.scheduledID);
               if (
-                diff <= item.minutes * 60 &&
+                diff <= item.duration &&
                 item.playlist !== "" &&
                 diff > 0 &&
                 !scheduledIDs.includes(item.id)
               ) {
                 let fillAttempt = await this.queuePlaylist({
-                  mode: item.selection,
                   playlist: item.playlist,
                   duration: diff,
                 });
@@ -325,7 +329,11 @@ class PlayList {
     }
   };
   queuePlaylist = async (options: any) => {
-    let items = await playlists.getPlaylist(options.playlist);
+    let playlistMeta = await playlists.getPlaylistMeta(options.playlist);
+    let items = await playlistItems.getPlaylist(
+      options.playlist,
+      playlistMeta.mode
+    );
     if (items.length == 0) return false;
     let maxTries = 1000;
     let tries = 0;
@@ -346,7 +354,7 @@ class PlayList {
           complete = true;
           for (let subitem of queue) {
             await this.queueVideo(subitem.url, subitem.username, null);
-            await playlists.updatePlayCount(subitem.id);
+            await playlistItems.updatePlayCount(subitem.id);
           }
           break loop;
         } else if (duration > maxDuration) {

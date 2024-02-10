@@ -2,6 +2,7 @@ import { socketInterface } from "../server/socket";
 import { PlaylistObj } from "../server/playlist";
 import playlist from "../server/playlist";
 import permissions from "../server/permissions";
+import moment from "moment";
 export default function updatePlaylist(
   socket: socketInterface,
   sentPlaylist: PlaylistObj
@@ -20,7 +21,7 @@ export default function updatePlaylist(
     playlist.playlist = newPlaylist;
     if (currentID !== newCurrentID) {
       playlist.currentSeekTime = 0;
-      playlist.playlist[0].startDate = new Date();
+      playlist.playlist[0].startDate = moment.utc();
     }
     playlist.send(null);
   }

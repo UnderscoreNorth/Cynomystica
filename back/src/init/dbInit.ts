@@ -10,6 +10,7 @@ import playlists from "../sqliteTables/playlists";
 import emotes from "../sqliteTables/emotes";
 import settings from "../sqliteTables/settings";
 import presets from "../sqliteTables/presets";
+import playlistItems from "../sqliteTables/playlistItems";
 
 export default async function dbInit() {
   const tableList = [
@@ -24,6 +25,7 @@ export default async function dbInit() {
     emotes,
     settings,
     presets,
+    playlistItems,
   ];
   //console.log(db.prepare(`SELECT * FROM sqlite_master`).all());
 

@@ -2,7 +2,7 @@ import { user, type userType } from './user';
 import { userSettings } from './userSettings';
 import { leader, video } from './video';
 import type { videoType } from './video';
-import { playlist } from './playlist';
+import { queue } from './queue';
 import { chat, type messageType } from './chat';
 import { io } from '$lib/realtime';
 import { users, type otherUser } from './users';
@@ -21,6 +21,7 @@ import { presets } from './presets';
 import { settings } from './settings';
 import { moderation, type Moderation } from './moderation';
 import { info } from './info';
+import moment from 'moment';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
@@ -71,6 +72,7 @@ settings.subscribe((e) => {
 	settingsObj = e;
 });
 const pushToChat = (oldChat: Array<messageType>, e: any) => {
+	console.log(74, e);
 	const pushMsg = (msg: messageType) => {
 		if (moderationObj.ignored.map((x) => x.username).includes(msg.username)) return;
 		if (msg.message) {
@@ -112,7 +114,7 @@ const init = () => {
 			oldChat = pushToChat(oldChat, {
 				icon: '',
 				message: 'Connected',
-				time: new Date(),
+				time: moment().local(),
 				username: 'SYSTEM',
 				type: 'system'
 			});
@@ -170,7 +172,7 @@ const init = () => {
 	io.emit('get-playlist');
 	io.on('playlist', (e) => {
 		if (e.status == 'success') {
-			playlist.set(e.playlist);
+			queue.set(e.playlist);
 			if (!e.playlist.length) {
 				video.set({ id: '', url: '', seekTime: 0, type: '', duration: 0 });
 			} else {
@@ -266,6 +268,7 @@ const init = () => {
 	});
 	io.on('schedule', (e) => {
 		if (e.status == 'success') {
+			console.log(271, e);
 			schedule.set(e.schedule);
 		}
 	});
@@ -304,7 +307,7 @@ const init = () => {
 			oldChat = pushToChat(oldChat, {
 				icon: '',
 				message: 'Disconnected',
-				time: new Date(),
+				time: moment().local(),
 				username: 'SYSTEM',
 				type: 'system'
 			});
@@ -316,7 +319,7 @@ const init = () => {
 			oldChat = pushToChat(oldChat, {
 				icon: '',
 				message: 'Reconnecting',
-				time: new Date(),
+				time: moment().local(),
 				username: 'SYSTEM',
 				type: 'system'
 			});

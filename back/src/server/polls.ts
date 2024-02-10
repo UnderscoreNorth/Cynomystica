@@ -2,15 +2,16 @@ import { default as IO, socketInterface } from "./socket";
 import permissions from "./permissions";
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
-
+import { Moment } from "moment";
+import moment from "moment";
 export interface Poll {
   username: string;
-  dateCreate: Date;
+  dateCreate: Moment;
   duration: number;
   title: string;
   options: Array<string>;
   votes: Record<string, number>;
-  dateClose?: Date;
+  dateClose?: Moment;
 }
 
 export class Polls {
@@ -28,7 +29,7 @@ export class Polls {
       this.polls[uuidv4()] = {
         username: socket.username,
         duration,
-        dateCreate: new Date(),
+        dateCreate: moment.utc(),
         title,
         options,
         votes: {},
@@ -39,20 +40,20 @@ export class Polls {
   close(socket: socketInterface, pollID: string) {
     if (socket.accessLevel >= permissions().items["managePolls"]) {
       if (this.polls[pollID]) {
-        this.polls[pollID].dateClose = new Date();
+        this.polls[pollID].dateClose = moment.utc();
         IO().emit("poll", this.polls);
       }
     }
   }
   check() {
-    let now = new Date().getTime();
+    let now = moment.utc();
     let updated = false;
     for (let pollID in this.polls) {
       let poll = this.polls[pollID];
       if (poll.duration > 0) {
-        if ((now - poll.dateCreate.getTime()) / 1000 > poll.duration) {
+        if (now.diff(poll.dateCreate) / 1000 > poll.duration) {
           updated = true;
-          poll.dateClose = new Date();
+          poll.dateClose = moment.utc();
           if (poll.options.length == 0) delete this.polls[pollID];
         }
       }

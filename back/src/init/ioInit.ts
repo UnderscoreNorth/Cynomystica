@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import md5 from "md5";
+import moment from "moment";
 
 import { socketInterface, sendUserList } from "../server/socket";
 import chat from "../server/chat";
@@ -52,6 +53,9 @@ import sendEmotes from "../lib/sendEmotes";
 import polls from "../server/polls";
 import sendIcons from "../lib/sendIcons";
 import { Server } from "socket.io";
+import addToPlaylist from "../controller/playlists/add-to-playlist";
+import getPlaylists from "../controller/playlists/get-playlists";
+import upsertPlaylist from "../controller/playlists/upsert-playlist";
 export default function ioInit(io: Server) {
   settingsInit();
   permissionsInit();
@@ -90,6 +94,9 @@ export default function ioInit(io: Server) {
     "update-info": updateInfo,
     "leader-sync": leaderSync,
     "set-leader": setLeader,
+    "add-to-playlist": addToPlaylist,
+    "get-playlists": getPlaylists,
+    "upsert-playlist": upsertPlaylist,
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();
@@ -117,7 +124,7 @@ export default function ioInit(io: Server) {
           ioEvents[event](socket, msg);
         });
       } catch (err) {
-        console.log(socket.username, new Date(), err);
+        console.log(socket.username, moment.utc(), err);
       }
     }
     socket.on("connection", (socket2) => {

@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import Config from "../../config.json";
 import RefreshTokens from "../sqliteTables/refreshTokens";
 import formatDate from "./formatDate";
+import moment from "moment";
 const accessExpiry = 60 * 15 * 1 * 1; //15 minutes
 const refreshExpiry = 60 * 60 * 24 * 7; //7 days
 export function sign(username: string, type: "access" | "refresh") {
@@ -18,12 +19,9 @@ export function sign(username: string, type: "access" | "refresh") {
       default:
         return false;
     }
-    let expiryDate = new Date();
-    expiryDate.setSeconds(expiryDate.getSeconds() + expiry);
+    let expiryDate = moment.utc().add(expiry, "seconds");
     let payload = { username, expires: "", type };
-    payload.expires = expiryDate.toLocaleString("en-US", {
-      timeZone: "America/Toronto",
-    });
+    payload.expires = formatDate(expiryDate);
     let token = jwt.sign({ payload }, Config.JWT_SALT, {
       expiresIn: expiry,
     });

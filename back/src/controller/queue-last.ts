@@ -1,8 +1,9 @@
 import { socketInterface } from "../server/socket";
 import { default as playlist } from "../server/playlist";
+import moment from "moment";
 export default async function queueLast(socket: socketInterface, message: any) {
   if (socket.lastQueue) {
-    if (new Date().getTime() - socket.lastQueue.getTime() < 500) {
+    if (moment.utc().diff(socket.lastQueue) < 500) {
       console.log(socket.username, "spamming");
       return;
     }
@@ -13,5 +14,5 @@ export default async function queueLast(socket: socketInterface, message: any) {
     .catch((err) => {
       console.log("queuevideo", err);
     });
-  socket.lastQueue = new Date();
+  socket.lastQueue = moment.utc();
 }

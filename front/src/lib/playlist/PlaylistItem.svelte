@@ -25,7 +25,7 @@
 <svelte:window bind:innerWidth />
 {#if innerWidth < 768}
 	<td>
-		{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}
+		{#if $user.accessLevel >= $permissions.manageQueue || $user.username == item.username}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={deleteItem(item)}>
 				<MdDelete />
@@ -48,7 +48,7 @@
 	</td>
 {:else}
 	<td class='t-mid'>
-		{#if $user.accessLevel >= $permissions.managePlaylist || $user.username == item.username}
+		{#if $user.accessLevel >= $permissions.manageQueue || $user.username == item.username}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="svgIcon" on:click={deleteItem(item)}>
 				<MdDelete />

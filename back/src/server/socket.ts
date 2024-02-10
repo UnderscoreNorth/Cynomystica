@@ -1,15 +1,16 @@
 import { Server, Socket } from "socket.io";
 import chat from "./chat";
 import moderation from "./moderation";
-
+import { Moment } from "moment";
+import moment from "moment";
 const errorDelay = 100;
 
 export interface socketInterface extends Socket {
   username: string;
   uuid: string;
   accessLevel: number;
-  lastQueue: Date;
-  lastMessage: Date;
+  lastQueue: Moment;
+  lastMessage: Moment;
   version: number;
   muted: boolean;
 }
@@ -28,7 +29,7 @@ export default function () {
 }
 
 export const activityCheck = async () => {
-  const now = new Date();
+  const now = moment.utc();
   let active = 0;
   let total = 0;
   for (let socket of Object.values(
@@ -36,7 +37,7 @@ export const activityCheck = async () => {
   ) as unknown as socketInterface[]) {
     total++;
     if (socket.lastMessage) {
-      if (now.getTime() - socket.lastMessage.getTime() <= 600000) active++;
+      if (now.diff(socket.lastMessage) <= 600000) active++;
     }
   }
   return { active, total };

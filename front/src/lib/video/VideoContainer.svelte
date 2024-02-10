@@ -61,6 +61,7 @@
 	style:background-image={$settings.videoBG ? `url(${$settings.videoBG})` : ''}
 >
 	{#key reset}<Video />{/key}
+	{#if $video.id}
 	<div id='videoControls' style={($userSettings.display.chat == 'left' ? 'right' : 'left') + ':4rem;'}>		
 		{#if $video.type == 'raw'}
 			{#if $video.url.split('????').length > 1}
@@ -78,6 +79,7 @@
 				<MdRefresh />
 			</div>
 		</Tooltip>
+		
 		<Tooltip title={$leader ? `Leader: ${$leader}` : 'No Leader'}>
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class='svgIcon' 
@@ -89,8 +91,9 @@
 				<MdStarBorder />
 				{/if}
 			</div>
-		</Tooltip>
+		</Tooltip>		
 	</div>
+	{/if}
 </div>
 <style>
 	#videoContainer {

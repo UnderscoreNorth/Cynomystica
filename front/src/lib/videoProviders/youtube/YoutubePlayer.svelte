@@ -12,7 +12,6 @@
 	let debounced = false;
 	let lastSeek = 0;
 	let videoURL = '';
-	let syncInterval:ReturnType<typeof setInterval>;
 	onMount(() => {
 		player = youTubePlayer('player', {
 			videoId: $video.url
@@ -25,25 +24,24 @@
 				const syncTime = async () => {
 					let clientTime = await player.getCurrentTime();
 					let serverTime = $video.seekTime;
+					const isLeader = ($user.username == $leader && $leader !== '');
 					if 
 						(Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 
 						&& $video.type == 'yt'
-						&& !($user.username == $leader && $leader !== '')
+						&& !isLeader
 						) {
-						console.log('Syncing');
 						player.seekTo(serverTime, true);
 					}
-					if ($user.username == $leader && $leader !== ''){			
+					if (isLeader){			
 						io.emit('leader-sync',clientTime);
 					}
+					if(player){
+						setTimeout(()=>{
+							syncTime();
+						}, isLeader ? 1000 : $userSettings.sync.threshold)
+					}
 				};
-				const initSyncTime = () => {
-					syncTime();
-					syncInterval = setInterval(function () {
-						syncTime();
-					}, $userSettings.sync.threshold);
-				};
-				initSyncTime();
+				syncTime();
 				player.on('stateChange', async (e) => {
 					if (!debounced && $user.accessLevel > -1) {
 						debounced = true;
@@ -67,10 +65,6 @@
 	});
 	onDestroy(() => {
 		player = null;
-		try {
-			clearInterval(syncInterval);
-		} finally {
-		}
 		let playerEl = document.getElementById('player');
 		while (playerEl?.firstChild) {
 			playerEl.removeChild(playerEl.firstChild);

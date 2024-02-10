@@ -3,6 +3,7 @@ import { default as IO, activityCheck, checkVersion } from "./socket";
 import polls from "./polls";
 import chat from "./chat";
 import { writeToLog } from "../lib/logger";
+import moment = require("moment");
 
 let inCycle = false;
 let lastPlaylist = "";
@@ -27,7 +28,7 @@ function consoleVitals() {
 }
 async function logActivity() {
   let { active, total } = await activityCheck();
-  writeToLog("userActivity", [{ total, active, time: new Date() }]);
+  writeToLog("userActivity", [{ total, active, time: moment.utc() }]);
 }
 export const cycle = async () => {
   if (!inCycle) {

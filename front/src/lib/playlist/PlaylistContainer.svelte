@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { permissions } from '$lib/stores/permissions';
 	import PlaylistItem from './PlaylistItem.svelte';
-	import { playlist } from '$lib/stores/playlist';
+	import { queue } from '$lib/stores/queue';
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
 	import SortableItems from '$lib/utilities/SortableItems.svelte';
+	import Playlists from './Playlists.svelte';
 	let mediaURL: string;
 	let title:string;
 	let permanent= false;
 	let queueNextDisabled = false;
 	let hoverIndex: number;
+	let selectedTab = 'Live Queue';
+	let tabs = ['Live Queue','Playlists'];
 	const queueNext = async () => {
 		if (mediaURL) {
 			io.emit('queue-next', {mediaURL,title,permanent});
@@ -29,11 +32,20 @@
 	};
 	let innerWidth = 0;
 	const updatePlaylist = () => {
-		if ($user.accessLevel >= $permissions.managePlaylist) io.emit('update-playlist', $playlist);
+		if ($user.accessLevel >= $permissions.manageQueue) io.emit('update-playlist', $queue);
 	};
 </script>
 
 <svelte:window bind:innerWidth />
+{#each tabs as tab}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <span 
+        class={'tabHeader' + (tab==selectedTab ? ' selected' : '')}
+        on:click={()=>selectedTab=tab}
+    >{tab}</span>
+{/each}
+<hr>
+{#if selectedTab == 'Live Queue'}
 <div id='playlistControlContainer'>
 	<input 
 		bind:value={title}
@@ -70,12 +82,12 @@
 			</tr>
 		{/if}
 		<tbody id='playlistBody'>
-			{#each $playlist as item, i}
-				{#if $user.accessLevel >= $permissions.managePlaylist}
+			{#each $queue as item, i}
+				{#if $user.accessLevel >= $permissions.manageQueue}
 					<SortableItems
 						class={`dragRows ${(hoverIndex === i ? 'classHovered' : '') + ' ' + (item.permanent ? 'permanent' : 'temporary')}`}
 						propItemNumber={i}
-						bind:propData={$playlist}
+						bind:propData={$queue}
 						bind:propHoveredItemNumber={hoverIndex}
 						dropCallback={() => {
 							updatePlaylist();
@@ -91,6 +103,10 @@
 		
 	</table>
 </div>
+{:else}
+<Playlists/>
+{/if}
+
 
 <style>
 	:global(#playlistBody>*){
@@ -144,4 +160,13 @@
 			rgba(255, 255, 255, 0.1) 20px
 			);
 	}
+	.tabHeader{
+        padding:0 5px;
+        cursor: pointer;
+    }
+    .tabHeader.selected{
+        cursor:default;
+        font-weight: bold;
+        border-radius: 2px 2px 0 0;
+    }
 </style>

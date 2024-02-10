@@ -5,7 +5,7 @@ export interface Permissions {
 	queueLast: number;
 	queueRaw: number;
 	queueLive: number;
-	managePlaylist: number;
+	manageQueue: number;
 	manageSchedule: number;
 	managePolls: number;
 	manageIcons: number;
@@ -19,15 +19,16 @@ export interface Permissions {
 	postMedia: number;
 	clearChat: number;
 	leader: number;
+	createPlaylists: number;
 }
 export const permissionGrouping = {
 	userMod: 'Moderation',
-	queueNext: 'Playlist',
-	queueLast: 'Playlist',
-	queueRaw: 'Playlist',
-	queueLive: 'Playlist',
-	managePlaylist: 'Playlist',
-	manageSchedule: 'Playlist',
+	queueNext: 'Queue/Playlists',
+	queueLast: 'Queue/Playlists',
+	queueRaw: 'Queue/Playlists',
+	queueLive: 'Queue/Playlists',
+	manageQueue: 'Queue/Playlists',
+	manageSchedule: 'Queue/Playlists',
 	managePolls: 'General',
 	manageEmotes: 'General',
 	manageIcons: 'General',
@@ -36,10 +37,11 @@ export const permissionGrouping = {
 	manageSettings: 'General',
 	manageInfoModal: 'General',
 	chat: 'Chat',
-	bypassQueueLimit: 'Playlist',
+	bypassQueueLimit: 'Queue/Playlists',
 	postMedia: 'Chat',
 	clearChat: 'Moderation',
-	leader: 'Playlist'
+	leader: 'Queue/Playlists',
+	createPlaylists: 'Queue/Playlists'
 };
 const permissionsObj: Permissions = {
 	chat: 10,
@@ -49,7 +51,7 @@ const permissionsObj: Permissions = {
 	queueLast: 10,
 	queueRaw: 10,
 	queueLive: 10,
-	managePlaylist: 10,
+	manageQueue: 10,
 	manageSchedule: 10,
 	managePolls: 10,
 	manageEmotes: 10,
@@ -58,6 +60,7 @@ const permissionsObj: Permissions = {
 	manageUsers: 10,
 	manageSettings: 10,
 	bypassQueueLimit: 10,
+	createPlaylists: 10,
 	manageInfoModal: 10,
 	clearChat: 10,
 	leader: 10

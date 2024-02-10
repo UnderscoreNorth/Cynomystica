@@ -1,7 +1,7 @@
 import { socketInterface } from "../server/socket";
 import { default as chat } from "../server/chat";
 import permissions from "../server/permissions";
-import moderation from "../server/moderation";
+import moment from "moment";
 interface incomingMessage {
   icon: string;
   msg: string;
@@ -16,9 +16,9 @@ export default async function message(
         username: socket.username,
         message: obj.msg.substring(0, 500),
         icon: obj.icon,
-        time: new Date(),
+        time: moment.utc(),
       };
-      socket.lastMessage = new Date();
+      socket.lastMessage = moment.utc();
       chat().message(messageObj, socket);
     }
   }
