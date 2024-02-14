@@ -104,12 +104,12 @@ class PlayList {
       this.currentSeekTime = Math.abs(
         moment.utc().diff(this.playlist[0].startDate) / 1000
       );
-
       if (
         this.currentSeekTime > this.playlist[0].duration &&
         this.playlist[0].duration > 0
       ) {
         if (!this.playlist[0].permanent) {
+          console.log(this.playlist, this.currentSeekTime);
           this.deleteVideo(this.playlist[0].id);
         } else {
           this.currentSeekTime = 0;
@@ -143,7 +143,7 @@ class PlayList {
         item.startDate = lastEndDate;
       }
       if (item.duration == 0) break;
-      item.endDate = item.startDate.add(item.duration, "seconds");
+      item.endDate = item.startDate.clone().add(item.duration, "seconds");
       if (item.duration == -1) {
         item.endDate = item.startDate;
       }
@@ -268,7 +268,7 @@ class PlayList {
           let tempPlaylist = [];
           for (let item of scheduled) {
             if (this.playlist.length == 0) {
-              if (moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 5) {
+              if (moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 1) {
                 await this.queueVideo(
                   { mediaURL: item.url },
                   item.username,
@@ -281,13 +281,14 @@ class PlayList {
             } else {
               let lastItem = this.playlist[this.playlist.length - 1];
               let diff =
-                moment.utc(item.playTimeUTC).diff(moment(lastItem.endDate)) /
+                moment(lastItem.endDate).diff(moment.utc(item.playTimeUTC)) /
                 1000;
+
               let scheduledIDs = this.playlist.map((x) => x.scheduledID);
               if (
                 diff <= item.duration &&
                 item.playlist !== "" &&
-                diff > 0 &&
+                diff + item.leeway * 60 > 0 + 15 &&
                 !scheduledIDs.includes(item.id)
               ) {
                 let fillAttempt = await this.queuePlaylist({

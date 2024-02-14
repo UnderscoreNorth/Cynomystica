@@ -11,7 +11,7 @@
 	let playtime: string | null = null;
 	let visible = true;
 	let finishtime: String | null = null;
-	let minutes = 5;
+	let prequeueMinutes = 5;
 	let selection = 'Random';
 	let playlist = '';
 	let id: string;
@@ -28,6 +28,7 @@
         playlists = e;
     })
 	if (selectedID?.id) {
+		console.log(selectedID)
 		newEntry = false;
 		url = selectedID.url;
 		title = selectedID.title;
@@ -36,7 +37,7 @@
 		id = selectedID.id;
 		selection = selectedID.selection;
 		playlist = selectedID.playlist;
-		minutes = selectedID.minutes;
+		prequeueMinutes = selectedID.prequeueMinutes;
 		visible = selectedID.visible;
 		duration = selectedID.duration;
 		leeway = selectedID.leeway
@@ -52,7 +53,7 @@
 			playtime:moment(playtime).utc().format(),
 			visible,
 			selectedID,
-			minutes,
+			prequeueMinutes,
 			playlist,
 			selection,
 			snap,
@@ -127,7 +128,7 @@
 			{/if}
 		</tr>
 		<tr>
-			<th>Duration (Min)</th>
+			<th>Duration (Sec)</th>
 			<td><input type="number" min=1 placeholder='Override the item length' bind:value={duration} /></td>
 		</tr>
 		<tr>
@@ -204,7 +205,7 @@
 		</tr>
 		<tr>
 			<th>Pre-queue<br>Minutes</th>
-			<td><input type='number' step=1 bind:value={minutes} disabled={playlist == ''}></td>
+			<td><input type='number' step=1 bind:value={prequeueMinutes} disabled={playlist == ''}></td>
 		</tr>
 		<tr>
 			<td colspan="2">

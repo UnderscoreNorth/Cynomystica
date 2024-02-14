@@ -17,6 +17,7 @@ export interface ScheduleItem {
   selection: string;
   dateCreated: string;
   leeway: number;
+  prequeueMinutes: number;
 }
 
 export default class {
@@ -33,6 +34,7 @@ export default class {
 			  'playlist' VARCHAR(512),
 			  'selection' VARCHAR(20),
         'leeway' INT,
+        'prequeueMinutes' INT,
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
   static init = () => {
@@ -51,6 +53,7 @@ export default class {
     return results as Array<ScheduleItem>;
   };
   static delete = async (id: string) => {
+    console.log("delete", id);
     await db
       .prepare(
         `
@@ -97,18 +100,36 @@ export default class {
       obj.id = obj.id ?? uuidv4();
       obj.visible = obj.visible ? 1 : 0;
       obj.leeway = obj.leeway || 0;
+      obj.startTime = formatDate(moment.utc(obj.playtime));
+      obj.finishTime = formatDate(
+        moment.utc(obj.playtime).add(obj.duration, "seconds")
+      );
+
       if (obj.snap == "before") {
         let adjItem = await db
           .prepare(
-            `SELECT * FROM schedule WHERE playTimeUTC > @start ORDER BY playTimeUTC LIMIT 1`
+            `SELECT * FROM schedule WHERE playTimeUTC >= @finish ORDER BY playTimeUTC LIMIT 1`
           )
-          .get({ start: formatDate(moment.utc(obj.playtime)) });
+          .get({ finish: obj.finishTime });
+        if (adjItem) {
+          obj.finishTime = formatDate(moment.utc(adjItem.playTimeUTC));
+          obj.startTime = formatDate(
+            moment.utc(adjItem.playTimeUTC).subtract(obj.duration, "seconds")
+          );
+        }
       } else if (obj.snap == "after") {
+        let adjItem = await db
+          .prepare(
+            `SELECT * FROM schedule WHERE finishTimeUTC <= @start ORDER BY playTimeUTC DESC LIMIT 1`
+          )
+          .get({ start: obj.startTime });
+        if (adjItem) {
+          obj.finishTime = formatDate(
+            moment.utc(adjItem.finishTimeUTC).add(obj.duration, "seconds")
+          );
+          obj.startTime = formatDate(moment.utc(adjItem.finishTimeUTC));
+        }
       }
-      obj.startTime = formatDate(moment.utc(obj.playtime));
-      obj.finishTime = formatDate(
-        moment(obj.playtime).add(obj.duration, "seconds")
-      );
       let conflict = await db
         .prepare(
           `
@@ -127,8 +148,8 @@ export default class {
           .prepare(
             `
               INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway) 
-              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway)
+              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway,prequeueMinutes) 
+              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway,@prequeueMinutes)
               ON CONFLICT(id) DO UPDATE SET
                   url=@url,
                   playTimeUTC = @startTime, 
@@ -138,7 +159,8 @@ export default class {
                   selection=@selection,
                   playlist=@playlist,
                   visible=@visible,
-                  leeway=@leeway`
+                  leeway=@leeway,
+                  prequeueMinutes=@prequeueMinutes`
           )
           .run(obj);
       } else {
