@@ -20,7 +20,7 @@
 	let bulkMode = false;
 	let snap = 'none';
 	let duration:number;
-	let leeway:number;
+	let leeway = 1;
 	let freq=1440;
 	let playlists:Record<string, playlistType> = {};
 	io.emit('get-playlists');
@@ -86,8 +86,6 @@
 	$: disabled = ()=>{
 		if(!playtime) return true;
 		if (checkDays(daysOfWeek) && bulkMode) return true;
-		console.log({url,playlist,duration,title},(!url && playlist && duration && title));
-		if (!url && !(playlist && duration && title)) return true;
 		return false;
 	}
 </script>
@@ -189,10 +187,8 @@
 		<tr>
 			<td colspan=2>
 				<hr><small>
-				Playlist - If the URL is blank and a duration and title are set, the scheduled
-				<br>time will be used to play the playlist. If a pre-queue is set, it will play the
-				<br>playlist in the minutes before the scheduled item if there is nothing else
-				<br>scheduled.</small><hr></td>
+				Playlist - If a pre-queue is set, it will play the playlist in the minutes before 
+				<br>the scheduled item if there is nothing else scheduled.</small><hr></td>
 		</tr>		
 		<tr>
 			<th>Playlist</th>

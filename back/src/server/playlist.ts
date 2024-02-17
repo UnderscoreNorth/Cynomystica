@@ -27,7 +27,7 @@ export interface PlaylistItem {
 }
 
 let theThreeGuys = [];
-
+const scheduleWiggle = 15;
 class PlayList {
   playlist: PlaylistObj;
   currentSeekTime: number;
@@ -257,123 +257,114 @@ class PlayList {
     cycle();
   }
   checkSchedule = async () => {
-    if (!this.scheduleCheck) {
-      this.scheduleCheck = true;
-      try {
-        let scheduled = await schedule.getAll(
-          moment.utc().subtract(5, "seconds")
-        );
-        let nextScheduled = scheduled[0];
-        if (nextScheduled) {
-          let tempPlaylist = [];
-          for (let item of scheduled) {
-            if (this.playlist.length == 0) {
-              if (moment.utc(item.playTimeUTC).diff(moment()) / 1000 <= 1) {
-                await this.queueVideo(
-                  { mediaURL: item.url },
-                  item.username,
-                  null,
-                  item.id
-                );
-              } else {
-                break;
-              }
-            } else {
-              let lastItem = this.playlist[this.playlist.length - 1];
-              let diff =
-                moment(lastItem.endDate).diff(moment.utc(item.playTimeUTC)) /
-                1000;
-
-              let scheduledIDs = this.playlist.map((x) => x.scheduledID);
-              if (
-                diff <= item.duration &&
-                item.playlist !== "" &&
-                diff + item.leeway * 60 > 0 + 15 &&
-                !scheduledIDs.includes(item.id)
-              ) {
-                let fillAttempt = await this.queuePlaylist({
-                  playlist: item.playlist,
-                  duration: diff,
-                });
-                if (fillAttempt) {
-                  await this.queueVideo(
-                    { mediaURL: item.url },
-                    item.username,
-                    null,
-                    item.id
-                  );
-                } else {
-                  break;
-                }
-              } else {
-                let diff = moment.utc(item.playTimeUTC).diff(moment()) / 1000;
-                if (diff <= 0 && !scheduledIDs.includes(item.id)) {
-                  tempPlaylist = structuredClone(this.playlist);
-                  this.playlist = [];
-                  await this.queueVideo(
-                    { mediaURL: item.url },
-                    item.username,
-                    null,
-                    item.id
-                  );
-                } else {
-                  break;
-                }
-              }
+    if (this.scheduleCheck) return;
+    this.scheduleCheck = true;
+    try {
+      let scheduled = await schedule.getAll(
+        moment.utc().subtract(5, "seconds")
+      );
+      let nextScheduled = scheduled[0];
+      if (!nextScheduled) {
+        this.scheduleCheck = false;
+        return;
+      }
+      let tempPlaylist = [];
+      for (let item of scheduled) {
+        let lastItem = this.playlist[this.playlist.length - 1] ?? {
+          endDate: moment.utc(),
+          scheduledID: "null",
+        };
+        let itemStart = moment.utc(item.playTimeUTC);
+        let diff = lastItem.endDate.diff(itemStart) / 1000;
+        let scheduledIDs = this.playlist
+          .concat(tempPlaylist)
+          .map((x) => x.scheduledID);
+        if (scheduledIDs.includes(item.id)) continue;
+        //Push out rest of playlist
+        if (diff - item.leeway * 60 > 0) {
+          for (let i = 0; i < this.playlist.length; i++) {
+            if (
+              this.playlist[i].endDate.diff(itemStart) / 1000 +
+                item.leeway * 60 >
+                -scheduleWiggle &&
+              (!scheduledIDs.includes(this.playlist[i].scheduledID) ||
+                !this.playlist[i].scheduledID)
+            ) {
+              tempPlaylist = this.playlist.splice(i, this.playlist.length - i);
+              lastItem = this.playlist[i - 1] ?? {
+                endDate: moment.utc(),
+                scheduledID: "null",
+              };
+              diff = lastItem.endDate.diff(itemStart) / 1000;
+              break;
             }
           }
-          this.playlist = this.playlist.concat(tempPlaylist);
         }
-      } finally {
-        this.scheduleCheck = false;
+        if (!item.playlist) item.prequeueMinutes = 0;
+        if (diff < -(item.prequeueMinutes * 60)) break;
+        if (diff > scheduleWiggle + item.leeway * 60) break;
+
+        if (item.playlist && item.prequeueMinutes > 0) {
+          let fillAttempt = await this.queuePlaylist({
+            playlist: item.playlist,
+            duration: -diff,
+            leeWayAfter: item.leeway * 60,
+          });
+          if (!fillAttempt) {
+            break;
+          }
+        }
+        await this.queueVideo(
+          { mediaURL: item.url },
+          item.username,
+          null,
+          item.id,
+          true
+        );
       }
+      this.playlist = this.playlist.concat(tempPlaylist);
+    } finally {
+      this.scheduleCheck = false;
     }
   };
   queuePlaylist = async (options: any) => {
     let playlistMeta = await playlists.getPlaylistMeta(options.playlist);
+    let complete = false;
+    let minDuration = options.duration;
+    let maxDuration = options.duration + scheduleWiggle;
+    if (options.leeWayAfter) {
+      maxDuration += options.leeWayAfter;
+    }
     let items = await playlistItems.getPlaylist(
       options.playlist,
       playlistMeta.mode
     );
     if (items.length == 0) return false;
-    let maxTries = 1000;
-    let tries = 0;
-    let complete = false;
-    let minDuration = options.duration;
-    let maxDuration = options.duration;
-    if (options.leeWayAfter) {
-      maxDuration += options.leeWayAfter;
-    }
-    do {
-      let duration = 0;
-      let queue = [];
-      complete = false;
-      loop: for (let item of items) {
-        duration += item.duration;
-        queue.push(item);
-        if (duration >= minDuration && duration <= maxDuration) {
-          complete = true;
-          for (let subitem of queue) {
-            await this.queueVideo(subitem.url, subitem.username, null);
-            await playlistItems.updatePlayCount(subitem.id);
-          }
-          break loop;
-        } else if (duration > maxDuration) {
-          break;
+    let duration = 0;
+    let queue = [];
+    complete = false;
+    loop: for (let item of items) {
+      if (duration + item.duration > maxDuration) continue;
+      duration += item.duration;
+      queue.push(item);
+      if (duration >= minDuration && duration <= maxDuration) {
+        complete = true;
+        for (let subitem of queue) {
+          await this.queueVideo(
+            { mediaURL: subitem.url },
+            subitem.username,
+            null,
+            null,
+            true
+          );
+          await playlistItems.updatePlayCount(subitem.id);
         }
-      }
-      tries++;
-      shuffleArray(items);
-    } while (tries < maxTries && !complete);
-    return complete;
-    function shuffleArray(array: any) {
-      for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        break loop;
+      } else if (duration > maxDuration) {
+        break;
       }
     }
+    return complete;
   };
 }
 

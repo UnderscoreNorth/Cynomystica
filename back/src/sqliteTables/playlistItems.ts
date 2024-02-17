@@ -43,12 +43,15 @@ export default class {
   static updatePlayCount = async (id: string) => {
     await db
       .prepare(
-        `UPDATE playlistItems SET playcount = playcount + 1 WHERE id=@id
-          DELETE FROM playlistItems 
-          WHERE playlist = (SELECT playlist FROM playlistItems WHERE id=@id)
-          AND playcount > (SELECT deleteAfter FROM playlist WHERE id=((SELECT playlist FROM playlistItems WHERE id=@id)))
-          AND (SELECT deleteAfter FROM playlist WHERE id=((SELECT playlist FROM playlistItems WHERE id=@id))) > 0
-        `
+        `UPDATE playlistItems SET playcount = playcount + 1 WHERE id=@id`
+      )
+      .run({ id });
+    await db
+      .prepare(
+        `DELETE FROM playlistItems 
+        WHERE playlist = (SELECT playlist FROM playlistItems WHERE id=@id)
+        AND playcount > (SELECT deleteAfter FROM playlists WHERE id=((SELECT playlist FROM playlistItems WHERE id=@id)))
+        AND (SELECT deleteAfter FROM playlists WHERE id=((SELECT playlist FROM playlistItems WHERE id=@id))) > 0`
       )
       .run({ id });
   };

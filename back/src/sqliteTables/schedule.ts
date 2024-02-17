@@ -63,9 +63,8 @@ export default class {
       .run({ id });
   };
   static upsert = async (username: string, obj: any) => {
-    if (obj.url.includes(" ")) return;
     if (!obj.playtime) return;
-    if (!obj.url) return;
+    if (!obj.url && !obj.playlist) return;
     if (obj.freq >= 1) {
       let urls = obj.url.split(/,|\n/g);
       let placeholder = obj.title;
