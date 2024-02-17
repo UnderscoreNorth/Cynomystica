@@ -152,7 +152,7 @@
                             <td>{secondsToTime(item.duration)}</td>
                             <td>{item.username}</td>
                             <td>{dateTime(item.dateCreated)}</td>
-                            <td>{item.playcount}</td>
+                            <td style:text-align='right'>{item.playcount}</td>
                         </tr>
                     {/each}                
                 </table>
