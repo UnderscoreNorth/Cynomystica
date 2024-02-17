@@ -4,39 +4,34 @@
 	import { io } from '$lib/realtime';
 	import { leader } from '$lib/stores/video';
 	import { user } from '$lib/stores/user';
-	import { onDestroy } from 'svelte';
 	let el:HTMLVideoElement;
-	let syncInterval:ReturnType<typeof setInterval>;
-	const initSyncTime = (e: any) => {
-		syncTime(e.target);
-		syncInterval = setInterval(function () {
-			syncTime(e.target);
-		}, $userSettings.sync.threshold);
-	};
-	const syncTime = (e: any) => {
-		let clientTime = e.currentTime;
+	const syncTime = () => {
+		let clientTime = el.currentTime;
 		let serverTime = $video.seekTime;
+		const isLeader = ($user.username == $leader && $leader !== '');
 		if (
 			Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000
 			&& el.paused == false 
 			&& $video.duration > 0
-			&& !($user.username == $leader  && $leader !== '')) {
-			e.currentTime = serverTime;
+			&& !isLeader) {
+			el.currentTime = serverTime;
 		}
-		if ($user.username == $leader && $leader !== ''){			
-			io.emit('leader-sync',e.currentTime);
+		if (isLeader){			
+			io.emit('leader-sync',el.currentTime);
+		}
+		if(el){
+			setTimeout(()=>{
+				syncTime
+			}, isLeader ? 1000 : $userSettings.sync.threshold)
 		}
 	};
-	onDestroy(()=>{
-		clearInterval(syncInterval)
-	})
 </script>
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
 	bind:volume={$userSettings.videoVolume}
 	bind:muted={$userSettings.muted}
 	bind:this={el}
-	on:loadedmetadata={initSyncTime}
+	on:loadedmetadata={syncTime}
 	preload="auto"
 	data-setup={`{}`}
 	autoplay

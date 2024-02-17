@@ -5,7 +5,7 @@
 	import { io } from '$lib/realtime';
 	//@ts-ignore
 	import MdDelete from 'svelte-icons/md/MdDelete.svelte';
-	import moment from 'moment';
+	import { dateTime } from '$lib/utilities/timeUtilities';
 	console.log($moderation)
 	io.emit('get-moderation');
 	io.on('moderation',(e)=>{
@@ -45,7 +45,7 @@
 	{#each $moderation.ignored as item}
 			<tr>
 				<td>{item.username}</td>
-				<td>{moment.utc(item.dateCreated).local().format('YYYY-MM-DD HH:mm')}</td>
+				<td>{dateTime(item.dateCreated)}</td>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<td class='svgIcon' on:click={()=>undoAction(item)}><MdDelete /></td>
 			</tr>
@@ -70,7 +70,7 @@
 			<tr>
 				<td>{item.username}</td>
 				<td>{item.action}</td>
-				<td>{moment.utc(item.dateCreated).local().format('YYYY-MM-DD HH:SS')}</td>
+				<td>{dateTime(item.dateCreated)}</td>
 				<td>{item.byUser}</td>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<td class='svgIcon' on:click={()=>undoAction(item)}><MdDelete /></td>

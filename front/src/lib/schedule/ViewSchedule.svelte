@@ -106,13 +106,13 @@
 			<th colspan=4>Date</th>
 		</tr>
 		{#each $schedule as item}
-			{#if Date.parse(item.playTimeUTC.toString()) > new Date().getTime()}
+			{#if item.playTimeUTC.isAfter(moment.utc())}
 			<tr>
 				<td style:padding-right={'0.5rem'}>{item.title}</td>
-				<td>{moment.utc(item.playTimeUTC).local().format('ddd MMM Do')}</td>
-				<td>{moment.utc(item.playTimeUTC).local().format('H:mm')}</td>
+				<td>{item.playTimeUTC.local().format('ddd MMM Do')}</td>
+				<td>{item.playTimeUTC.local().format('H:mm')}</td>
 				<td>-</td>
-				<td>{moment.utc(item.finishTimeUTC).local().format('H:mm')}</td>
+				<td>{item.finishTimeUTC.local().format('H:mm')}</td>
 			</tr>
 			{/if}
 		{/each}

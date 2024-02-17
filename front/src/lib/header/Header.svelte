@@ -69,7 +69,7 @@
 			<div id="siteName">
 				<a target="_blank" rel="noreferrer" href="https://github.com/UnderscoreNorth/Cynomystica"><Tooltip title='Github/Documentation'>Cynomystica</Tooltip></a> |</div>
 			<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
-			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Playlist'} />
+			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Queue'} />
 			<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
 			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info'} />
 			<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
@@ -84,7 +84,7 @@
 		</Modal>
 	{/if}
 	{#if playListModalOpen}
-		<Modal closeModal={togglePlaylist} title={'Playlist'}>
+		<Modal closeModal={togglePlaylist} title={'Queue'}>
 			<PlaylistContainer />
 		</Modal>
 	{/if}

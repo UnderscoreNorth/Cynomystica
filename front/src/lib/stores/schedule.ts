@@ -1,13 +1,14 @@
 import { writable } from 'svelte/store';
+import type { Moment } from 'moment';
 const scheduleObj: Schedule = [];
 export interface ScheduleItem {
 	id: string;
 	title: string;
 	url: string;
 	username: string;
-	duration: string;
-	playTimeUTC: Date;
-	finishTimeUTC: Date;
+	duration: number;
+	playTimeUTC: Moment;
+	finishTimeUTC: Moment;
 	gridArea?: string;
 	minutes: number;
 	selection: string;

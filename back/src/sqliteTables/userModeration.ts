@@ -1,9 +1,10 @@
 import { db } from "../sqliteDB";
+import { Moment } from "moment";
 export type actionTypes = "Ignore" | "Ban" | "" | "Mute" | "IP Ban";
 export type moderationItem = {
   action: actionTypes;
   byUser: string;
-  dateCreated: string;
+  dateCreated: Moment;
   username: string;
 };
 export default class {

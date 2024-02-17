@@ -3,12 +3,13 @@ import messageFormatter from "../lib/messageFormatter";
 import permissions from "./permissions";
 import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
+import { Moment } from "moment";
 
 export interface Message {
   username: string;
   message: string;
   icon: string;
-  time: Date;
+  time: Moment;
 }
 export type Messages = Array<Message>;
 

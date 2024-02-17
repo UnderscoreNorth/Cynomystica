@@ -2,6 +2,7 @@ import { db } from "../sqliteDB";
 import { v4 as uuidv4 } from "uuid";
 import formatDate from "../lib/formatDate";
 import parseURL from "../lib/parseURL";
+import moment from "moment";
 
 export interface ScheduleItem {
   id: string;
@@ -12,10 +13,11 @@ export interface ScheduleItem {
   finishTimeUTC: string;
   visible: boolean;
   duration: number;
-  minutes: number;
   playlist: string;
   selection: string;
   dateCreated: string;
+  leeway: number;
+  prequeueMinutes: number;
 }
 
 export default class {
@@ -29,15 +31,16 @@ export default class {
         'finishTimeUTC' DATETIME(20),
         'visible' INT,
         'duration' INT,
-        'minutes' INT,
 			  'playlist' VARCHAR(512),
 			  'selection' VARCHAR(20),
+        'leeway' INT,
+        'prequeueMinutes' INT,
         'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
     );`;
   static init = () => {
     return `DELETE FROM schedule`;
   };
-  static getAll = async (date = new Date()) => {
+  static getAll = async (date = moment.utc()) => {
     let dateString = formatDate(date);
     const results = await db
       .prepare(
@@ -50,6 +53,7 @@ export default class {
     return results as Array<ScheduleItem>;
   };
   static delete = async (id: string) => {
+    console.log("delete", id);
     await db
       .prepare(
         `
@@ -59,9 +63,8 @@ export default class {
       .run({ id });
   };
   static upsert = async (username: string, obj: any) => {
-    if (obj.url.includes(" ")) return;
     if (!obj.playtime) return;
-    if (!obj.url) return;
+    if (!obj.url && !obj.playlist) return;
     if (obj.freq >= 1) {
       let urls = obj.url.split(/,|\n/g);
       let placeholder = obj.title;
@@ -77,14 +80,9 @@ export default class {
         await subSert(obj);
         let attempts = 0;
         do {
-          obj.playtime = new Date(
-            new Date(obj.playtime).getTime() + obj.freq * 1000 * 60
-          ).toString();
+          obj.playtime.add(obj.freq, "minutes");
           attempts++;
-        } while (
-          !obj.dow[new Date(obj.playtime).getDay()][1] &&
-          attempts < 1000
-        );
+        } while (!obj.dow[obj.playtime.day()][1] && attempts < 1000);
         if (attempts == 1000) return;
         num++;
       }
@@ -94,16 +92,43 @@ export default class {
     async function subSert(obj: any) {
       await parseURL(obj.url).then((playlistItem) => {
         obj.title = obj.title || playlistItem.name;
-        obj.duration = Math.ceil(playlistItem.duration);
+        obj.duration = obj.duration ?? Math.ceil(playlistItem.duration);
       });
 
       obj.username = username ?? "SCHEDULER";
       obj.id = obj.id ?? uuidv4();
       obj.visible = obj.visible ? 1 : 0;
-      obj.startTime = formatDate(new Date(obj.playtime));
+      obj.leeway = obj.leeway || 0;
+      obj.startTime = formatDate(moment.utc(obj.playtime));
       obj.finishTime = formatDate(
-        new Date(new Date(obj.playtime).getTime() + obj.duration * 1000)
+        moment.utc(obj.playtime).add(obj.duration, "seconds")
       );
+
+      if (obj.snap == "before") {
+        let adjItem = await db
+          .prepare(
+            `SELECT * FROM schedule WHERE playTimeUTC >= @finish ORDER BY playTimeUTC LIMIT 1`
+          )
+          .get({ finish: obj.finishTime });
+        if (adjItem) {
+          obj.finishTime = formatDate(moment.utc(adjItem.playTimeUTC));
+          obj.startTime = formatDate(
+            moment.utc(adjItem.playTimeUTC).subtract(obj.duration, "seconds")
+          );
+        }
+      } else if (obj.snap == "after") {
+        let adjItem = await db
+          .prepare(
+            `SELECT * FROM schedule WHERE finishTimeUTC <= @start ORDER BY playTimeUTC DESC LIMIT 1`
+          )
+          .get({ start: obj.startTime });
+        if (adjItem) {
+          obj.finishTime = formatDate(
+            moment.utc(adjItem.finishTimeUTC).add(obj.duration, "seconds")
+          );
+          obj.startTime = formatDate(moment.utc(adjItem.finishTimeUTC));
+        }
+      }
       let conflict = await db
         .prepare(
           `
@@ -122,18 +147,19 @@ export default class {
           .prepare(
             `
               INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,minutes,playlist,selection) 
-              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@minutes,@playlist,@selection)
+              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway,prequeueMinutes) 
+              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway,@prequeueMinutes)
               ON CONFLICT(id) DO UPDATE SET
                   url=@url,
                   playTimeUTC = @startTime, 
                   finishTimeUTC=@finishTime, 
                   title=@title,
                   duration=@duration,
-                  minutes=@minutes,
                   selection=@selection,
                   playlist=@playlist,
-                  visible=@visible`
+                  visible=@visible,
+                  leeway=@leeway,
+                  prequeueMinutes=@prequeueMinutes`
           )
           .run(obj);
       } else {

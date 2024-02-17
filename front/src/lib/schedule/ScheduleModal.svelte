@@ -3,31 +3,44 @@
 	import type { ScheduleItem } from '$lib/stores/schedule';
 	export let changeSelectedID: Function;
 	export let selectedID: ScheduleItem|null;
+	import { dateTimeSeconds } from '$lib/utilities/timeUtilities';
+	import type { playlistType } from '$lib/stores/playlists';
 	import moment from 'moment';
 	let url: String;
 	let title: String;
-	let playtime: String | null = null;
+	let playtime: string | null = null;
 	let visible = true;
 	let finishtime: String | null = null;
-	let minutes = 5;
+	let prequeueMinutes = 5;
 	let selection = 'Random';
 	let playlist = '';
 	let id: string;
 	let loading = false;
 	let newEntry = false;
 	let bulkMode = false;
+	let snap = 'none';
+	let duration:number;
+	let leeway = 1;
 	let freq=1440;
+	let playlists:Record<string, playlistType> = {};
+	io.emit('get-playlists');
+    io.on('playlists',(e)=>{
+        playlists = e;
+    })
 	if (selectedID?.id) {
+		console.log(selectedID)
 		newEntry = false;
 		url = selectedID.url;
 		title = selectedID.title;
-		finishtime = moment.utc(selectedID.finishTimeUTC).local().format('YYYY-MM-DD HH:mm:ss');
-		playtime = moment.utc(selectedID.playTimeUTC).local().format('YYYY-MM-DD HH:mm:ss');
+		finishtime = dateTimeSeconds(selectedID.finishTimeUTC);
+		playtime = dateTimeSeconds(selectedID.playTimeUTC);
 		id = selectedID.id;
 		selection = selectedID.selection;
 		playlist = selectedID.playlist;
-		minutes = selectedID.minutes;
+		prequeueMinutes = selectedID.prequeueMinutes;
 		visible = selectedID.visible;
+		duration = selectedID.duration;
+		leeway = selectedID.leeway
 	} else {
 		newEntry = true;
 		loading = false;
@@ -37,12 +50,15 @@
 			id,
 			url,
 			title,
-			playtime,
+			playtime:moment(playtime).utc().format(),
 			visible,
 			selectedID,
-			minutes,
+			prequeueMinutes,
 			playlist,
-			selection
+			selection,
+			snap,
+			duration,
+			leeway
 		};
 		if(bulkMode){
 			sendObj.freq = freq >= 1 ? freq : 1;
@@ -67,6 +83,11 @@
 	const checkDays = (daysOfWeek)=>{
 		return Object.values(daysOfWeek).every((x)=>x[1] == false)
 	}
+	$: disabled = ()=>{
+		if(!playtime) return true;
+		if (checkDays(daysOfWeek) && bulkMode) return true;
+		return false;
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -90,6 +111,12 @@
 		</tr>
 		{/if}
 		<tr>
+			<th>Title</th><td>
+				<input bind:value={title} disabled={loading} 
+				placeholder={bulkMode ? 'use |n| for episode #' : 'Override title'}
+				/></td>
+		</tr>
+		<tr>
 			{#if bulkMode}
 				<th>URLs (Seperate by<br>line and/or comma) </th>
 				<td><textarea bind:value={url} disabled={loading} /></td>
@@ -99,14 +126,16 @@
 			{/if}
 		</tr>
 		<tr>
-			<th>Title</th><td>
-				<input bind:value={title} disabled={loading} 
-				placeholder={bulkMode ? 'use |n| for episode #' : 'Override title'}
-				/></td>
+			<th>Duration (Sec)</th>
+			<td><input type="number" min=1 placeholder='Override the item length' bind:value={duration} /></td>
 		</tr>
 		<tr>
 			<th>{bulkMode ? 'First Ep': 'Playtime'}</th>
 			<td><input type="datetime-local" bind:value={playtime} disabled={loading} /></td>
+		</tr>
+		<tr>
+			<th>Leeway (Min)</th>
+			<td><input type="number" min=0 placeholder='Allow for late start' bind:value={leeway} /></td>
 		</tr>
 		{#if !bulkMode}
 		<tr>
@@ -140,31 +169,43 @@
 		</tr>
 		<tr>
 			<td colspan=2>
-				<hr>Filler - Queues items from a playlist to fill
-				<br>the gap between scheduled items if the gap
-				<br>to the previous item is below the minutes
-				<br>threshold (Not enabled yet)<hr></td>
+				<hr><small>
+				Snapping - Snap item to closest item within 15 min so they start after each
+				<br>other. Does not automatically resnap if the adjacent item is moved after.
+				<br>Snapping after an item that has leeway can cause this item to be skipped.</small>
+				<hr>
+			</td>
+		</tr>
+		<tr>
+			<th>Snap</th>
+			<td>
+				<input type='radio' bind:group={snap} value='none'> None
+				<br><input type='radio' bind:group={snap} value='before'> Before the next item
+				<br><input type='radio' bind:group={snap} value='after'> After the previous item
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<hr><small>
+				Playlist - If a pre-queue is set, it will play the playlist in the minutes before 
+				<br>the scheduled item if there is nothing else scheduled.</small><hr></td>
 		</tr>		
 		<tr>
 			<th>Playlist</th>
 			<td><select bind:value={playlist}>
-				<option value=''>None</option>
+					<option></option>
+				{#each Object.values(playlists) as item}
+					<option value={item.id}>{item.name}</option>
+				{/each}
 			</select></td>
 		</tr>
 		<tr>
-			<th>Minutes</th>
-			<td><input type='number' step=1 bind:value={minutes} disabled={playlist == ''}></td>
-		</tr>
-		<tr>
-			<th>Selection</th>
-			<td><select bind:value={selection} disabled={playlist == ''}>
-				<option>Random</option>
-				<option>Weighted</option>
-			</select></td>
+			<th>Pre-queue<br>Minutes</th>
+			<td><input type='number' step=1 bind:value={prequeueMinutes} disabled={playlist == ''}></td>
 		</tr>
 		<tr>
 			<td colspan="2">
-				<button disabled={(checkDays(daysOfWeek) && bulkMode) || !playtime} on:click={upsert}>{newEntry ? 'Add' : 'Edit'}</button>
+				<button disabled={disabled()} on:click={upsert}>{newEntry ? 'Add' : 'Edit'}</button>
 				{#if !newEntry}
 				<button on:click={deleteItem}>Delete</button>
 				{/if}
@@ -177,7 +218,7 @@
 	#scheduleModal {
 		max-width: 80vw;
 		opacity: 0.9;
-		margin-top: calc(50svh - 12rem);
+		margin-top: 10rem;
 		border: solid 1px var(--color-bg-dark-1);
 		padding: 1rem;
 		height:fit-content

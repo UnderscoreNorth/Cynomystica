@@ -8,6 +8,7 @@
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { moderation } from '$lib/stores/moderation';
 	import { settings } from '$lib/stores/settings';
+	import { time } from '$lib/utilities/timeUtilities';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -39,7 +40,7 @@
 {#if message?.username && !$moderation.ignored.map(x=>x.username).includes(message?.username)}
 	<tr class={getRowClasses(message.message)}>
 		<td class="chatTime">
-			[{new Date(message.time).toLocaleTimeString('en-UK', { hour12: false })}]
+			[{time(message.time)}]
 		</td>
 		<td style="width:99%;overflow-wrap:anywhere">			
 			{#if message.type == 'system'}

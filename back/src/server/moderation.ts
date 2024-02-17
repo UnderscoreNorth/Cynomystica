@@ -5,8 +5,10 @@ import {
 import { Server } from "socket.io";
 import { default as IO, socketInterface } from "./socket";
 import { sendUserList } from "./socket";
+import moment from "moment";
+import { moderationItem } from "../sqliteTables/userModeration";
 class Moderation {
-  users: Record<string, Record<string, Record<string, string>>>;
+  users: Record<string, Record<string, moderationItem>>;
   constructor() {
     this.users = {};
     this.refresh();
@@ -36,7 +38,7 @@ class Moderation {
         username,
         action,
         byUser: socket.username,
-        dateCreated: new Date().toUTCString(),
+        dateCreated: moment.utc(),
       };
     }
   }

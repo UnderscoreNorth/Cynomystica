@@ -2,7 +2,8 @@
     import { user as me } from "$lib/stores/user";
     import { io } from "$lib/realtime";
     import SortArrow from "$lib/ui/sortArrow.svelte";  
-    import moment from "moment";  
+    import { dateTime } from "$lib/utilities/timeUtilities";
+    import accessLevels from "$lib/accessLevels";
     let users:Array<any>;
     let sortBy = 'username';
     let sortDir = 1;
@@ -11,13 +12,6 @@
         sortUsers();
     });
     io.emit('get-user-management');
-    const userRoles = {
-        1:'Registered',
-        2:'Member',
-        3:'Moderator',
-        4:'Administrator',
-        5:'Owner'
-    }
     const sortUsers = ()=>{
         users = users.sort((a,b)=>{
             let res;
@@ -40,6 +34,7 @@
         user.accessLevel = parseInt(lvl.toString());
         io.emit('update-user-role',user);
     }
+    $: accessKeys = Object.keys(accessLevels).filter(x=>parseInt(x)>0)
 </script>
 <table>
     <thead>
@@ -47,7 +42,7 @@
         <th>
 
         </th>
-        <th colspan={Object.keys(userRoles).length} class='clickCell' on:click={()=>changeSort('accessLevel')}>
+        <th colspan={accessKeys.length} class='clickCell' on:click={()=>changeSort('accessLevel')}>
             Role 
             <SortArrow name='accessLevel' selected={sortBy} dir={sortDir} />
         </th>
@@ -58,8 +53,8 @@
             User
             <SortArrow name='username' selected={sortBy} dir={sortDir} />
         </th>
-        {#each Object.values(userRoles) as role}
-            <th>{role}</th>
+        {#each accessKeys as key}
+            <th>{accessLevels[key]}</th>
         {/each}
         <th  on:click={()=>changeSort('lastLogin')}  class='clickCell'>
             Last Login
@@ -73,7 +68,7 @@
             {#each users as user}
                 <tr>
                     <td>{user.username}</td>
-                    {#each Object.keys(userRoles) as roleLvl}
+                    {#each accessKeys as roleLvl}
                         <td><input 
                             type='radio' 
                             name={user.username} 
@@ -84,7 +79,7 @@
                             >
                         </td>
                     {/each}
-                    <td>{moment.utc(user.lastLogin).local().format('YYYY-MM-DD HH:mm')}</td>
+                    <td>{dateTime(user.lastLogin)}</td>
                 </tr>
             {/each}
             {/key}
