@@ -5,7 +5,7 @@
 	import { leader } from '$lib/stores/video';
 	import { user } from '$lib/stores/user';
 	let el:HTMLVideoElement;
-	const syncTime = () => {
+	const syncTime = () => {		
 		let clientTime = el.currentTime;
 		let serverTime = $video.seekTime;
 		const isLeader = ($user.username == $leader && $leader !== '');
@@ -21,7 +21,7 @@
 		}
 		if(el){
 			setTimeout(()=>{
-				syncTime
+				syncTime();
 			}, isLeader ? 1000 : $userSettings.sync.threshold)
 		}
 	};

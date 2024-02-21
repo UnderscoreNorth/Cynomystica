@@ -10,24 +10,24 @@
 		<th>Chat</th>
 		<td>
 			<div style='display:flex'>
-			<span>Left<input
+			<span><input
 				type="radio"
 				name="chatDisplay"
 				value="left"
 				bind:group={$userSettings.display.chat}
-			/></span>
-			<span>Right<input
+			/>Left</span>
+			<span><input
 				type="radio"
 				name="chatDisplay"
 				value="right"
 				bind:group={$userSettings.display.chat}
-			/></span>
-			<span>None<input
+			/>Right</span>
+			<span><input
 				type="radio"
 				name="chatDisplay"
 				value="none"
 				bind:group={$userSettings.display.chat}
-			/></span>
+			/>None</span>
 		</div>
 		</td>
 	</tr>
@@ -44,26 +44,25 @@
 		<th>Danmaku</th>
 		<td>
 			<div style='display:flex'>
-				<span>Full<input
+				<span><input
 					type="radio"
 					name="chatDanmaku"
 					value="full"
 					bind:group={$userSettings.display.danmaku}
-				/></span>
-				<span>Transparent<input
+				/>Full</span>
+				<span><input
 					type="radio"
 					name="chatDanmaku"
 					value="half"
 					bind:group={$userSettings.display.danmaku}
-				/></span>
-				<span>None<input
+				/>Transparent</span>
+				<span><input
 					type="radio"
 					name="chatDanmaku"
 					value="none"
 					bind:group={$userSettings.display.danmaku}
-				/></span>
+				/>None</span>
 			</div>
-			
 		</td>
 	</tr>
 	<tr>
