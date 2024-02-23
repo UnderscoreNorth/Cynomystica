@@ -218,10 +218,11 @@
 	#scheduleModal {
 		max-width: 80vw;
 		opacity: 0.9;
-		margin-top: 10rem;
+		margin-top: 3rem;
 		border: solid 1px var(--color-bg-dark-1);
 		padding: 1rem;
-		height:fit-content
+		max-height:calc(100vh - 6rem);
+		overflow-y: auto;
 		
 	}
 	input {

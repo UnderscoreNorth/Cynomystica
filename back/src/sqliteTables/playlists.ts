@@ -59,7 +59,7 @@ export default class {
   static upsert = async (username: string, obj: any) => {
     obj.username = username;
     obj.id = obj.id ?? uuidv4();
-    obj.name = obj.title ?? "New Playlist";
+    obj.name = obj.name ?? "New Playlist";
     obj.description = obj.description ?? "";
     obj.mode = obj.mode ?? "Random";
     obj.durationLimit = obj.durationLimit ?? -1;
