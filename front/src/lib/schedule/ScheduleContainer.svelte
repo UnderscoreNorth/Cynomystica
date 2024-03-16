@@ -4,6 +4,7 @@
 	import { user } from '$lib/stores/user';
 	import ScheduleModal from './ScheduleModal.svelte';
 	import type { ScheduleItem } from '$lib/stores/schedule';
+	import { io } from '$lib/realtime';
 	let selectedID: ScheduleItem | null;
 	const changeSelectedID = (newID: ScheduleItem | null) => {
 		selectedID = newID;
@@ -22,8 +23,10 @@
 	<button on:click={() => changeSelectedID(null)}>Add item</button>
 {/if}
 <button
-	on:click={() =>
-		($tempSettings.scheduleView = $tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar')}
+	on:click={() => {
+		$tempSettings.scheduleView = $tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar';
+		if ($tempSettings.scheduleView == 'list') io.emit('get-schedule', new Date());
+	}}
 >
 	Switch to {$tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar'} view
 </button>

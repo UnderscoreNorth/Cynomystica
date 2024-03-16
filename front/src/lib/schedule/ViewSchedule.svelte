@@ -12,7 +12,7 @@
 	let timeSet: Set<number> = new Set();
 	let minSplit = 0;
 	let maxSplit = 1000;
-	io.emit('get-schedule');
+	io.emit('get-schedule', date.toString());
 	const splitToTime = (split: number) => {
 		let hour =
 			parseInt(
@@ -70,6 +70,7 @@
 				item.endingSplit !== undefined
 			) {
 				if (item.startingSplit < minSplit) {
+					if (item.diff == 0) continue;
 					item.diff--;
 					item.startingSplit += 1440;
 					item.endingSplit += 1440;
@@ -87,7 +88,7 @@
 	};
 	const moveDate = (int: number) => {
 		date.add(int, 'days');
-		io.emit('get-schedule');
+		io.emit('get-schedule', date.toString());
 	};
 	const getTimeGrid = (int: number) => {
 		if (int >= 1440) int++;
@@ -161,9 +162,9 @@
 				<tr>
 					<td style:padding-right={'0.5rem'}>{item.title}</td>
 					<td>{moment.utc(item.playTimeUTC).local().format('ddd MMM Do')}</td>
-					<td>{moment.utc(item.playTimeUTC).local().format('H:mm')}</td>
+					<td>{moment.utc(item.playTimeUTC).local().format('HH:mm')}</td>
 					<td>-</td>
-					<td>{moment.utc(item.playTimeUTC).local().format('H:mm')}</td>
+					<td>{moment.utc(item.playTimeUTC).local().format('HH:mm')}</td>
 				</tr>
 			{/if}
 		{/each}

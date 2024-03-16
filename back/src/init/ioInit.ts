@@ -136,7 +136,7 @@ export default function ioInit(io: Server) {
     chat().getRecent(socket);
     polls().get(socket);
     sendIcons(socket);
-    getSchedule(socket);
+    getSchedule(socket, new Date().toLocaleString());
     settings().sendPreset(socket);
     settings().sendSettings(socket);
     settings().sendInfo(socket);
