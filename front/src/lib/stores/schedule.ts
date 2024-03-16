@@ -14,6 +14,9 @@ export interface ScheduleItem {
 	selection: string;
 	playlist: string;
 	visible: boolean;
+	startingSplit?: number;
+	endingSplit?: number;
+	diff?: number;
 }
 export type Schedule = Array<ScheduleItem>;
 export const schedule = writable(scheduleObj);

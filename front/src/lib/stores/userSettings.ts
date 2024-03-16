@@ -16,5 +16,6 @@ export const userSettings = writable({
 	users: [],
 	ready: false,
 	muted: false,
-	videoVolume: 1
+	videoVolume: 1,
+	scheduleModalStart: '00:00'
 });

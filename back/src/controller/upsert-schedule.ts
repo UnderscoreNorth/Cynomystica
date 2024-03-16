@@ -2,9 +2,10 @@ import { socketInterface } from "../server/socket";
 import schedule from "../sqliteTables/schedule";
 import { getSchedule } from "../server/schedule";
 import permissions from "../server/permissions";
+import { SubsertObj } from "../sqliteTables/schedule";
 export default async function upsertSchedule(
   socket: socketInterface,
-  msg: string
+  msg: SubsertObj
 ) {
   if (socket.accessLevel >= permissions().items["manageSchedule"]) {
     try {

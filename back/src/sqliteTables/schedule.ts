@@ -2,7 +2,7 @@ import { db } from "../sqliteDB";
 import { v4 as uuidv4 } from "uuid";
 import formatDate from "../lib/formatDate";
 import parseURL from "../lib/parseURL";
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 export interface ScheduleItem {
   id: string;
@@ -19,6 +19,22 @@ export interface ScheduleItem {
   leeway: number;
   prequeueMinutes: number;
 }
+export type SubsertObj = {
+  playtime: Moment;
+  url: string;
+  freq: number;
+  playlist: string;
+  id: string;
+  title: string;
+  dow: number[];
+  duration: number;
+  username: string;
+  visible: number;
+  leeway: number;
+  startTime: string;
+  finishTime: string;
+  snap: "before" | "after";
+};
 
 export default class {
   static tableName = "schedule";
@@ -62,9 +78,10 @@ export default class {
       )
       .run({ id });
   };
-  static upsert = async (username: string, obj: any) => {
+  static upsert = async (username: string, obj: SubsertObj) => {
     if (!obj.playtime) return;
     if (!obj.url && !obj.playlist) return;
+    obj.playtime = moment.utc(obj.playtime);
     if (obj.freq >= 1) {
       let urls = obj.url.split(/,|\n/g);
       let placeholder = obj.title;
@@ -75,7 +92,7 @@ export default class {
         obj.id = uuidv4();
         obj.title = "";
         if (placeholder) {
-          obj.title = placeholder.replace(/\|n\|/g, num);
+          obj.title = placeholder.replace(/\|n\|/g, num.toString());
         }
         await subSert(obj);
         let attempts = 0;
@@ -89,7 +106,7 @@ export default class {
     } else {
       await subSert(obj);
     }
-    async function subSert(obj: any) {
+    async function subSert(obj: SubsertObj) {
       await parseURL(obj.url).then((playlistItem) => {
         obj.title = obj.title || playlistItem.name;
         obj.duration = obj.duration ?? Math.ceil(playlistItem.duration);
@@ -99,9 +116,9 @@ export default class {
       obj.id = obj.id ?? uuidv4();
       obj.visible = obj.visible ? 1 : 0;
       obj.leeway = obj.leeway || 0;
-      obj.startTime = formatDate(moment.utc(obj.playtime));
+      obj.startTime = formatDate(obj.playtime);
       obj.finishTime = formatDate(
-        moment.utc(obj.playtime).add(obj.duration, "seconds")
+        obj.playtime.clone().add(obj.duration, "seconds")
       );
 
       if (obj.snap == "before") {
