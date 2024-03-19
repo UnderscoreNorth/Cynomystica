@@ -273,6 +273,7 @@ class PlayList {
         let lastItem = this.playlist[this.playlist.length - 1] ?? {
           endDate: moment.utc(),
           scheduledID: "null",
+          duration: -1,
         };
         let itemStart = moment.utc(item.playTimeUTC);
         let diff = lastItem.endDate.diff(itemStart) / 1000;
@@ -281,7 +282,11 @@ class PlayList {
           .map((x) => x.scheduledID);
         if (scheduledIDs.includes(item.id)) continue;
         //Push out rest of playlist
-        if (diff - item.leeway * 60 > 0) {
+        if (
+          diff - item.leeway * 60 > 0 ||
+          (lastItem.duration == -1 &&
+            moment.utc(item.playTimeUTC).diff(moment.utc()) < 1)
+        ) {
           for (let i = 0; i < this.playlist.length; i++) {
             if (
               this.playlist[i].endDate.diff(itemStart) / 1000 +
@@ -294,6 +299,7 @@ class PlayList {
               lastItem = this.playlist[i - 1] ?? {
                 endDate: moment.utc(),
                 scheduledID: "null",
+                duration: -1,
               };
               diff = lastItem.endDate.diff(itemStart) / 1000;
               break;
