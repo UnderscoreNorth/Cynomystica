@@ -3,8 +3,11 @@ import schedule from "../sqliteTables/schedule";
 import permissions from "./permissions";
 import moment from "moment";
 
-export const getSchedule = async (socket: socketInterface | null) => {
-  let socketSchedule = await schedule.getAll(moment("2000-01-01"));
+export const getSchedule = async (
+  socket: socketInterface | null,
+  date = "2000-01-01"
+) => {
+  let socketSchedule = await schedule.getAll(moment(date));
   const sendSchedule = (socket: socketInterface) => {
     let visibleOnly =
       (socket.accessLevel ?? -1) < permissions().items["manageSchedule"];

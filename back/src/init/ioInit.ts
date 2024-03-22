@@ -56,6 +56,7 @@ import { Server } from "socket.io";
 import addToPlaylist from "../controller/playlists/add-to-playlist";
 import getPlaylists from "../controller/playlists/get-playlists";
 import upsertPlaylist from "../controller/playlists/upsert-playlist";
+import deletePlaylist from "../controller/playlists/delete-playlist";
 export default function ioInit(io: Server) {
   settingsInit();
   permissionsInit();
@@ -97,6 +98,7 @@ export default function ioInit(io: Server) {
     "add-to-playlist": addToPlaylist,
     "get-playlists": getPlaylists,
     "upsert-playlist": upsertPlaylist,
+    "delete-playlist": deletePlaylist,
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();
@@ -136,7 +138,7 @@ export default function ioInit(io: Server) {
     chat().getRecent(socket);
     polls().get(socket);
     sendIcons(socket);
-    getSchedule(socket);
+    getSchedule(socket, new Date().toLocaleString());
     settings().sendPreset(socket);
     settings().sendSettings(socket);
     settings().sendInfo(socket);
