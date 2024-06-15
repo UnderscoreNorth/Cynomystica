@@ -14,7 +14,7 @@ export const writeToLog = (type: string, messages: Array<any>) => {
     csv.stringify(
       messages.map((x) => {
         if (x.time) {
-          x.time = formatDate(x.time);
+          return {...x, time: formatDate(x.time)};
         }
         return x;
       }),
@@ -45,7 +45,7 @@ const processFile = async (file: string) => {
       username: record[0],
       message: record[1],
       icon: record[2],
-      time: moment(record[3]),
+      time: moment.utc(record[3]),
     });
   }
   return records;
