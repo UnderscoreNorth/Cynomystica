@@ -32,6 +32,7 @@
 	};
 	let innerWidth = 0;
 	const updatePlaylist = () => {
+		$queue = $queue.filter((x)=>x !== null)
 		if ($user.accessLevel >= $permissions.manageQueue) io.emit('update-playlist', $queue);
 	};
 </script>
