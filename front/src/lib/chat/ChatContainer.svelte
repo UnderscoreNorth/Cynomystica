@@ -1,19 +1,21 @@
 <script lang="ts">
-	import { userSettings } from '$lib/stores/userSettings';	
+	import { userSettings } from '$lib/stores/userSettings';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { settings } from '$lib/stores/settings';
-	import { users } from '$lib/stores/users';	
-	import type { usersType} from '$lib/stores/users';
-	import ChatBar from './ChatBar.svelte';	
+	import { user } from '$lib/stores/user';
+	import { users } from '$lib/stores/users';
+	import type { usersType } from '$lib/stores/users';
+	import ChatBar from './ChatBar.svelte';
 	//@ts-ignore
 	import MdGroup from 'svelte-icons/md/MdGroup.svelte';
 	//@ts-ignore
-	import MdLockOutline from 'svelte-icons/md/MdLockOutline.svelte'
+	import MdLockOutline from 'svelte-icons/md/MdLockOutline.svelte';
 	//@ts-ignore
-	import MdLockOpen from 'svelte-icons/md/MdLockOpen.svelte'
+	import MdLockOpen from 'svelte-icons/md/MdLockOpen.svelte';
 	import ChatTable from './ChatTable.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
 	import UserList from './UserList.svelte';
+	import { permissions } from '$lib/stores/permissions';
 	let settingsObj: any;
 	let usersObj: usersType;
 	$: userListOpen = false;
@@ -23,37 +25,44 @@
 	users.subscribe((value) => {
 		usersObj = value;
 	});
-	
+
 	const toggleUserList = () => {
 		userListOpen = !userListOpen;
 	};
-	const getUserCountText = (count:number,countText:string) =>{
+	const getUserCountText = (count: number, countText: string) => {
 		countText = countText || '|n| connected user|s|';
-		if(count == 1){
-			countText = countText.replace(/\|s\|/g,'')
+		if (count == 1) {
+			countText = countText.replace(/\|s\|/g, '');
 		} else {
-			countText = countText.replace(/\|s\|/g,'s')
+			countText = countText.replace(/\|s\|/g, 's');
 		}
-		countText = countText.replace(/\|n\|/g,count.toString());
+		countText = countText.replace(/\|n\|/g, count.toString());
 		return countText;
-	}
+	};
 </script>
 
-<div class={'chatContainer' + ($tempSettings.minimize.toggle ? ' chatMinimal' : '')} style="width:100%">
+<div
+	class={'chatContainer' + ($tempSettings.minimize.toggle ? ' chatMinimal' : '')}
+	style="width:100%"
+>
 	{#if $tempSettings.minimize.toggle}
 		<ChatTable />
 	{:else}
 		<div id="chatGrid">
 			<div id="chatHeader">
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
-				<span style:flex-grow=1>
-					{getUserCountText($users.connectedUsers,$settings.userCountText)}
+				{#if $permissions.viewUsers < $user.accessLevel}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
+				{/if}
+				<span style:flex-grow="1">
+					{getUserCountText($users.connectedUsers, $settings.userCountText)}
 				</span>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<Tooltip title='Toggle autoscroll'>
-					<div class="svgIcon"
-						on:click={()=>$tempSettings.scrollLock = !$tempSettings.scrollLock}>
+				<Tooltip title="Toggle autoscroll">
+					<div
+						class="svgIcon"
+						on:click={() => ($tempSettings.scrollLock = !$tempSettings.scrollLock)}
+					>
 						{#if $tempSettings.scrollLock}
 							<MdLockOutline />
 						{:else}
@@ -71,12 +80,11 @@
 			<div id="chatBarContainer">
 				<ChatBar />
 			</div>
-			
 		</div>
-	{/if}	
+	{/if}
 </div>
 
-<style>	
+<style>
 	#chatHeader {
 		display: flex;
 		line-height: 2em;
@@ -89,7 +97,7 @@
 	#chatBarContainer {
 		position: relative;
 		order: 3;
-		display:flex;
+		display: flex;
 		overflow: visible;
 	}
 	@media (orientation: portrait) {
@@ -99,18 +107,18 @@
 		#chatBarContainer {
 			order: 1;
 		}
-	}	
+	}
 	.chatContainer {
 		height: 100%;
 		display: inline-block;
 		vertical-align: top;
 	}
-	.chatContainer.chatMinimal{
-		display:flex;
-		height:100svh;
+	.chatContainer.chatMinimal {
+		display: flex;
+		height: 100svh;
 		align-items: center;
 	}
-	#chatGrid {		
+	#chatGrid {
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-template-rows: 2em 1fr 2em 5px;
@@ -122,7 +130,7 @@
 		position: relative;
 		overflow-y: hidden;
 		order: 2;
-		height:100%;
-		width:inherit;
-	}		
+		height: 100%;
+		width: inherit;
+	}
 </style>

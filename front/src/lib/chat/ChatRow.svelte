@@ -4,11 +4,12 @@
 	import { bulletMode } from '$lib/stores/bulletmode';
 	import { user } from '$lib/stores/user';
 	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
-	import {chatInput, chatEl, type messageType } from '$lib/stores/chat';
+	import { chatInput, chatEl, type messageType } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { moderation } from '$lib/stores/moderation';
 	import { settings } from '$lib/stores/settings';
 	import { time } from '$lib/utilities/timeUtilities';
+	import { permissions } from '$lib/stores/permissions';
 	const getRowClasses = (msg: string) => {
 		let array = [];
 		array.push($bulletMode ? 'chatRow bulletMode' : 'chatRow');
@@ -17,36 +18,37 @@
 		}
 		return array.join(' ');
 	};
-	const getUserStyle = (icons,message) => {
+	const getUserStyle = (icons, message) => {
 		let style = '';
 		if (icons[message.icon]?.color) {
 			style = `color:${$icons[message.icon]?.color}`;
 		}
 		return style;
 	};
-	const parseUser = (message:any) => {
+	const parseUser = (message: any) => {
 		let username = message.username;
 		username = parseThreeGuys(username);
 		if ($tempSettings.anonymous) username = '';
 		return username;
 	};
-	function clickMessage(e:MouseEvent){
-		if(e.target?.classList?.contains('emote')){
+	function clickMessage(e: MouseEvent) {
+		if (e.target?.classList?.contains('emote')) {
 			$chatInput += e.target?.title;
 			$chatEl.focus();
 		}
 	}
 </script>
-{#if message?.username && !$moderation.ignored.map(x=>x.username).includes(message?.username)}
+
+{#if message?.username && !$moderation.ignored.map((x) => x.username).includes(message?.username)}
 	<tr class={getRowClasses(message.message)}>
 		<td class="chatTime">
 			[{time(message.time)}]
 		</td>
-		<td style="width:99%;overflow-wrap:anywhere">			
+		<td style="width:99%;overflow-wrap:anywhere">
 			{#if message.type == 'system'}
-			<div class={'systemMsg '+message.message}>
-				{@html message.message}
-			</div>			
+				<div class={'systemMsg ' + message.message}>
+					{@html message.message}
+				</div>
 			{:else}
 				<span class="chatIcon">
 					{#if message.icon && $icons[message.icon]?.url}
@@ -59,18 +61,21 @@
 						{@html message.message.substring(4)}
 					</span>
 				{:else}
-					{#if !$tempSettings.anonymous}
-						<span class="chatUser" style={getUserStyle($icons,message)}>
-							{parseUser(message)}: 
+					{#if !$tempSettings.anonymous && $permissions.viewUsers < $user.accessLevel}
+						<span class="chatUser" style={getUserStyle($icons, message)}>
+							{parseUser(message)}:
 						</span>
 					{/if}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<span class="chatMsg" on:click={clickMessage} style={`--max-height:${$settings.maxImageHeight}px;--max-emote-height:${$settings.maxEmoteHeight}px`}>
+					<span
+						class="chatMsg"
+						on:click={clickMessage}
+						style={`--max-height:${$settings.maxImageHeight}px;--max-emote-height:${$settings.maxEmoteHeight}px`}
+					>
 						{@html message.message}
 					</span>
 				{/if}
 			{/if}
-			
 		</td>
 	</tr>
 {/if}
@@ -105,19 +110,19 @@
 		max-height: var(--max-height);
 		vertical-align: middle;
 	}
-	.systemMsg{
+	.systemMsg {
 		color: white;
 		height: 1.5rem;
 		line-height: 1.5rem;
 		text-align: center;
 	}
-	.systemMsg.Connected{
-		background:green;		
+	.systemMsg.Connected {
+		background: green;
 	}
-	.systemMsg.Disconnected{
-		background:rgb(145, 0, 0);		
+	.systemMsg.Disconnected {
+		background: rgb(145, 0, 0);
 	}
-	.systemMsg.Reconnecting{
-		background:rgba(156, 94, 1, 0.795);		
+	.systemMsg.Reconnecting {
+		background: rgba(156, 94, 1, 0.795);
 	}
 </style>

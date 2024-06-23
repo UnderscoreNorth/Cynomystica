@@ -20,6 +20,7 @@ export interface Permissions {
 	clearChat: number;
 	leader: number;
 	createPlaylists: number;
+	viewUsers: number;
 }
 export const permissionGrouping = {
 	userMod: 'Moderation',
@@ -41,7 +42,8 @@ export const permissionGrouping = {
 	postMedia: 'Chat',
 	clearChat: 'Moderation',
 	leader: 'Queue/Playlists',
-	createPlaylists: 'Queue/Playlists'
+	createPlaylists: 'Queue/Playlists',
+	viewUsers: 'Chat'
 };
 const permissionsObj: Permissions = {
 	chat: 10,
@@ -63,6 +65,7 @@ const permissionsObj: Permissions = {
 	createPlaylists: 10,
 	manageInfoModal: 10,
 	clearChat: 10,
-	leader: 10
+	leader: 10,
+	viewUsers: 10
 };
 export const permissions = writable(permissionsObj);
