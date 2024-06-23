@@ -35,6 +35,23 @@ When queuing raw mp4s, you can combine differents links together with ????, for 
 
 ### Update Log
 
+#### Jun 23, 2024
+
+- Queue folder on the system side to allow for queuing by other processes
+- Forcable anon mode by permission level
+
+#### Feb 17, 2024
+
+- Scheduled items can now be snapped to neighbors, with leeway allowances
+
+#### Feb 10, 2024
+
+- Playlists for prequeuing
+
+#### Jan 5, 2024
+
+- Leader syncing
+
 #### Dec 31, 2023
 
 - Twitch live support (No vods yet)
