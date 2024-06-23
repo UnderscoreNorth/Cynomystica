@@ -5,6 +5,7 @@ import { createServer } from "node:http";
 import dbInit from "./init/dbInit";
 import ioInit from "./init/ioInit";
 import { init, default as IO } from "./server/socket";
+import { queueWatchInit } from "./init/queueWatchInit";
 
 let app: Express;
 dbInit().then(() => {
@@ -14,7 +15,7 @@ dbInit().then(() => {
   // @ts-ignore
   init(server);
   ioInit(IO());
-
+  queueWatchInit();
   //let syncPlay = SyncPlay();
   //playlist.queuePlaylist({ playlist: "Commercials", duration: 500 });
 

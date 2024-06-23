@@ -120,6 +120,10 @@ export default function ioInit(io: Server) {
       return;
     }
     socket.emit("connected", socket.uuid);
+    socket.use((s, next) => {
+      console.log(new Date(), socket.username, s);
+      next();
+    });
     for (let event in ioEvents) {
       try {
         socket.on(event, async (msg) => {
