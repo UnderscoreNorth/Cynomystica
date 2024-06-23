@@ -33,6 +33,19 @@ Cynomystica is named after the prairie dog.
 
 When queuing raw mp4s, you can combine differents links together with ????, for example, https://source1.com/DSADSA.mp4????https://source2.com/265654.mp4????https://source3.com/dsa80AD.mp4, and it will give users the options to pick between the servers
 
+### Leader Mode
+
+With a sufficient permission level, a user can become leader by hovering over the video player and toggling the star. In leader mode, the stream will sync to the leader, allowing them to seek through the video
+
+### Scheduling and Playlists
+
+Items may be scheduled in advance, either one at a time, or in bulk mode. Bulk mode has scheduling options to adjust how far to space the items apart in the schedule (Eg. Every Sat at 9pm, or Every Mon-Thu at 2pm). Items can be set to snap to a neighbor so they start one after the other, and leeway may be provided on how late an item can start after it's scheduled time.
+Playlists can be created for later use. Playlists can be configured to range from a permanent random rotation to a queue where items are deleted after queueing. To use a playlist, it must be selected when scheduling an item. If a playlist is used without scheduling a link, the scheduled block will be reserved completely for the playlist. If used in combination with a link, the playlist will queue up it's contents before the scheduled item begins. (Eg. Scheduling a video at 9pm with 5 minutes of prequeue will slot in 5 minutes of the playlist's contents from 8:55-9:00, after which the scheduled video will play)
+
+### Internal Queuing
+
+After starting the backend, there'll be a queue folder in the root. Placing a txt file with a link inside will queue up that link. This can be used by other applications or scripts.
+
 ### Update Log
 
 #### Jun 23, 2024
