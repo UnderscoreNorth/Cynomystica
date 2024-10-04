@@ -43,7 +43,8 @@ export default async function parseURL(url: string) {
       default:
         throw "type not accounted for yet";
     }
-  } catch {
+  } catch (err) {
+    if (err == "Invalid ID") throw "Invalid ID";
     throw "type not accounted for yet";
   }
 }

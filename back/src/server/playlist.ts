@@ -239,8 +239,12 @@ class PlayList {
         }
         this.updateDates();
       })
-      .catch(() => {
-        socketError(`Video type not supported`);
+      .catch((err) => {
+        if (err == "Invalid ID") {
+          socketError(err);
+        } else {
+          socketError(`Video type not supported`);
+        }
       });
   };
   deleteVideo(id: number) {
