@@ -13,7 +13,7 @@ import { icons } from './icons';
 import { login } from '$lib/utilities/login';
 import { permissions } from './permissions';
 import { tabText } from './tabText';
-import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
+//import { theThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 import { emotes, type Emote } from './emotes';
 import { polls, type Poll } from './polls';
 import { tempSettings } from './tempSettings';
@@ -181,7 +181,7 @@ const init = () => {
 					video.set(e.playlist[e.playlistIndex]);
 				}
 			}
-			theThreeGuys.set(e.theThreeGuys);
+			//theThreeGuys.set(e.theThreeGuys);
 		}
 	});
 	io.on('message', (e) => {
@@ -191,6 +191,7 @@ const init = () => {
 		});
 	});
 	io.on('messages', (e) => {
+		console.log('messages');
 		chat.set(e);
 	});
 	io.on('seek-update', (e) => {

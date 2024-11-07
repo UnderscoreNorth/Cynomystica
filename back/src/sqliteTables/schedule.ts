@@ -58,13 +58,15 @@ export default class {
   };
   static getAll = async (date = moment.utc()) => {
     let dateString = formatDate(date);
+    let dateStringUpper = formatDate(date.clone().add(2, "months"));
     const results = await db
       .prepare(
         `SELECT * FROM schedule WHERE         
-        playTimeUTC > @date ORDER BY playTimeUTC ASC`
+        playTimeUTC > @date AND playtimeUTC <= @upper ORDER BY playTimeUTC ASC`
       )
       .all({
         date: dateString,
+        upper: dateStringUpper,
       });
     return results as Array<ScheduleItem>;
   };

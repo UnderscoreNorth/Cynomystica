@@ -11,6 +11,7 @@ import {
 } from "../server/permissions";
 import { default as settings, init as settingsInit } from "../server/settings";
 import { default as moderation, init as modInit } from "../server/moderation";
+import { init as effectInit } from "../server/effects";
 
 import message from "../controller/message";
 import deleteItem from "../controller/delete-item";
@@ -45,6 +46,7 @@ import deleteSchedule from "../controller/delete-schedule";
 import updateInfo from "../controller/settings/update-info";
 import leaderSync from "../controller/leader-sync";
 import setLeader from "../controller/set-leader";
+import effect from "../controller/effect";
 
 import playlist from "../server/playlist";
 
@@ -61,6 +63,7 @@ export default function ioInit(io: Server) {
   settingsInit();
   permissionsInit();
   modInit();
+  effectInit();
   const ioEvents = {
     "delete-item": deleteItem,
     disconnect: disconnect,
@@ -99,6 +102,7 @@ export default function ioInit(io: Server) {
     "get-playlists": getPlaylists,
     "upsert-playlist": upsertPlaylist,
     "delete-playlist": deletePlaylist,
+    effect: effect,
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();

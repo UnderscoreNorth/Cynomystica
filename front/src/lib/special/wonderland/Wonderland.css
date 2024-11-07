@@ -1,0 +1,293 @@
+.c-effect__christmas-wonderland {
+    --navbar-height: 0px;
+  
+    /* Lightrope */
+    --bulb-width: 14px;
+    --bulb-height: 32px;
+    --bulb-spacing: 40px;
+    --bulb-spread: 3px;
+    --bulb-off-opacity: 0.4;
+    --bulb-hidden-in-socket: 6px;
+  
+    --socket-width: 12px;
+    --socket-height: 10px;
+    --socket-color: #444;
+    --socket-top: 0; /* calc((var(--socket-height) - var(--bulb-hidden-in-socket)) * -1); */
+  
+    --light-color-blue: 42, 236, 241;
+    --light-color-green: 29, 189, 59;
+    --light-color-red: 236, 18, 53;
+    --light-color-orange: 240, 157, 41;
+  
+    /* --light-alpha: 1; */
+    --light-box-shadow-alpha: 0.5;
+    --light-off-opacity: 0.5;
+  
+  
+    /* Candy cane */
+    --candy-cane-width: 12px;
+  
+    --lightrope-zindex: 1002;
+    --candy-cane-zindex: 1001;
+  
+  
+    /* Christmas tree */
+    --christmas-tree-light-color-1: 248, 178, 41;
+    --christmas-tree-light-color-2: 187, 37, 40;
+    --christmas-tree-light-color-3: 250, 250, 250;
+  
+    --left-tree-z-index: 1300;
+    --middle-tree-z-index: 1100;
+    --right-tree-z-index: 1300;
+    --kfc-z-index: 1200;
+  
+    --tree-width: 120px;
+    --tree-big-width: 160px;
+  
+    --left-tree-x: 200px;
+    --middle-tree-x: 95px;
+    --right-tree-x: 25px;
+  
+    --kfc-x: 135px;
+    --kfc-width: 80px;
+  
+    pointer-events: none;
+  }
+  
+  /* -------------------------------- Lightrope ------------------------------- */
+  .c-effect__lightrope {
+    display: flex;
+  
+    position: fixed;
+    left: calc(var(--bulb-spacing) * -0.5);
+    top: var(--navbar-height);
+    z-index: var(--lightrope-zindex);
+  
+    margin: 0;
+    padding: 0;
+    padding-bottom: 20px;
+    pointer-events: none;
+    overflow: hidden;
+    width: calc(100% + (var(--bulb-spacing) / 0.5));
+  }
+  
+  .c-effect__lightrope-light {
+    position: relative;
+    flex: 0 0 auto;
+  
+    margin: 0 calc(var(--bulb-spacing) / 2);
+    /* margin-top: calc(var(--socket-height) - var(--bulb-hidden-in-socket)); */
+  }
+  .c-effect__lightrope-light:first-child {
+    margin-left: 4px;
+  }
+  
+  .c-effect__lightrope-bulb {
+    width: var(--bulb-width);
+    height: var(--bulb-height);
+    border-radius: 50%;
+  
+    background: rgb(var(--light-color-blue));
+    box-shadow: 0px var(--bulb-hidden-in-socket) calc(var(--bulb-width) / 2) 5px rgba(var(--light-color-blue), var(--light-box-shadow-alpha));
+    opacity: 1;
+  
+    will-change: opacity;
+    animation: c-effect__light-flash both infinite 3s ease-in-out;
+  }
+  
+  .c-effect__lightrope-light:nth-child(2n) .c-effect__lightrope-bulb {
+    background: rgb(var(--light-color-green));
+    box-shadow: 0px var(--bulb-hidden-in-socket) calc(var(--bulb-width) / 2) 5px rgba(var(--light-color-green), var(--light-box-shadow-alpha));
+  }
+  .c-effect__lightrope-light:nth-child(4n) .c-effect__lightrope-bulb {
+    background: rgb(var(--light-color-red));
+    box-shadow: 0px var(--bulb-hidden-in-socket) calc(var(--bulb-width) / 2) 5px rgba(var(--light-color-red), var(--light-box-shadow-alpha));
+  }
+  .c-effect__lightrope-light:nth-child(8n) .c-effect__lightrope-bulb {
+    background: rgb(var(--light-color-orange));
+    box-shadow: 0px var(--bulb-hidden-in-socket) calc(var(--bulb-width) / 2) 5px rgba(var(--light-color-orange), var(--light-box-shadow-alpha));
+  }
+  
+  /* Timings */
+  .c-effect__lightrope-light:nth-child(2n+1) .c-effect__lightrope-bulb {
+    animation-duration: 0.6s;
+  }
+  .c-effect__lightrope-light:nth-child(4n+2) .c-effect__lightrope-bulb {
+    animation-duration: 1.2s;
+  }
+  .c-effect__lightrope-light:nth-child(odd) .c-effect__lightrope-bulb {
+    animation-duration: 2.3s;
+  }
+  .c-effect__lightrope-light:nth-child(3n+1) .c-effect__lightrope-bulb {
+    animation-duration: 1.6s;
+  }
+  
+  /* Bulb socket */
+  .c-effect__lightrope-socket {
+    position: absolute;
+    top: var(--socket-top);
+    left: calc((var(--bulb-width) - var(--socket-width)) / 2);
+  
+    width: var(--socket-width);
+    height: var(--socket-height);
+  
+    background-color: var(--socket-color);
+    border-radius: 3px;
+  }
+  
+  /* Bulb rope */
+  .c-effect__lightrope-rope {
+    position: absolute;
+    top: -2px;
+    left: calc(var(--bulb-width) - 4px);
+  
+    width: calc(var(--bulb-spacing) + 8px);
+    height: var(--socket-height);
+    border-bottom: solid var(--socket-color) 2px;
+    border-radius: 50%;
+  }
+  /* Only show the rope for the first child */
+  .c-effect__lightrope-light:first-child .c-effect__lightrope-bulb,
+  .c-effect__lightrope-light:first-child .c-effect__lightrope-socket {
+    display: none;
+  }
+  
+  @keyframes c-effect__light-flash {
+    0%, 100% {
+      opacity: var(--light-off-opacity);
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
+  /* ------------------------------- Candy canes ------------------------------ */
+  .c-candy-cane {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    bottom: 0;
+    width: var(--candy-cane-width);
+    overflow: hidden;
+    border-radius: calc(var(--candy-cane-width) / 2) calc(var(--candy-cane-width) / 2) 2px 2px;
+    z-index: var(--candy-cane-zindex);
+  }
+  .c-candy-cane--right {
+    left: auto;
+    right: 0;
+  }
+  
+  .c-candy-cane-ring {
+    padding-top: 100%;
+    background-color: #fff;
+    transform: skewY(35deg) translateY(-50%);
+  }
+  
+  .c-candy-cane-ring--red {
+    background-color: #ff0000;
+  }
+  
+  /* ----------------------------- Christmas trees ---------------------------- */
+  .c-christmas-tree {
+    position: fixed;
+    bottom: 0;
+    right: var(--left-tree-x);
+    width: var(--tree-width);
+  }
+  .c-christmas-tree__tree {
+    fill: #165b33;
+  }
+  
+  .c-christmas-tree--left {
+    filter: drop-shadow(2px 4px 6px #212121);
+    z-index: var(--left-tree-z-index);
+    right: var(--left-tree-x);
+  }
+  .c-christmas-tree--middle {
+    width: var(--tree-big-width);
+    z-index: var(--middle-tree-z-index);
+    right: var(--middle-tree-x);
+  }
+  .c-christmas-tree--right {
+    filter: drop-shadow(-2px -4px 6px #212121);
+    z-index: var(--right-tree-z-index);
+    right: var(--right-tree-x);
+  }
+  
+  .c-christmas-tree--middle .c-christmas-tree__tree {
+    fill: #114627;
+  }
+  
+  
+  
+  .c-christmas-tree__light {
+    --christmas-tree-light-color: var(--christmas-tree-light-color-1);
+  
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(var(--christmas-tree-light-color), 1);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+    opacity: 1;
+  
+    will-change: opacity;
+    animation: c-christmas-tree-lights-glow both infinite 2.5s ease-in-out;
+  }
+  .c-christmas-tree__light:after {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
+  
+  .c-christmas-tree__light--2 {
+    --christmas-tree-light-color: var(--christmas-tree-light-color-2);
+  }
+  .c-christmas-tree__light--3 {
+    --christmas-tree-light-color: var(--christmas-tree-light-color-3);
+  }
+  
+  .c-christmas-tree__light {
+    animation-duration: 3s;
+  }
+  .c-christmas-tree__light:nth-child(2n) {
+    animation-duration: 2s;
+  }
+  .c-christmas-tree__light:nth-child(3n) {
+    animation-duration: 2.5s;
+  }
+  .c-christmas-tree__light:nth-child(4n) {
+    animation-duration: 1.5s;
+  }
+  
+  @keyframes c-christmas-tree-lights-glow {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
+  
+  .c-kfc-bucket {
+    position: fixed;
+    width: var(--kfc-width);
+    bottom: 0;
+    right: var(--kfc-x);
+    z-index: var(--kfc-z-index);
+  }
+  .c-kfc-bucket img {
+    width: 100%;
+  }
+  
+  
+  .c-effect__snow-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    pointer-events: none;
+    z-index: 1000000;
+  }
+  

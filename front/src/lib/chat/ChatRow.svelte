@@ -3,7 +3,7 @@
 	import { icons } from '$lib/stores/icons';
 	import { bulletMode } from '$lib/stores/bulletmode';
 	import { user } from '$lib/stores/user';
-	import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
+	//import { parseThreeGuys } from '$lib/special/theThreeGuys/parseThreeGuys';
 	import { chatInput, chatEl, type messageType } from '$lib/stores/chat';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { moderation } from '$lib/stores/moderation';
@@ -27,7 +27,7 @@
 	};
 	const parseUser = (message: any) => {
 		let username = message.username;
-		username = parseThreeGuys(username);
+		//username = parseThreeGuys(username);
 		if ($tempSettings.anonymous) username = '';
 		return username;
 	};

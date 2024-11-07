@@ -12,19 +12,36 @@ let beat = 0;
 function getCurrentPlayList() {
   return JSON.stringify(playlist.playlist);
 }
-function consoleVitals() {
+function consoleVitals(beat: number) {
   if (
-    playlist.currentSeekTime == 0 &&
-    playlist.playing == false &&
-    playlist.playlist[0] == undefined
+    !(
+      playlist.currentSeekTime == 0 &&
+      playlist.playing == false &&
+      playlist.playlist[0] == undefined
+    ) &&
+    beat == 1
   )
-    return;
-  console.log({
-    seek: playlist.currentSeekTime,
-    playing: playlist.playing,
-    currentTitle: playlist.playlist?.[0]?.name,
-    currentURL: playlist.playlist?.[0]?.url,
-  });
+    console.log({
+      seek: playlist.currentSeekTime,
+      playing: playlist.playing,
+      currentTitle: playlist.playlist?.[0]?.name,
+      currentURL: playlist.playlist?.[0]?.url,
+    });
+
+  const memoryUsage = process.memoryUsage();
+  if (memoryUsage.heapTotal / 1024 / 1024 > 200) {
+    console.log(`Memory Usage: ` + new Date().toLocaleTimeString());
+    console.log(`  RSS: ${Math.round(memoryUsage.rss / 1024 / 1024)} MB`);
+    console.log(
+      `  Heap Total: ${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`
+    );
+    console.log(
+      `  Heap Used: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`
+    );
+    console.log(
+      `  External: ${Math.round(memoryUsage.external / 1024 / 1024)} MB`
+    );
+  }
 }
 async function logActivity() {
   let { active, total } = await activityCheck();
@@ -35,9 +52,7 @@ export const cycle = async () => {
     inCycle = true;
     try {
       beat++;
-      if (beat == 1) {
-        consoleVitals();
-      }
+      consoleVitals(beat);
       playlist.updateDates();
       let currentPlaylist = getCurrentPlayList();
       playlist.checkSchedule();

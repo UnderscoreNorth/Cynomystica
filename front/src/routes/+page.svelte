@@ -16,7 +16,7 @@
 	let tabName = $settings.tabName;
 
 	onMount(() => {
-		if(!$page.url.search.includes('debug')) window.console.log = ()=>{}
+		if (!$page.url.search.includes('debug')) window.console.log = () => {};
 		init();
 		setInterval(() => {
 			if ($tabText && tabName !== $tabText) {
@@ -33,8 +33,7 @@
 			$userSettings.ready = true;
 		}
 		userSettings.subscribe((e) => {
-			if(e.ready)
-				localStorage.setItem('userSettings',JSON.stringify($userSettings))
+			if (e.ready) localStorage.setItem('userSettings', JSON.stringify($userSettings));
 		});
 	});
 </script>
@@ -42,10 +41,7 @@
 <svelte:head>
 	<title>{tabName}</title>
 	<meta name="description" content="Prairie Dog Streaming" />
-	<link
-			rel="icon"
-			href={$settings.tabIcon}
-		/>
+	<link rel="icon" href={$settings.tabIcon} />
 </svelte:head>
 
 <section id="app">
@@ -68,8 +64,9 @@
 				style:width={`${$userSettings.chat.chatWidth}rem`}
 				style:order={$userSettings.display.chat == 'left' ? 1 : 3}
 				style:left={$userSettings.display.chat == 'left' && $tempSettings.minimize.toggle ? 0 : ''}
-				style:right={$userSettings.display.chat == 'right' && $tempSettings.minimize.toggle ? 0 : ''}
-				><ChatContainer /></c
+				style:right={$userSettings.display.chat == 'right' && $tempSettings.minimize.toggle
+					? 0
+					: ''}><ChatContainer /></c
 			>
 		{/if}
 	</main>
@@ -80,13 +77,12 @@
 		height: 100svh;
 		width: 100vw;
 		overflow: hidden;
-		display:flex;
+		display: flex;
 		flex-direction: column;
-		
 	}
 	main {
 		display: flex;
-		flex-grow:1;
+		flex-grow: 1;
 		width: 100vw;
 		overflow-y: hidden;
 	}
@@ -94,8 +90,8 @@
 		flex-grow: 1;
 		order: 1;
 	}
-	#cChat.minimal{
-		position:fixed;
+	#cChat.minimal {
+		position: fixed;
 		z-index: 1;
 		pointer-events: none;
 	}

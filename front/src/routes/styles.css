@@ -141,12 +141,20 @@ button:focus:not(:focus-visible) {
 	width: 1.5rem;
 	padding: 0.15rem 0rem;
 	margin: 0.1rem;
+	border-radius: 3px;
 }
 .svgIcon:hover {
 	cursor: pointer;
 	color: var(--color-bg-2);
 	background: var(--color-fg-2);
-	border-radius: 3px;
+}
+.svgIcon.true {
+	color: var(--color-fg-3);
+	background: var(--color-bg-3);
+}
+.svgIcon.true:hover {
+	color: var(--color-bg-2);
+	background: var(--color-fg-2);
 }
 .greentext {
 	color: #789922;

@@ -24,7 +24,7 @@
 </script>
 
 <div id="snowContainer">
-	{#key $tempSettings.snow}
+		{#key $tempSettings.snow}
 		{#each Array($tempSettings.snow) as _, index (index)}
 			<div class="snow" style={getStyle()} />
 		{/each}

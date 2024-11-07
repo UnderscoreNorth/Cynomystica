@@ -16,6 +16,7 @@
 	import Tooltip from '$lib/ui/tooltip.svelte';
 	import UserList from './UserList.svelte';
 	import { permissions } from '$lib/stores/permissions';
+	import EffectsController from '$lib/special/EffectsController.svelte';
 	let settingsObj: any;
 	let usersObj: usersType;
 	$: userListOpen = false;
@@ -77,6 +78,11 @@
 				{/if}
 				<ChatTable />
 			</div>
+			<div id="effectsControl">
+				{#if $user.accessLevel > 3}
+					<EffectsController />
+				{/if}
+			</div>
 			<div id="chatBarContainer">
 				<ChatBar />
 			</div>
@@ -96,13 +102,18 @@
 
 	#chatBarContainer {
 		position: relative;
-		order: 3;
+		order: 4;
 		display: flex;
 		overflow: visible;
 	}
+	#effectsControl {
+		order: 3;
+		background: var(--color-bg-3);
+		color: white;
+	}
 	@media (orientation: portrait) {
 		#chatHeader {
-			order: 3;
+			order: 4;
 		}
 		#chatBarContainer {
 			order: 1;
@@ -121,7 +132,7 @@
 	#chatGrid {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-template-rows: 2em 1fr 2em 5px;
+		grid-template-rows: 2em 1fr auto 2em 5px;
 		gap: 0px 0px;
 		height: 100%;
 		width: 100%;

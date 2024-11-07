@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Login from './Login.svelte';
+	import { user } from '$lib/stores/user';
 	import ModerationContainer from '$lib/moderation/ModerationContainer.svelte';
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
 	import Alert from './Alert.svelte';
 	import Modal from '$lib/ui/modal.svelte';
-	
+
 	import IconButton from '$lib/ui/iconButton.svelte';
 	//@ts-ignore
 	import MdPoll from 'svelte-icons/md/MdPoll.svelte';
@@ -19,12 +20,16 @@
 	import MdDateRange from 'svelte-icons/md/MdDateRange.svelte';
 	//@ts-ignore
 	import MdInfoOutline from 'svelte-icons/md/MdInfoOutline.svelte';
+	//@ts-ignore
+	import GiSnowflake2 from 'svelte-icons/gi/GiSnowflake2.svelte';
 	import InfoContainer from '$lib/information/infoContainer.svelte';
 	import PollModal from '$lib/polls/PollModal.svelte';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import ChatBar from '$lib/chat/ChatBar.svelte';
 	import SettingsModal from '$lib/settings/SettingsModal.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
+	import EffectsModal from '$lib/special/EffectsModal.svelte';
+	import Effects from '$lib/special/Effects.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -32,6 +37,8 @@
 	let scheduleModalOpen: boolean = false;
 	let infoModalOpen: boolean = false;
 	let pollModalOpen: boolean = false;
+	let effectsOff: boolean = false;
+	let effectsModalOpen: boolean = false;
 	const toggleSettings = () => {
 		userSettingsModalOpen = !userSettingsModalOpen;
 	};
@@ -47,33 +54,52 @@
 	const toggleInfo = () => {
 		infoModalOpen = !infoModalOpen;
 	};
-	const togglePoll = ()=>{
+	const togglePoll = () => {
 		pollModalOpen = !pollModalOpen;
-	}
-		
+	};
+	const toggleEffects = () => {
+		effectsOff = !effectsOff;
+	};
+	const toggleEffectsModal = () => {
+		effectsModalOpen = !effectsModalOpen;
+	};
+
 	const dummy = () => {};
 </script>
 
-<header>	
+<header>
 	{#if $tempSettings.minimize.toggle}
-		<div id='minimalHeader'>
-			<div id='minimalSettings'>
-				<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />			
-			</div>		
-			<div id='minimalChatBar'>
+		<div id="minimalHeader">
+			<div id="minimalSettings">
+				<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
+			</div>
+			<div id="minimalChatBar">
 				<ChatBar />
 			</div>
 		</div>
 	{:else}
 		<nav>
 			<div id="siteName">
-				<a target="_blank" rel="noreferrer" href="https://github.com/UnderscoreNorth/Cynomystica"><Tooltip title='Github/Documentation'>Cynomystica</Tooltip></a> |</div>
+				<a target="_blank" rel="noreferrer" href="https://github.com/UnderscoreNorth/Cynomystica"
+					><Tooltip title="Github/Documentation">Cynomystica</Tooltip></a
+				> |
+			</div>
 			<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
 			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Queue'} />
 			<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
 			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info'} />
 			<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
-			<IconButton Icon={MdSentimentVeryDissatisfied} onClick={toggleModeration} tooltip={'User Management'}/>	
+			<IconButton
+				Icon={MdSentimentVeryDissatisfied}
+				onClick={toggleModeration}
+				tooltip={'User Management'}
+			/>
+			<IconButton
+				state={effectsOff}
+				Icon={GiSnowflake2}
+				onClick={toggleEffects}
+				tooltip={effectsOff ? 'Turn Effects On' : 'Turn Effects Off'}
+			/>
 			<div id="loginLi"><Login /></div>
 		</nav>
 	{/if}
@@ -89,7 +115,7 @@
 		</Modal>
 	{/if}
 	{#if moderationModalOpen}
-		<Modal closeModal={toggleModeration} title='User Management'>
+		<Modal closeModal={toggleModeration} title="User Management">
 			<ModerationContainer />
 		</Modal>
 	{/if}
@@ -99,14 +125,17 @@
 		</Modal>
 	{/if}
 	{#if infoModalOpen}
-		<Modal closeModal={toggleInfo} title='Info'>
+		<Modal closeModal={toggleInfo} title="Info">
 			<InfoContainer />
 		</Modal>
 	{/if}
 	{#if pollModalOpen}
-		<Modal closeModal={togglePoll} title='Polls/Pinned Messages'>
+		<Modal closeModal={togglePoll} title="Polls/Pinned Messages">
 			<PollModal />
 		</Modal>
+	{/if}
+	{#if !effectsOff}
+		<Effects />
 	{/if}
 </header>
 
@@ -120,43 +149,47 @@
 		justify-content: space-between;
 		border-bottom: solid 1px black;
 	}
-	#minimalHeader{
+	#minimalHeader {
 		color: var(--color-fg-2);
-		opacity:0.5;
-		position:absolute;
-		top:1rem;
-		left:1rem;
+		opacity: 0.5;
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
 		z-index: 2;
-		width:calc(100% - 1rem);
-		display:flex;
+		width: calc(100% - 1rem);
+		display: flex;
 		pointer-events: none;
 	}
-	#minimalHeader>*{
+	#minimalHeader > * {
 		pointer-events: all;
 	}
-	#minimalSettings{
-		float:left;
-		background:rgba(0,0,0,0.2);
-		border-radius:0.5rem;
-	}
-	#minimalChatBar{
-		max-width: 80vw;	
-		width:20rem;
-		display:flex;
-		position: relative;
-		margin:auto;
-		height:max-content;
-		height:2rem;
-	}
-	:global(#minimalChatBar>input){
-		background:rgba(0,0,0,0.1);
+	#minimalSettings {
+		float: left;
+		background: rgba(0, 0, 0, 0.2);
 		border-radius: 0.5rem;
-		text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
-		outline:solid 1px rgba(255,255,255,0.1);
 	}
-	:global(#minimalChatBar>#iconSelect){
-		border:none;
-		opacity:0.3;
+	#minimalChatBar {
+		max-width: 80vw;
+		width: 20rem;
+		display: flex;
+		position: relative;
+		margin: auto;
+		height: max-content;
+		height: 2rem;
+	}
+	:global(#minimalChatBar > input) {
+		background: rgba(0, 0, 0, 0.1);
+		border-radius: 0.5rem;
+		text-shadow:
+			-1px -1px 0 white,
+			1px -1px 0 white,
+			-1px 1px 0 white,
+			1px 1px 0 white;
+		outline: solid 1px rgba(255, 255, 255, 0.1);
+	}
+	:global(#minimalChatBar > #iconSelect) {
+		border: none;
+		opacity: 0.3;
 	}
 	nav {
 		display: flex;
@@ -169,9 +202,9 @@
 		align-items: stretch;
 		line-height: 2rem;
 	}
-	@media (orientation:portrait){
-		#siteName{
-			display:none;
+	@media (orientation: portrait) {
+		#siteName {
+			display: none;
 		}
 	}
 </style>
