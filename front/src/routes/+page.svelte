@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Header from '$lib/header/Header.svelte';
 	import ChatContainer from '$lib/chat/ChatContainer.svelte';
 	import VideoContainer from '$lib/video/VideoContainer.svelte';
@@ -41,7 +41,7 @@
 <svelte:head>
 	<title>{tabName}</title>
 	<meta name="description" content="Prairie Dog Streaming" />
-	<link rel="icon" href={$settings.tabIcon} />
+	<link rel="icon" href={$settings.tabIcon.toString() ?? ''} />
 </svelte:head>
 
 <section id="app">

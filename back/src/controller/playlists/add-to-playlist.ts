@@ -28,39 +28,41 @@ export default async function addToPlaylist(socket: socketInterface, msg: any) {
       return;
     }
     let video;
-    try {
-      video = await parseURL(msg.url);
-    } catch (error) {
-      socket.emit("alert", {
-        type: "playlist",
-        message: "Invalid link",
+    for (const url of msg.url.split(",").map((x) => x.trim())) {
+      try {
+        video = await parseURL(url);
+      } catch (error) {
+        socket.emit("alert", {
+          type: "playlist",
+          message: "Invalid link",
+        });
+        return;
+      }
+      if (video.duration < 0) {
+        socket.emit("alert", {
+          type: "playlist",
+          message: "Livestreams can not be added to playlists",
+        });
+        return;
+      }
+      if (msg.override) video.name = msg.override;
+      if (
+        playlist.durationLimit > 0 &&
+        duration + video.duration > playlist.durationLimit * 60
+      ) {
+        socket.emit("alert", {
+          type: "playlist",
+          message: "Duration limit reached",
+        });
+        return;
+      }
+      await playlistItems.insert(socket.username, msg.playlist, {
+        url: url,
+        title: video.name,
+        duration: video.duration,
       });
-      return;
+      socket.emit("playlists", await playlists.getPlaylists());
     }
-    if (video.duration < 0) {
-      socket.emit("alert", {
-        type: "playlist",
-        message: "Livestreams can not be added to playlists",
-      });
-      return;
-    }
-    if (msg.override) video.name = msg.override;
-    if (
-      playlist.durationLimit > 0 &&
-      duration + video.duration > playlist.durationLimit * 60
-    ) {
-      socket.emit("alert", {
-        type: "playlist",
-        message: "Duration limit reached",
-      });
-      return;
-    }
-    await playlistItems.insert(socket.username, msg.playlist, {
-      url: msg.url,
-      title: video.name,
-      duration: video.duration,
-    });
-    socket.emit("playlists", await playlists.getPlaylists());
   } else {
     socket.emit("alert", {
       type: "playlist",

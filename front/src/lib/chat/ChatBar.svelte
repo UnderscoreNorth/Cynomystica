@@ -113,17 +113,17 @@
 				sent.unshift($chatInput);
 				let isCommand = false;
 				let text = $chatInput.trim();
-				for (let effect in $effectStore) {
+				/*for (let effect in $effectStore) {
 					if (text.indexOf($effectStore[effect].command) == 0 && $user.accessLevel > 3) {
 						isCommand = true;
 						let arg = text.replace($effectStore[effect].command, '').trim();
-						io.emit('effect', { command: 'toggle', effect, arg });
+						io.emit('effect', { command: 'toggle', value: effect, arg });
 						break;
 					}
 				}
-				if (!isCommand) {
-					io.emit('message', { icon: $userSettings.icon ?? '', msg: text });
-				}
+				if (!isCommand) {*/
+				io.emit('message', { icon: $userSettings.icon ?? '', msg: text });
+				//}
 			}
 			$chatInput = '';
 		}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Login from './Login.svelte';
-	import { user } from '$lib/stores/user';
+	//import { user } from '$lib/stores/user';
 	import ModerationContainer from '$lib/moderation/ModerationContainer.svelte';
 	import PlaylistContainer from '$lib/playlist/PlaylistContainer.svelte';
 	import ScheduleContainer from '$lib/schedule/ScheduleContainer.svelte';
@@ -21,15 +21,13 @@
 	//@ts-ignore
 	import MdInfoOutline from 'svelte-icons/md/MdInfoOutline.svelte';
 	//@ts-ignore
-	import GiSnowflake2 from 'svelte-icons/gi/GiSnowflake2.svelte';
+	//import GiSnowflake2 from 'svelte-icons/gi/GiSnowflake2.svelte';
 	import InfoContainer from '$lib/information/infoContainer.svelte';
 	import PollModal from '$lib/polls/PollModal.svelte';
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import ChatBar from '$lib/chat/ChatBar.svelte';
 	import SettingsModal from '$lib/settings/SettingsModal.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
-	import EffectsModal from '$lib/special/EffectsModal.svelte';
-	import Effects from '$lib/special/Effects.svelte';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -37,8 +35,7 @@
 	let scheduleModalOpen: boolean = false;
 	let infoModalOpen: boolean = false;
 	let pollModalOpen: boolean = false;
-	let effectsOff: boolean = false;
-	let effectsModalOpen: boolean = false;
+
 	const toggleSettings = () => {
 		userSettingsModalOpen = !userSettingsModalOpen;
 	};
@@ -57,14 +54,29 @@
 	const togglePoll = () => {
 		pollModalOpen = !pollModalOpen;
 	};
+
+	const dummy = () => {};
+	/*
+	import EffectsModal from '$lib/special/EffectsModal.svelte';
+	import Effects from '$lib/special/Effects.svelte';
+	let effectsOff: boolean = false;
+	let effectsModalOpen: boolean = false;
 	const toggleEffects = () => {
 		effectsOff = !effectsOff;
 	};
 	const toggleEffectsModal = () => {
 		effectsModalOpen = !effectsModalOpen;
 	};
-
-	const dummy = () => {};
+	<IconButton
+		state={effectsOff}
+		Icon={GiSnowflake2}
+		onClick={toggleEffects}
+		tooltip={effectsOff ? 'Turn Effects On' : 'Turn Effects Off'}
+	/>
+	{#if !effectsOff}
+		<Effects />
+	{/if}
+	*/
 </script>
 
 <header>
@@ -94,12 +106,7 @@
 				onClick={toggleModeration}
 				tooltip={'User Management'}
 			/>
-			<IconButton
-				state={effectsOff}
-				Icon={GiSnowflake2}
-				onClick={toggleEffects}
-				tooltip={effectsOff ? 'Turn Effects On' : 'Turn Effects Off'}
-			/>
+
 			<div id="loginLi"><Login /></div>
 		</nav>
 	{/if}
@@ -120,7 +127,7 @@
 		</Modal>
 	{/if}
 	{#if scheduleModalOpen}
-		<Modal closeModal={toggleSchedule} title={'Schedule'}>
+		<Modal closeModal={toggleSchedule} title={'Schedule'} width="90vw" height="90vh">
 			<ScheduleContainer />
 		</Modal>
 	{/if}
@@ -133,9 +140,6 @@
 		<Modal closeModal={togglePoll} title="Polls/Pinned Messages">
 			<PollModal />
 		</Modal>
-	{/if}
-	{#if !effectsOff}
-		<Effects />
 	{/if}
 </header>
 
