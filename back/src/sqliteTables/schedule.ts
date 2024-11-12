@@ -88,6 +88,8 @@ export default class {
       let urls = obj.url.split(/,|\n/g);
       let placeholder = obj.title;
       let num = 1;
+      let freq = 0;
+      let start = obj.playtime.clone();
       for (let url of urls) {
         if (url.trim().length == 0) continue;
         obj.url = url.trim();
@@ -97,12 +99,26 @@ export default class {
           obj.title = placeholder.replace(/\|n\|/g, num.toString());
         }
         await subSert(obj);
+        await parseURL(obj.url).then((playlistItem) => {
+          obj.title = obj.title || playlistItem.name;
+          obj.duration = obj.duration ?? Math.ceil(playlistItem.duration);
+        });
         let attempts = 0;
-        do {
-          obj.playtime.add(obj.freq, "minutes");
-          attempts++;
-        } while (!obj.dow[obj.playtime.day()][1] && attempts < 1000);
-        if (attempts == 1000) return;
+        freq++;
+        console.log(freq, num);
+        if (freq == obj.freq) {
+          console.log(Math.floor(num / obj.freq));
+          freq = 0;
+          obj.playtime = start.clone();
+          obj.playtime.add(Math.floor(num / obj.freq), "days");
+          while (!obj.dow[obj.playtime.day()][1] && attempts < 1000) {
+            obj.playtime.add(1, "days");
+            attempts++;
+          }
+          if (attempts == 1000) return;
+        } else {
+          obj.playtime.add(obj.duration, "seconds");
+        }
         num++;
       }
     } else {

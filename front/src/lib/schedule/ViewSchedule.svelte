@@ -42,13 +42,13 @@
 			let itemMoment = moment.utc(item.playTimeUTC).local();
 			let diff = Math.floor(itemMoment.diff(displayDate) / 86400000);
 			if (diff < 7 && diff >= 0) {
-				let startingSplit = Math.floor(
+				let startingSplit = Math.round(
 					parseInt(itemMoment.format('H')) * 60 + parseInt(itemMoment.format('m'))
 				);
 				let endingMinute = itemMoment.clone().add(item.duration, 's');
-				let endingSplit =
-					Math.floor(parseInt(endingMinute.format('H')) * 60 + parseInt(endingMinute.format('m'))) +
-					1;
+				let endingSplit = Math.round(
+					parseInt(endingMinute.format('H')) * 60 + parseInt(endingMinute.format('m'))
+				);
 				if (endingSplit < startingSplit) {
 					endingSplit += 1440;
 				}
@@ -58,7 +58,6 @@
 				if (startingSplit < minSplit) minSplit = startingSplit;
 			}
 		}
-		console.log(minSplit, calendarStart * 60);
 		if (minSplit < calendarStart * 60) {
 			offset = calendarStart * 60 - minSplit;
 			minSplit = calendarStart * 60;
