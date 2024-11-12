@@ -47,6 +47,7 @@ import updateInfo from "../controller/settings/update-info";
 import leaderSync from "../controller/leader-sync";
 import setLeader from "../controller/set-leader";
 import effect from "../controller/effect";
+import recheck from "../controller/recheck";
 
 import playlist from "../server/playlist";
 
@@ -102,6 +103,7 @@ export default function ioInit(io: Server) {
     "get-playlists": getPlaylists,
     "upsert-playlist": upsertPlaylist,
     "delete-playlist": deletePlaylist,
+    recheck: recheck,
     effect: effect,
   };
   io.on("connection", async (socket: socketInterface) => {

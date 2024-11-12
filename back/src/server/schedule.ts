@@ -7,7 +7,7 @@ export const getSchedule = async (
   socket: socketInterface | null,
   date = "2000-01-01 00:00:00"
 ) => {
-  let socketSchedule = await schedule.getAll(moment(date));
+  let socketSchedule = await schedule.getAll(moment(date).subtract(1, "day"));
   const sendSchedule = (socket: socketInterface) => {
     let visibleOnly =
       (socket.accessLevel ?? -1) < permissions().items["manageSchedule"];

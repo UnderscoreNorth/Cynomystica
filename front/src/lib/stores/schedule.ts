@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import type { Moment } from 'moment';
 const scheduleObj: Schedule = [];
 export interface ScheduleItem {
+	conflict?: boolean;
 	id: string;
 	title: string;
 	url: string;

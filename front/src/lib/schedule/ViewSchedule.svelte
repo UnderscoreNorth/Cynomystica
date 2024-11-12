@@ -38,8 +38,22 @@
 		for (let i = 0; i < 7; i++) {
 			week.push(displayDate.clone().add(i, 'days'));
 		}
+		let prevStart = moment.utc('2000-01-01 00:00:00').local();
+		let prevFinish = moment.utc('2001-01-01 00:00:00').local();
+		let prevItem: ScheduleItem;
 		for (let item of $schedule) {
 			let itemMoment = moment.utc(item.playTimeUTC).local();
+			let finishMoment = moment.utc(item.finishTimeUTC).local();
+			let conflict =
+				(itemMoment > prevStart && itemMoment < prevFinish) ||
+				(finishMoment > prevStart && finishMoment < prevFinish);
+			if (conflict) {
+				item.conflict = conflict;
+				if (typeof prevItem !== 'undefined') prevItem.conflict = conflict;
+			}
+			prevStart = itemMoment.clone();
+			prevFinish = finishMoment.clone();
+			prevItem = item;
 			let diff = Math.floor(itemMoment.diff(displayDate) / 86400000);
 			if (diff < 7 && diff >= 0) {
 				let startingSplit = Math.round(
@@ -127,6 +141,7 @@
 			<div
 				class={!item.visible ? 'scheduleItem hidden' : 'scheduleItem'}
 				style={`grid-area:${item.gridArea}`}
+				style:border={item.conflict ? 'dashed 2px red' : ''}
 				on:click={() => changeSelectedID(item)}
 			>
 				{item.title}

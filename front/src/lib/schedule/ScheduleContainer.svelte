@@ -17,6 +17,9 @@
 	function removeMinutes() {
 		$userSettings.scheduleModalStart = $userSettings.scheduleModalStart.split(':')[0] + ':00';
 	}
+	function recheck() {
+		io.emit('recheck');
+	}
 </script>
 
 {#if $user.accessLevel >= $permissions.manageSchedule}
@@ -30,6 +33,9 @@
 >
 	Switch to {$tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar'} view
 </button>
+{#if $user.accessLevel >= $permissions.manageSchedule}
+	<button style:float={'right'} on:click={() => recheck()}>Recheck Schedule</button>
+{/if}
 {#if $tempSettings.scheduleView == 'calendar'}
 	Calendar Start <input
 		type="time"

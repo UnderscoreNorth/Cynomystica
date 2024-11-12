@@ -11,7 +11,7 @@ export interface ScheduleItem {
   url: string;
   playTimeUTC: string;
   finishTimeUTC: string;
-  visible: boolean;
+  visible: boolean | number;
   duration: number;
   playlist: string;
   selection: string;
@@ -29,7 +29,7 @@ export type SubsertObj = {
   dow: number[];
   duration: number;
   username: string;
-  visible: number;
+  visible: boolean | number;
   leeway: number;
   startTime: string;
   finishTime: string;
@@ -87,6 +87,28 @@ export default class {
               WHERE id=@id`
       )
       .run({ id });
+  };
+  static recheck = async () => {
+    const results = (await db
+      .prepare(
+        `SELECT * FROM schedule WHERE         
+        playTimeUTC > DATE('now') ORDER BY playTimeUTC ASC`
+      )
+      .all()) as Array<
+      ScheduleItem & {
+        playtime: Moment;
+        finishTime: string;
+        startTime: string;
+        freq: number;
+        dow: number[];
+        snap: "before" | "after";
+      }
+    >;
+    for (const result of results) {
+      result.playtime = moment.utc(result.playTimeUTC);
+      result.finishTime = result.finishTimeUTC;
+      await this.upsert(result.username, result);
+    }
   };
   static upsert = async (username: string, obj: SubsertObj) => {
     if (!obj.playtime) return;
