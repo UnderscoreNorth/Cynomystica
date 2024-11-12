@@ -107,9 +107,8 @@ export default class {
           obj.title = placeholder.replace(/\|n\|/g, num.toString());
         }
         await subSert(obj);
-        await parseURL(obj.url).then((playlistItem) => {
-          obj.title = obj.title || playlistItem.name;
-          obj.duration = obj.duration ?? Math.ceil(playlistItem.duration);
+        let prevDuration = await parseURL(obj.url).then((playlistItem) => {
+          return Math.ceil(playlistItem.duration);
         });
         let attempts = 0;
         freq++;
@@ -125,7 +124,7 @@ export default class {
           }
           if (attempts == 1000) return;
         } else {
-          obj.playtime.add(obj.duration, "seconds");
+          obj.playtime.add(prevDuration, "seconds");
         }
         num++;
       }
@@ -135,7 +134,7 @@ export default class {
     async function subSert(obj: SubsertObj) {
       await parseURL(obj.url).then((playlistItem) => {
         obj.title = obj.title || playlistItem.name;
-        obj.duration = obj.duration ?? Math.ceil(playlistItem.duration);
+        obj.duration = Math.ceil(playlistItem.duration);
       });
 
       obj.username = username ?? "SCHEDULER";
@@ -185,6 +184,7 @@ export default class {
       (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
         )
         .get({ start: obj.startTime, finish: obj.finishTime });
+      console.log(obj.duration, obj.title);
       if (conflict.c >= 0) {
         await db
           .prepare(
