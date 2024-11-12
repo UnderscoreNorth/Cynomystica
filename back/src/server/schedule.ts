@@ -11,7 +11,6 @@ export const getSchedule = async (
   const sendSchedule = (socket: socketInterface) => {
     let visibleOnly =
       (socket.accessLevel ?? -1) < permissions().items["manageSchedule"];
-    console.log(socket.accessLevel, visibleOnly);
     socket.emit("schedule", {
       status: "success",
       schedule: socketSchedule.filter(
