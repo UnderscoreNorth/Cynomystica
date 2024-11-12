@@ -270,6 +270,9 @@ const init = () => {
 	io.on('schedule', (e) => {
 		if (e.status == 'success') {
 			console.log(271, e);
+			for (const i of e.schedule) {
+				i.hsl = i.hsl.split(',');
+			}
 			schedule.set(e.schedule);
 		}
 	});

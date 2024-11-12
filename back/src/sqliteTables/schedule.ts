@@ -18,6 +18,7 @@ export interface ScheduleItem {
   dateCreated: string;
   leeway: number;
   prequeueMinutes: number;
+  hsl: string;
 }
 export type SubsertObj = {
   playtime: Moment;
@@ -34,6 +35,7 @@ export type SubsertObj = {
   startTime: string;
   finishTime: string;
   snap: "before" | "after";
+  hsl: string;
 };
 
 export default class {
@@ -51,7 +53,8 @@ export default class {
 			  'selection' VARCHAR(20),
         'leeway' INT,
         'prequeueMinutes' INT,
-        'dateCreated' DATETIME(20) DEFAULT (DATETIME('now'))
+        'dateCreated' DATETIME(20) DEFAULT (DATETIME('now')),
+        "hsl"	VARCHAR(500) DEFAULT '0,0,0'
     );`;
   static init = () => {
     return `DELETE FROM schedule`;
@@ -134,7 +137,6 @@ export default class {
         });
         let attempts = 0;
         freq++;
-        console.log(freq, num);
         if (freq == obj.freq) {
           console.log(Math.floor(num / obj.freq));
           freq = 0;
@@ -212,8 +214,8 @@ export default class {
           .prepare(
             `
               INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway,prequeueMinutes) 
-              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway,@prequeueMinutes)
+              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway,prequeueMinutes,hsl) 
+              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway,@prequeueMinutes,@hsl)
               ON CONFLICT(id) DO UPDATE SET
                   url=@url,
                   playTimeUTC = @startTime, 
@@ -224,7 +226,8 @@ export default class {
                   playlist=@playlist,
                   visible=@visible,
                   leeway=@leeway,
-                  prequeueMinutes=@prequeueMinutes`
+                  prequeueMinutes=@prequeueMinutes,
+                  hsl=@hsl`
           )
           .run(obj);
       } else {

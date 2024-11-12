@@ -18,6 +18,7 @@ export interface ScheduleItem {
 	startingSplit?: number;
 	endingSplit?: number;
 	diff?: number;
+	hsl: string[];
 }
 export type Schedule = Array<ScheduleItem>;
 export const schedule = writable(scheduleObj);

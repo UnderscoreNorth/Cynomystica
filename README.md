@@ -48,6 +48,10 @@ After starting the backend, there'll be a queue folder in the root. Placing a tx
 
 ### Update Log
 
+#### Nov 11, 2024
+
+- Scheduled items can now be coloured
+
 #### Jun 23, 2024
 
 - Queue folder on the system side to allow for queuing by other processes

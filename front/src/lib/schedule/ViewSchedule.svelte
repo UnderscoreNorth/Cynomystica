@@ -49,6 +49,7 @@
 				(finishMoment > prevStart && finishMoment < prevFinish);
 			if (conflict) {
 				item.conflict = conflict;
+				//@ts-ignore
 				if (typeof prevItem !== 'undefined') prevItem.conflict = conflict;
 			}
 			prevStart = itemMoment.clone();
@@ -142,6 +143,9 @@
 				class={!item.visible ? 'scheduleItem hidden' : 'scheduleItem'}
 				style={`grid-area:${item.gridArea}`}
 				style:border={item.conflict ? 'dashed 2px red' : ''}
+				style:background={`hsla(${item?.hsl?.[0] ?? 0},${item?.hsl?.[1] ?? 0},${
+					item?.hsl?.[2] ?? 0
+				},0.5)`}
 				on:click={() => changeSelectedID(item)}
 			>
 				{item.title}
@@ -173,12 +177,16 @@
 		</tr>
 		{#each $schedule as item}
 			{#if moment.utc(item.playTimeUTC).isAfter(moment.utc())}
-				<tr>
+				<tr
+					style:background={`hsla(${item?.hsl?.[0] ?? 0},${item?.hsl?.[1] ?? 0},${
+						item?.hsl?.[2] ?? 0
+					},0.3)`}
+				>
 					<td style:padding-right={'0.5rem'}>{item.title}</td>
 					<td>{moment.utc(item.playTimeUTC).local().format('ddd MMM Do')}</td>
 					<td>{moment.utc(item.playTimeUTC).local().format('HH:mm')}</td>
 					<td>-</td>
-					<td>{moment.utc(item.playTimeUTC).local().format('HH:mm')}</td>
+					<td>{moment.utc(item.finishTimeUTC).local().format('HH:mm')}</td>
 				</tr>
 			{/if}
 		{/each}
@@ -186,8 +194,11 @@
 {/if}
 
 <style>
-	#scheduleList tr:nth-child(2n) {
-		background: rgba(255, 255, 255, 0.1);
+	#scheduleList tr {
+		border-bottom: solid 2px rgba(0, 0, 0, 0.5);
+	}
+	#scheduleList td {
+		padding: 0 5px;
 	}
 	#scheduleList {
 		border-collapse: collapse;
@@ -232,9 +243,6 @@
 		left: 0;
 		background: inherit;
 		margin-right: 2px;
-	}
-	.scheduleItem {
-		background: rgba(0, 0, 0, 0.05);
 	}
 	.scheduleItem.hidden {
 		background: repeating-linear-gradient(
