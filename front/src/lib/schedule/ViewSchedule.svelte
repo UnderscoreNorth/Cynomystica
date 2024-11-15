@@ -132,11 +132,6 @@
 				>
 			</span>
 		</div>
-		{#each week as day, i}
-			<div class="scheduleHeader" style={`grid-area:1/${i + 2}/2/${i + 3};font-weight:bold`}>
-				{day.format('ddd DD')}
-			</div>
-		{/each}
 		{#each scheduleArray as item}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
@@ -147,8 +142,17 @@
 					item?.hsl?.[2] ?? 0
 				},0.5)`}
 				on:click={() => changeSelectedID(item)}
+				title={`${moment.utc(item.playTimeUTC).local().format('HH:mm')} - ${moment
+					.utc(item.finishTimeUTC)
+					.local()
+					.format('HH:mm')}`}
 			>
 				{item.title}
+			</div>
+		{/each}
+		{#each week as day, i}
+			<div class="scheduleHeader" style={`grid-area:1/${i + 2}/2/${i + 3};font-weight:bold`}>
+				{day.format('ddd DD')}
 			</div>
 		{/each}
 		{#each Array.from(timeSet) as item}
@@ -209,7 +213,7 @@
 		background: var(--color-bg-4);
 		color: var(--color-fg-4);
 		grid-template-columns: 4rem 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-		grid-template-rows: repeat(1800, 1);
+		grid-template-rows: 2rem repeat(1800, 1fr);
 		grid-column-gap: 0;
 		grid-row-gap: 0;
 		max-height: calc(90svh - 13rem);
@@ -241,7 +245,7 @@
 		border: none !important;
 		position: sticky;
 		left: 0;
-		background: inherit;
+		background: none;
 		margin-right: 2px;
 	}
 	.scheduleItem.hidden {

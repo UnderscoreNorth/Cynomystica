@@ -122,6 +122,7 @@ export default class {
       let placeholder = obj.title;
       let num = 1;
       let freq = 0;
+      let jump = 0;
       let start = obj.playtime.clone();
       for (let url of urls) {
         if (url.trim().length == 0) continue;
@@ -138,12 +139,13 @@ export default class {
         let attempts = 0;
         freq++;
         if (freq == obj.freq) {
-          console.log(Math.floor(num / obj.freq));
+          jump++;
           freq = 0;
           obj.playtime = start.clone();
-          obj.playtime.add(Math.floor(num / obj.freq), "days");
+          obj.playtime.add(jump, "days");
           while (!obj.dow[obj.playtime.day()][1] && attempts < 1000) {
             obj.playtime.add(1, "days");
+            jump++;
             attempts++;
           }
           if (attempts == 1000) return;
@@ -208,7 +210,6 @@ export default class {
       (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
         )
         .get({ start: obj.startTime, finish: obj.finishTime });
-      console.log(obj.duration, obj.title);
       if (conflict.c >= 0) {
         await db
           .prepare(

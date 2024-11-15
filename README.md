@@ -51,6 +51,7 @@ After starting the backend, there'll be a queue folder in the root. Placing a tx
 #### Nov 11, 2024
 
 - Scheduled items can now be coloured
+- Schedule conflicts are highlighted with red borders
 
 #### Jun 23, 2024
 
