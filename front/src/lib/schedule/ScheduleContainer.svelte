@@ -33,6 +33,7 @@
 >
 	Switch to {$tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar'} view
 </button>
+<i style:float={'right'}>Schedules are shown in your device's timezone</i>
 {#if $user.accessLevel >= $permissions.manageSchedule}
 	<button style:float={'right'} on:click={() => recheck()}>Recheck Schedule</button>
 {/if}
