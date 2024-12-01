@@ -23,7 +23,7 @@
 	let leeway = 1;
 	let freq = 1;
 	let playlists: Record<string, playlistType> = {};
-	let hsl = '';
+	let hsl = '#000000';
 	io.emit('get-playlists');
 	io.on('playlists', (e) => {
 		playlists = e;

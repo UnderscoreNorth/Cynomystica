@@ -63,7 +63,7 @@
 	{:else}
 		<div id="chatGrid">
 			<div id="chatHeader">
-				{#if $permissions.viewUsers < $user.accessLevel}
+				{#if $permissions.viewUsers <= $user.accessLevel}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
 				{/if}

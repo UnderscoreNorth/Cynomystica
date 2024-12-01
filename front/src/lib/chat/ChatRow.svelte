@@ -61,7 +61,7 @@
 						{@html message.message.substring(4)}
 					</span>
 				{:else}
-					{#if !$tempSettings.anonymous && $permissions.viewUsers < $user.accessLevel}
+					{#if !$tempSettings.anonymous && $permissions.viewUsers <= $user.accessLevel}
 						<span class="chatUser" style={getUserStyle($icons, message)}>
 							{parseUser(message)}:
 						</span>
