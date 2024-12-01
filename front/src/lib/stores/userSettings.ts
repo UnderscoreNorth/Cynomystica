@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 //Settings that persist upon refresh
-export const userSettings = writable({
+export const defaultSettings = {
 	sync: { threshold: 2500 },
 	display: {
 		danmaku: 'none',
@@ -19,4 +19,5 @@ export const userSettings = writable({
 	videoVolume: 1,
 	scheduleModalStart: '00:00',
 	color: 222
-});
+};
+export const userSettings = writable(defaultSettings);

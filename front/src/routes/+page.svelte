@@ -4,7 +4,7 @@
 	import VideoContainer from '$lib/video/VideoContainer.svelte';
 	import init from '$lib/stores/socket';
 	import { onMount } from 'svelte';
-	import { userSettings } from '$lib/stores/userSettings';
+	import { defaultSettings, userSettings } from '$lib/stores/userSettings';
 	import './styles.css';
 	import { io } from '$lib/realtime';
 	import { user } from '$lib/stores/user';
@@ -28,6 +28,22 @@
 		const local = JSON.parse(localStorage.getItem('userSettings') ?? '{}');
 		if (Object.keys(local).length > 0) {
 			local.ready = true;
+			for (let k in defaultSettings) {
+				const key = k as keyof typeof defaultSettings;
+				if (local[key] == undefined) {
+					local[key] = defaultSettings[key];
+				} else {
+					if (typeof defaultSettings[key] == 'object') {
+						for (let j in defaultSettings[key]) {
+							const subKey = j as keyof (typeof defaultSettings)[typeof key];
+							console.log(key, subKey);
+							if (local[key][subKey] == undefined) {
+								local[key][subKey] = defaultSettings[key][subKey];
+							}
+						}
+					}
+				}
+			}
 			$userSettings = local;
 		} else {
 			$userSettings.ready = true;
@@ -44,9 +60,10 @@
 	<link rel="icon" href={$settings.tabIcon.toString() ?? ''} />
 </svelte:head>
 
-<section id="app"
-style:--color-bg-2 = {`hsl(${$userSettings.color},56%,41%)`}
-style:--color-fg-3 = {`hsl(${$userSettings.color},32%,74%)`}
+<section
+	id="app"
+	style:--color-bg-2={`hsl(${$userSettings.color},56%,41%)`}
+	style:--color-fg-3={`hsl(${$userSettings.color},32%,74%)`}
 >
 	<c id="cHeader"><Header /></c>
 	{#if $tempSettings.snow > 0}
