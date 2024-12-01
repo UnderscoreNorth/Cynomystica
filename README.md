@@ -48,6 +48,10 @@ After starting the backend, there'll be a queue folder in the root. Placing a tx
 
 ### Update Log
 
+#### Nov 15, 2024
+
+- Site theme colour can now be changed by user
+
 #### Nov 11, 2024
 
 - Scheduled items can now be coloured

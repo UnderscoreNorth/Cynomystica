@@ -5,20 +5,16 @@
 		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	--font-mono: 'Fira Mono', monospace;
 	--color-dark-1: #03141b;
-	--color-dark-2: #2e51a2;
 	--color-dark-3: #2c2c2c;
 	--color-light-1: #eee;
 	--color-light-2: #ddd;
-	--color-light-3: #a6b7d1;
 
 	--color-bg-1: var(--color-dark-1);
 	--color-fg-1: var(--color-light-1);
 
-	--color-bg-2: var(--color-dark-2);
 	--color-fg-2: var(--color-light-2);
 
 	--color-bg-3: var(--color-dark-3);
-	--color-fg-3: var(--color-light-3);
 
 	--color-bg-4: var(--color-light-2);
 	--color-fg-4: var(--color-dark-3);

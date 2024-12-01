@@ -44,7 +44,10 @@
 	<link rel="icon" href={$settings.tabIcon.toString() ?? ''} />
 </svelte:head>
 
-<section id="app">
+<section id="app"
+style:--color-bg-2 = {`hsl(${$userSettings.color},56%,41%)`}
+style:--color-fg-3 = {`hsl(${$userSettings.color},32%,74%)`}
+>
 	<c id="cHeader"><Header /></c>
 	{#if $tempSettings.snow > 0}
 		<Snow />

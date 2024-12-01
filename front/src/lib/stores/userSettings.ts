@@ -17,5 +17,6 @@ export const userSettings = writable({
 	ready: false,
 	muted: false,
 	videoVolume: 1,
-	scheduleModalStart: '00:00'
+	scheduleModalStart: '00:00',
+	color: 222
 });
