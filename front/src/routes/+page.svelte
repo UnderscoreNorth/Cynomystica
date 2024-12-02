@@ -94,7 +94,7 @@
 
 <style>
 	#app {
-		height: 100svh;
+		height: 100vh;
 		width: 100vw;
 		overflow: hidden;
 		display: flex;
@@ -141,6 +141,11 @@
 		#cChat,
 		#cVideo {
 			width: 100vw !important;
+		}
+	}
+	@media (pointer: none), (pointer: coarse) {
+		#app {
+			height: 100svh;
 		}
 	}
 </style>
