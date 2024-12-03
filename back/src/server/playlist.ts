@@ -188,55 +188,61 @@ class PlayList {
         return;
       }
     }
+
     await parseURL(item.mediaURL)
-      .then((playlistItem) => {
-        playlistItem.id = id;
-        playlistItem.username = username;
-        if (item.title) playlistItem.name = item.title;
-        if (item.permanent) playlistItem.permanent = true;
-        let currentLen = 0;
-        if (socket) {
-          if (
-            socket.accessLevel < permissions().items["queueLive"] &&
-            playlistItem.duration == -1
-          ) {
-            socketError(
-              `You do not have permission to queue live videos/iframes`
-            );
-            return;
-          }
-
-          if (
-            socket.accessLevel < permissions().items["bypassQueueLimit"] &&
-            settings().settings["maxTotalQueueLength"] > 0
-          ) {
-            for (let i of this.playlist) {
-              if (i.username == username) currentLen += i.duration;
-            }
-            currentLen += playlistItem.duration;
-            if (currentLen / 60 > settings().settings["maxTotalQueueLength"]) {
+      .then((res) => {
+        for (const playlistItem of res) {
+          playlistItem.id = id;
+          playlistItem.username = username;
+          if (item.title) playlistItem.name = item.title;
+          if (item.permanent) playlistItem.permanent = true;
+          let currentLen = 0;
+          if (socket) {
+            if (
+              socket.accessLevel < permissions().items["queueLive"] &&
+              playlistItem.duration == -1
+            ) {
               socketError(
-                `Can not have more than ${
-                  settings().settings["maxTotalQueueLength"]
-                } min queued`
+                `You do not have permission to queue live videos/iframes`
               );
-              return;
+              continue;
             }
+
+            if (
+              socket.accessLevel < permissions().items["bypassQueueLimit"] &&
+              settings().settings["maxTotalQueueLength"] > 0
+            ) {
+              for (let i of this.playlist) {
+                if (i.username == username) currentLen += i.duration;
+              }
+              currentLen += playlistItem.duration;
+              if (
+                currentLen / 60 >
+                settings().settings["maxTotalQueueLength"]
+              ) {
+                socketError(
+                  `Can not have more than ${
+                    settings().settings["maxTotalQueueLength"]
+                  } min queued`
+                );
+                continue;
+              }
+            }
+          }
+          if (!this.playlist.length) {
+            playlistItem.startDate = moment.utc();
+            playlistItem.endDate = moment
+              .utc()
+              .add(playlistItem.duration, "seconds");
+          }
+          playlistItem.scheduledID = scheduleID;
+          if (last) {
+            this.playlist.push(playlistItem);
+          } else {
+            this.playlist.splice(1, 0, playlistItem);
           }
         }
 
-        if (!this.playlist.length) {
-          playlistItem.startDate = moment.utc();
-          playlistItem.endDate = moment
-            .utc()
-            .add(playlistItem.duration, "seconds");
-        }
-        playlistItem.scheduledID = scheduleID;
-        if (last) {
-          this.playlist.push(playlistItem);
-        } else {
-          this.playlist.splice(1, 0, playlistItem);
-        }
         this.updateDates();
       })
       .catch((err) => {

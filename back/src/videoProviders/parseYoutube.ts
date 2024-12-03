@@ -1,7 +1,7 @@
 import config from "../../config.json";
 import { PlaylistItem } from "../server/playlist";
 
-const parseYoutube = (mediaURL: string) => {
+export function parseYoutube(mediaURL: string) {
   return new Promise<PlaylistItem>((resolve, reject) => {
     try {
       let jsonResult: any;
@@ -59,6 +59,34 @@ const parseYoutube = (mediaURL: string) => {
       reject();
     }
   });
-};
-
-export default parseYoutube;
+}
+export function parseYoutubePlaylist(mediaURL: string) {
+  return new Promise<PlaylistItem[]>((resolve, reject) => {
+    try {
+      let jsonResult: any;
+      let item: any;
+      fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${mediaURL}&maxResults=50&part=contentDetails,snippet&key=${config.YT_API_KEY}`
+      )
+        .then(async (result) => {
+          jsonResult = await result.json();
+          if (jsonResult?.items?.length == 0) {
+            reject("Invalid ID");
+            return;
+          }
+          let items: PlaylistItem[] = [];
+          for (const item of jsonResult.items) {
+            if (item?.contentDetails?.videoId !== undefined)
+              items.push(await parseYoutube(item.contentDetails.videoId));
+          }
+          resolve(items);
+        })
+        .catch((nestedErr) => {
+          console.log(jsonResult);
+          reject(nestedErr);
+        });
+    } catch (err) {
+      reject();
+    }
+  });
+}

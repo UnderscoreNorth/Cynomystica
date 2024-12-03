@@ -1,5 +1,8 @@
 import parseRawVideo from "../videoProviders/parseRawVideo";
-import parseYoutube from "../videoProviders/parseYoutube";
+import {
+  parseYoutube,
+  parseYoutubePlaylist,
+} from "../videoProviders/parseYoutube";
 import parseTwitch from "../videoProviders/parseTwitch";
 import { PlaylistItem } from "../server/playlist";
 const isValidUrl = (urlString) => {
@@ -20,26 +23,30 @@ export default async function parseURL(url: string) {
     let parsedURL = parseRaw(url);
     switch (parsedURL.type) {
       case "raw":
-        return await parseRawVideo(parsedURL.id);
+        return [await parseRawVideo(parsedURL.id)];
       case "yt":
-        return await parseYoutube(parsedURL.id);
+        return [await parseYoutube(parsedURL.id)];
+      case "yp":
+        return await parseYoutubePlaylist(parsedURL.id);
       case "tw_vod":
-        return await parseTwitch(parsedURL.id, "vod");
+        return [await parseTwitch(parsedURL.id, "vod")];
       case "tw_live":
-        return await parseTwitch(parsedURL.id, "live");
+        return [await parseTwitch(parsedURL.id, "live")];
       case "iframe":
-        return {
-          id: 0,
-          name: "Live Stream",
-          url: parsedURL.id,
-          startDate: null,
-          endDate: null,
-          username: "N/A",
-          duration: -1,
-          type: "iframe",
-          scheduledID: null,
-          permanent: false,
-        } as PlaylistItem;
+        return [
+          {
+            id: 0,
+            name: "Live Stream",
+            url: parsedURL.id,
+            startDate: null,
+            endDate: null,
+            username: "N/A",
+            duration: -1,
+            type: "iframe",
+            scheduledID: null,
+            permanent: false,
+          } as PlaylistItem,
+        ];
       default:
         throw "type not accounted for yet";
     }

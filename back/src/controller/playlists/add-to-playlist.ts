@@ -2,6 +2,7 @@ import { socketInterface } from "../../server/socket";
 import playlists from "../../sqliteTables/playlists";
 import playlistItems from "../../sqliteTables/playlistItems";
 import parseURL from "../../lib/parseURL";
+import { PlaylistItem } from "../../server/playlist";
 export default async function addToPlaylist(socket: socketInterface, msg: any) {
   let playlist = await playlists.getPlaylist(msg.playlist);
   if (socket.accessLevel >= playlist.minAccessLevel) {
@@ -27,7 +28,7 @@ export default async function addToPlaylist(socket: socketInterface, msg: any) {
       socket.emit("alert", { type: "playlist", message: "Item limit reached" });
       return;
     }
-    let video;
+    let video: PlaylistItem[];
     for (const url of msg.url.split(",").map((x) => x.trim())) {
       try {
         video = await parseURL(url);
@@ -38,29 +39,26 @@ export default async function addToPlaylist(socket: socketInterface, msg: any) {
         });
         return;
       }
-      if (video.duration < 0) {
-        socket.emit("alert", {
-          type: "playlist",
-          message: "Livestreams can not be added to playlists",
-        });
-        return;
+      for (const v of video) {
+        if (v.duration > 0) {
+          if (
+            playlist.durationLimit > 0 &&
+            duration + v.duration > playlist.durationLimit * 60
+          ) {
+            duration += v.duration;
+            socket.emit("alert", {
+              type: "playlist",
+              message: "Duration limit reached",
+            });
+            return;
+          }
+          await playlistItems.insert(socket.username, msg.playlist, {
+            url: url,
+            title: v.name,
+            duration: v.duration,
+          });
+        }
       }
-      if (msg.override) video.name = msg.override;
-      if (
-        playlist.durationLimit > 0 &&
-        duration + video.duration > playlist.durationLimit * 60
-      ) {
-        socket.emit("alert", {
-          type: "playlist",
-          message: "Duration limit reached",
-        });
-        return;
-      }
-      await playlistItems.insert(socket.username, msg.playlist, {
-        url: url,
-        title: video.name,
-        duration: video.duration,
-      });
       socket.emit("playlists", await playlists.getPlaylists());
     }
   } else {

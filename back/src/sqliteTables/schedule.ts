@@ -134,7 +134,7 @@ export default class {
         }
         await subSert(obj);
         let prevDuration = await parseURL(obj.url).then((playlistItem) => {
-          return Math.ceil(playlistItem.duration);
+          return Math.ceil(playlistItem[0].duration);
         });
         let attempts = 0;
         freq++;
@@ -159,8 +159,8 @@ export default class {
     }
     async function subSert(obj: SubsertObj) {
       await parseURL(obj.url).then((playlistItem) => {
-        obj.title = obj.title || playlistItem.name;
-        obj.duration = Math.ceil(playlistItem.duration);
+        obj.title = obj.title || playlistItem[0].name;
+        obj.duration = Math.ceil(playlistItem[0].duration);
       });
 
       obj.username = username ?? "SCHEDULER";
