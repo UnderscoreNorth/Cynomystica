@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import { socketInterface, default as IO } from "./socket";
 import parseURL, { parseRaw } from "../lib/parseURL";
 import { cycle } from "./cycle";
-import schedule, { ScheduleItem } from "../sqliteTables/schedule";
+import schedule from "../sqliteTables/schedule";
 import moment from "moment";
 import playlists from "../sqliteTables/playlists";
 import playlistItems from "../sqliteTables/playlistItems";
@@ -26,6 +26,7 @@ export interface PlaylistItem {
   permanent: boolean;
 }
 
+let theThreeGuys = [];
 const scheduleWiggle = 15;
 class PlayList {
   playlist: PlaylistObj;
@@ -33,52 +34,57 @@ class PlayList {
   playing: boolean;
   scheduleCheck: boolean;
   leaderSeekTime: number;
-  scheduleStatus: Array<{
-    item: ScheduleItem;
-    status: Record<string, string | object>;
-  }>;
   constructor() {
     this.playlist = [];
     this.currentSeekTime = 0;
     this.playing = false;
     this.scheduleCheck = false;
     this.leaderSeekTime = -1;
-    this.scheduleStatus = [];
     console.log("Playlist Initialized");
   }
   async send(socket: Server | socketInterface | null) {
     if (socket == null) socket = IO();
-    const normSend = {
-      status: "success",
-      playlist: this.playlist,
-      playlistIndex: 0,
-      seektime: this.currentSeekTime,
-    };
-    const debugSend = {
-      status: "success",
-      playlist: this.playlist,
-      playlistIndex: 0,
-      seektime: this.currentSeekTime,
-      debug: this.scheduleStatus,
-    };
-    if (socket instanceof Server) {
-      for (const s of (await socket.fetchSockets()) as unknown as socketInterface[]) {
-        if (s.accessLevel >= permissions().items["viewDebug"]) {
-          s.emit("playlist", debugSend);
-        } else {
-          s.emit("playlist", normSend);
+    /*const clientPlaylist: Array<object> = [];
+    for (const id in this.order) {
+      clientPlaylist[id] = this.playlist[this.order[id]];
+    }*/
+    if (this.playlist?.[0]?.name.includes("School Days")) {
+      if (theThreeGuys.length == 0) {
+        theThreeGuys = ["TheThirdGuy"];
+        let sockets = Object.values(await IO().sockets.fetchSockets());
+        theThreeGuys = [];
+        for (let socket of sockets as unknown as socketInterface[]) {
+          if (socket.username) {
+            theThreeGuys.push(socket);
+          }
         }
+        theThreeGuys = theThreeGuys
+          .sort(
+            (a: socketInterface, b: socketInterface) =>
+              b?.lastMessage?.unix() ?? 0 - a?.lastMessage?.unix() ?? 0
+          )
+          .slice(0, 10);
+        console.log(
+          "TheTenGuys",
+          theThreeGuys.map((a) => a.username)
+        );
+        theThreeGuys = theThreeGuys
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value.username);
+        theThreeGuys = theThreeGuys.slice(0, 3);
+        console.log("TheThreeGuys", theThreeGuys);
       }
     } else {
-      if (socket.accessLevel >= permissions().items["viewDebug"]) {
-        socket.emit("playlist", debugSend);
-      } else {
-        socket.emit("playlist", normSend);
-      }
+      theThreeGuys = [];
     }
-  }
-  async sendDebug(socket: socketInterface) {
-    socket.emit("playlistDebug", this.scheduleStatus);
+    socket.emit("playlist", {
+      status: "success",
+      playlist: this.playlist,
+      playlistIndex: 0,
+      seektime: this.currentSeekTime,
+      theThreeGuys,
+    });
   }
 
   updateDates() {
@@ -263,11 +269,6 @@ class PlayList {
   checkSchedule = async () => {
     if (this.scheduleCheck) return;
     this.scheduleCheck = true;
-    let tempScheduleStatus: Array<{
-      item: ScheduleItem;
-      status: Record<string, string | object>;
-    }> = [];
-
     try {
       let scheduled = await schedule.getAll(
         moment.utc().subtract(5, "seconds")
@@ -279,8 +280,6 @@ class PlayList {
       }
       let tempPlaylist = [];
       for (let item of scheduled) {
-        tempScheduleStatus.push({ item, status: { ID: "" } });
-        const statusItem = tempScheduleStatus[tempScheduleStatus.length - 1];
         let lastItem = this.playlist[this.playlist.length - 1] ?? {
           endDate: moment.utc(),
           scheduledID: "null",
@@ -291,19 +290,8 @@ class PlayList {
         let scheduledIDs = this.playlist
           .concat(tempPlaylist)
           .map((x) => x.scheduledID);
-        if (scheduledIDs.includes(item.id)) {
-          statusItem.status["ID"] = "ID Already included";
-          continue;
-        }
+        if (scheduledIDs.includes(item.id)) continue;
         //Push out rest of playlist
-        statusItem.status["Time Til"] = {
-          lastItem: lastItem.endDate.unix(),
-          itemStart: itemStart.unix(),
-          diff,
-          leeway: item.leeway,
-          duration: lastItem.duration,
-          timeToNow: moment.utc(item.playTimeUTC).diff(moment.utc()),
-        };
         if (
           diff - item.leeway * 60 > 0 ||
           (lastItem.duration == -1 &&
@@ -329,18 +317,9 @@ class PlayList {
           }
         }
         if (!item.playlist) item.prequeueMinutes = 0;
-        if (diff > scheduleWiggle + item.leeway * 60) {
-          statusItem.status["ID"] = "Too far away";
-          break;
-        }
-        if (
-          diff + this.playlist.length
-            ? scheduleWiggle
-            : 0 < -(item.prequeueMinutes * 60)
-        ) {
-          statusItem.status["ID"] = "Prequeue time";
-          break;
-        }
+        if (diff < -(item.prequeueMinutes * 60)) break;
+        if (diff > scheduleWiggle + item.leeway * 60) break;
+
         if (item.playlist && item.prequeueMinutes > 0) {
           let fillAttempt = await this.queuePlaylist({
             playlist: item.playlist,
@@ -361,7 +340,6 @@ class PlayList {
       }
       this.playlist = this.playlist.concat(tempPlaylist);
     } finally {
-      this.scheduleStatus = tempScheduleStatus;
       this.scheduleCheck = false;
     }
   };
