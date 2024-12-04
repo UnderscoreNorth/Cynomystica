@@ -333,7 +333,11 @@ class PlayList {
           statusItem.status["ID"] = "Too far away";
           break;
         }
-        if (diff < -(item.prequeueMinutes * 60)) {
+        if (
+          diff + this.playlist.length
+            ? scheduleWiggle
+            : 0 < -(item.prequeueMinutes * 60)
+        ) {
           statusItem.status["ID"] = "Prequeue time";
           break;
         }
