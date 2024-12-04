@@ -297,6 +297,8 @@ class PlayList {
         }
         //Push out rest of playlist
         statusItem.status["Time Til"] = {
+          lastItem: lastItem.endDate.unix(),
+          itemStart: itemStart.unix(),
           diff,
           leeway: item.leeway,
           duration: lastItem.duration,
