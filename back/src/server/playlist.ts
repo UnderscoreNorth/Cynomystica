@@ -327,12 +327,12 @@ class PlayList {
           }
         }
         if (!item.playlist) item.prequeueMinutes = 0;
-        if (diff < -(item.prequeueMinutes * 60)) {
-          statusItem.status["ID"] = "Prequeue time";
-          break;
-        }
         if (diff > scheduleWiggle + item.leeway * 60) {
           statusItem.status["ID"] = "Too far away";
+          break;
+        }
+        if (diff + scheduleWiggle < -(item.prequeueMinutes * 60)) {
+          statusItem.status["ID"] = "Prequeue time";
           break;
         }
         if (item.playlist && item.prequeueMinutes > 0) {

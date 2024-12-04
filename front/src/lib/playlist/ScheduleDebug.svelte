@@ -5,7 +5,7 @@
 <table>
 	{#each $scheduleDebug as item}
 		<tr>
-			<td rowspan={item.status['ID'] == undefined ? 4 : 1}>{item.item.title}</td>
+			<td rowspan={item.status['ID'] !== 'ID Already included' ? 4 : 1}>{item.item.title}</td>
 			<td>{item.status['ID']}</td>
 		</tr>
 		{#if item.status['ID'] !== 'ID Already included'}
