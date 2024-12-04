@@ -18,9 +18,10 @@ const isValidUrl = (urlString) => {
   return !!urlPattern.test(urlString);
 };
 
-export default async function parseURL(url: string) {
+export default async function parseURL(url: string, allowMultiple = false) {
   try {
     let parsedURL = parseRaw(url);
+    if (parsedURL.type == "yp" && !allowMultiple) throw "playlists not allowed";
     switch (parsedURL.type) {
       case "raw":
         return [await parseRawVideo(parsedURL.id)];

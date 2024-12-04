@@ -22,6 +22,7 @@ import { settings } from './settings';
 import { moderation, type Moderation } from './moderation';
 import { info } from './info';
 import moment from 'moment';
+import { scheduleDebug } from './scheduleDebug';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
@@ -181,7 +182,7 @@ const init = () => {
 					video.set(e.playlist[e.playlistIndex]);
 				}
 			}
-			//theThreeGuys.set(e.theThreeGuys);
+			if (e.debug) scheduleDebug.set(e.debug);
 		}
 	});
 	io.on('message', (e) => {
@@ -191,7 +192,6 @@ const init = () => {
 		});
 	});
 	io.on('messages', (e) => {
-		console.log('messages');
 		chat.set(e);
 	});
 	io.on('seek-update', (e) => {

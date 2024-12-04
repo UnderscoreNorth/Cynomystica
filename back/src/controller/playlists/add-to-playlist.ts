@@ -31,7 +31,7 @@ export default async function addToPlaylist(socket: socketInterface, msg: any) {
     let video: PlaylistItem[];
     for (const url of msg.url.split(",").map((x) => x.trim())) {
       try {
-        video = await parseURL(url);
+        video = await parseURL(url, true);
       } catch (error) {
         socket.emit("alert", {
           type: "playlist",
@@ -52,8 +52,13 @@ export default async function addToPlaylist(socket: socketInterface, msg: any) {
             });
             return;
           }
+          let link = url;
+          if (video.length > 1) {
+            if (v.type == "yt")
+              link = "https://www.youtube.com/watch?v=" + v.url;
+          }
           await playlistItems.insert(socket.username, msg.playlist, {
-            url: url,
+            url: link,
             title: v.name,
             duration: v.duration,
           });
