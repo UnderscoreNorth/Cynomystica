@@ -279,7 +279,7 @@ class PlayList {
       }
       let tempPlaylist = [];
       for (let item of scheduled) {
-        tempScheduleStatus.push({ item, status: {} });
+        tempScheduleStatus.push({ item, status: { ID: "" } });
         const statusItem = tempScheduleStatus[tempScheduleStatus.length - 1];
         let lastItem = this.playlist[this.playlist.length - 1] ?? {
           endDate: moment.utc(),
@@ -327,9 +327,14 @@ class PlayList {
           }
         }
         if (!item.playlist) item.prequeueMinutes = 0;
-        if (diff < -(item.prequeueMinutes * 60)) break;
-        if (diff > scheduleWiggle + item.leeway * 60) break;
-
+        if (diff < -(item.prequeueMinutes * 60)) {
+          statusItem.status["ID"] = "Prequeue time";
+          break;
+        }
+        if (diff > scheduleWiggle + item.leeway * 60) {
+          statusItem.status["ID"] = "Too far away";
+          break;
+        }
         if (item.playlist && item.prequeueMinutes > 0) {
           let fillAttempt = await this.queuePlaylist({
             playlist: item.playlist,
