@@ -287,6 +287,7 @@ class PlayList {
         };
         let itemStart = moment.utc(item.playTimeUTC);
         let diff = lastItem.endDate.diff(itemStart) / 1000;
+        if (this.playlist.length) diff -= scheduleWiggle;
         let scheduledIDs = this.playlist
           .concat(tempPlaylist)
           .map((x) => x.scheduledID);
@@ -318,7 +319,7 @@ class PlayList {
         }
         if (!item.playlist) item.prequeueMinutes = 0;
         if (diff < -(item.prequeueMinutes * 60)) break;
-        if (diff > scheduleWiggle + item.leeway * 60) break;
+        if (diff > item.leeway * 60) break;
 
         if (item.playlist && item.prequeueMinutes > 0) {
           let fillAttempt = await this.queuePlaylist({
