@@ -105,7 +105,6 @@
 			title,
 			playtime: moment(playtime).utc().format(),
 			visible,
-			selectedID,
 			prequeueMinutes,
 			playlist,
 			selection,

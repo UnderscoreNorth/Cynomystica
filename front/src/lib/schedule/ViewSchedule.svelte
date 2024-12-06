@@ -6,6 +6,9 @@
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { userSettings } from '$lib/stores/userSettings';
 	export let changeSelectedID: Function;
+	export let bulkEdit: boolean;
+	export let addRemoveID: Function;
+	export let bulkIDs: Set<ScheduleItem>;
 	let date = moment().startOf('day');
 	let week = [] as Array<Moment>;
 	let scheduleArray: Array<ScheduleItem> = [];
@@ -137,11 +140,24 @@
 			<div
 				class={!item.visible ? 'scheduleItem hidden' : 'scheduleItem'}
 				style={`grid-area:${item.gridArea}`}
-				style:border={item.conflict ? 'dashed 2px red' : ''}
+				style:font-weight={Array.from(bulkIDs)
+					.map((i) => i.id)
+					.includes(item.id)
+					? 'bold'
+					: 'normal'}
+				style:border={Array.from(bulkIDs)
+					.map((i) => i.id)
+					.includes(item.id)
+					? 'solid 5px gold'
+					: item.conflict
+						? 'dashed 2px red'
+						: ''}
 				style:background={`hsla(${item?.hsl?.[0] ?? 0},${item?.hsl?.[1] ?? 0},${
 					item?.hsl?.[2] ?? 0
 				},0.5)`}
-				on:click={() => changeSelectedID(item)}
+				on:click={() => {
+					bulkEdit ? addRemoveID(item) : changeSelectedID(item);
+				}}
 				title={`${moment.utc(item.playTimeUTC).local().format('HH:mm')} - ${moment
 					.utc(item.finishTimeUTC)
 					.local()
@@ -182,6 +198,9 @@
 		{#each $schedule as item}
 			{#if moment.utc(item.playTimeUTC).isAfter(moment.utc())}
 				<tr
+					on:click={() => {
+						bulkEdit ? addRemoveID(item) : changeSelectedID(item);
+					}}
 					style:background={`hsla(${item?.hsl?.[0] ?? 0},${item?.hsl?.[1] ?? 0},${
 						item?.hsl?.[2] ?? 0
 					},0.3)`}

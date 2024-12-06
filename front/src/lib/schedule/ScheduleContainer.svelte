@@ -6,11 +6,15 @@
 	import type { ScheduleItem } from '$lib/stores/schedule';
 	import { io } from '$lib/realtime';
 	let selectedID: ScheduleItem | null;
+	let bulkEdit = false;
+	let bulkIDs: Set<ScheduleItem> = new Set();
+	let bulkMinuteShift = 0;
 	const changeSelectedID = (newID: ScheduleItem | null) => {
 		selectedID = newID;
 	};
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { userSettings } from '$lib/stores/userSettings';
+	import moment from 'moment';
 	if ($userSettings.scheduleModalStart == null || $userSettings.scheduleModalStart == undefined) {
 		$userSettings.scheduleModalStart = '00:00';
 	}
@@ -19,6 +23,26 @@
 	}
 	function recheck() {
 		io.emit('recheck');
+	}
+	function toggleBulk() {
+		bulkEdit = !bulkEdit;
+		if (!bulkEdit) bulkIDs.clear();
+		bulkIDs = bulkIDs;
+	}
+	function addRemoveID(item: ScheduleItem) {
+		if (!bulkIDs.has(item)) {
+			bulkIDs.add(item);
+		} else {
+			bulkIDs.delete(item);
+		}
+		bulkIDs = bulkIDs;
+	}
+	function shiftSelected() {
+		for (const item of Array.from(bulkIDs)) {
+			let playtime = moment.utc(item.playTimeUTC).add(bulkMinuteShift, 'minutes').format();
+			let hsl = item.hsl.join(',');
+			io.emit('upsert-schedule', Object.assign(item, { playtime, hsl }));
+		}
 	}
 </script>
 
@@ -33,10 +57,6 @@
 >
 	Switch to {$tempSettings.scheduleView == 'calendar' ? 'list' : 'calendar'} view
 </button>
-<i style:float={'right'}>Schedules are shown in your device's timezone</i>
-{#if $user.accessLevel >= $permissions.viewDebug}
-	<button style:float={'right'} on:click={() => recheck()}>Recheck Schedule</button>
-{/if}
 {#if $tempSettings.scheduleView == 'calendar'}
 	Calendar Start <input
 		type="time"
@@ -46,7 +66,18 @@
 		on:change={() => removeMinutes()}
 	/>
 {/if}
-<ViewSchedule {changeSelectedID} />
+{#if $user.accessLevel >= $permissions.manageSchedule}
+	<button on:click={() => toggleBulk()}>Bulk Edit {bulkEdit ? 'Off' : 'On'}</button>
+{/if}
+{#if bulkEdit}
+	<input bind:value={bulkMinuteShift} style:width="5rem" />
+	<button on:click={() => shiftSelected()}>Shift selected (minutes)</button>
+{/if}
+<i style:float={'right'}>Schedules are shown in your device's timezone</i>
+{#if $user.accessLevel >= $permissions.viewDebug}
+	<button style:float={'right'} on:click={() => recheck()}>Recheck Schedule</button>
+{/if}
+<ViewSchedule {changeSelectedID} {bulkEdit} {addRemoveID} {bulkIDs} />
 {#if $user.accessLevel >= $permissions.manageSchedule && selectedID !== undefined}
 	<ScheduleModal {changeSelectedID} {selectedID} />
 {/if}
