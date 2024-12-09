@@ -43,6 +43,7 @@ export class Subs {
     this.lastTime = 0;
   }
   message(msg: Message) {
+    if (!this.vid) return;
     let time = msg.time.diff(this.vid.startDate) / 1000;
     if (time == this.lastTime) time += 0.01;
     this.addLines(time);
@@ -62,6 +63,8 @@ export class Subs {
       createFolder(path);
       fs.writeFileSync(path + fileName, this.subtitles);
     }
+    this.vid = undefined;
+    this.subtitleMsgs = [];
   }
   addLines(time: number) {
     this.subtitles += `

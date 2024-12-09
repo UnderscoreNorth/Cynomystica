@@ -30,7 +30,7 @@ async function main() {
     time: Moment;
   }> = [];
   let vids: Array<{ url: string; title: string; time: Moment }> = [];
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 9; i++) {
     chat = chat.concat(await processChat(`./logs/chat/2024/12/${i}.csv`));
     vids = vids.concat(await processVid(`./logs/playlist/2024/12/${i}.csv`));
   }
