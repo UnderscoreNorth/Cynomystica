@@ -10,6 +10,7 @@ import { writeToLog } from "../lib/logger";
 import permissions from "./permissions";
 import settings from "./settings";
 import { Moment } from "moment";
+import subs from "./subs";
 
 export type PlaylistOrder = Array<number>;
 export type PlaylistObj = Array<PlaylistItem>;
@@ -115,6 +116,7 @@ class PlayList {
           this.currentSeekTime = 0;
           this.leaderSeekTime = -1;
           this.playlist.push(this.playlist.splice(0, 1)[0]);
+          subs().finish();
         }
         this.playing = false;
         change = true;
@@ -133,6 +135,7 @@ class PlayList {
           time: moment.utc(),
         },
       ]);
+      subs().new(this.playlist[0]);
       change = true;
     }
     let lastEndDate = null;
@@ -259,6 +262,7 @@ class PlayList {
         this.playlist.splice(parseInt(index), 1);
         if (parseInt(index) == 0) {
           this.currentSeekTime = 0;
+          subs().finish();
           this.leaderSeekTime = -1;
           this.playing = false;
         }
@@ -360,26 +364,26 @@ class PlayList {
     let duration = 0;
     let queue = [];
     complete = false;
-    loop: for (let item of items) {
+    let i = 0;
+    do {
+      const item = items[i];
       if (duration + item.duration > maxDuration) continue;
       duration += item.duration;
       queue.push(item);
-      if (duration >= minDuration && duration <= maxDuration) {
+      if (duration > minDuration && duration <= maxDuration) {
         complete = true;
-        for (let subitem of queue) {
-          await this.queueVideo(
-            { mediaURL: subitem.url },
-            subitem.username,
-            null,
-            null,
-            true
-          );
-          await playlistItems.updatePlayCount(subitem.id);
-        }
-        break loop;
-      } else if (duration > maxDuration) {
-        break;
       }
+      i++;
+    } while (!complete && i < items.length);
+    for (let subitem of queue) {
+      await this.queueVideo(
+        { mediaURL: subitem.url },
+        subitem.username,
+        null,
+        null,
+        true
+      );
+      await playlistItems.updatePlayCount(subitem.id);
     }
     return complete;
   };

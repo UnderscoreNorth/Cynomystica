@@ -37,7 +37,15 @@ export default class {
       )
       .all({
         playlist,
-      });
+      }) as Array<{
+      id: string;
+      username: string;
+      title: string;
+      url: string;
+      duration: number;
+      playlist: string;
+      playcount: number;
+    }>;
     return results;
   };
   static updatePlayCount = async (id: string) => {

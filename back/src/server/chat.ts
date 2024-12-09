@@ -4,6 +4,7 @@ import permissions from "./permissions";
 import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
 import { Moment } from "moment";
+import subs from "./subs";
 
 export interface Message {
   username: string;
@@ -37,6 +38,7 @@ export class Chat {
       message.message = messageFormatter(message.message);
       this.recentMsgs.push(message);
       this.unloggedMsgs.push(message);
+      subs().message(message);
       IO().emit("message", message);
     }
   }
