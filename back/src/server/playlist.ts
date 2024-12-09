@@ -291,7 +291,6 @@ class PlayList {
         };
         let itemStart = moment.utc(item.playTimeUTC);
         let diff = lastItem.endDate.diff(itemStart) / 1000;
-        if (this.playlist.length) diff -= scheduleWiggle;
         let scheduledIDs = this.playlist
           .concat(tempPlaylist)
           .map((x) => x.scheduledID);
@@ -324,7 +323,6 @@ class PlayList {
         if (!item.playlist) item.prequeueMinutes = 0;
         if (diff < -(item.prequeueMinutes * 60)) break;
         if (diff > item.leeway * 60) break;
-
         if (item.playlist && item.prequeueMinutes > 0) {
           let fillAttempt = await this.queuePlaylist({
             playlist: item.playlist,
@@ -344,6 +342,8 @@ class PlayList {
         );
       }
       this.playlist = this.playlist.concat(tempPlaylist);
+    } catch (err) {
+      console.log(err);
     } finally {
       this.scheduleCheck = false;
     }
@@ -367,13 +367,13 @@ class PlayList {
     let i = 0;
     do {
       const item = items[i];
+      i++;
       if (duration + item.duration > maxDuration) continue;
       duration += item.duration;
       queue.push(item);
       if (duration > minDuration && duration <= maxDuration) {
         complete = true;
       }
-      i++;
     } while (!complete && i < items.length);
     for (let subitem of queue) {
       await this.queueVideo(
