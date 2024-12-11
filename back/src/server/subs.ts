@@ -68,9 +68,7 @@ export class Subs {
   }
   addLines(time: number) {
     this.subtitles += `
-    Dialogue: 0,${formatTime(this.lastTime)},${formatTime(
-      time
-    )},Default,,0,0,0,,`;
+Dialogue: 0,${formatTime(this.lastTime)},${formatTime(time)},Default,,0,0,0,,`;
     for (let j = this.subtitleMsgs.length - 1; j >= 0; j--) {
       let msg = this.subtitleMsgs[j];
       let last = "";
