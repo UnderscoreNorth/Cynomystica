@@ -72,7 +72,7 @@ moderation.subscribe((e) => {
 settings.subscribe((e) => {
 	settingsObj = e;
 });
-const pushToChat = (oldChat: Array<messageType>, e: any) => {
+export const pushToChat = (oldChat: Array<messageType>, e: any) => {
 	console.log(74, e);
 	const pushMsg = (msg: messageType) => {
 		if (moderationObj.ignored.map((x) => x.username).includes(msg.username)) return;

@@ -13,10 +13,12 @@
 	import MdStarBorder from 'svelte-icons/md/MdStarBorder.svelte';
 	import MdRefresh from 'svelte-icons/md/MdRefresh.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
+	import { onMount } from 'svelte';
 	let chatMessageElem: HTMLElement | null;
 	let videoHeight: number;
 	let bulletHeight = 40;
 	let reset = 0;
+	let cursorTime = 0;
 	if (browser) chatMessageElem = document.getElementById('cVideo');
 	chat.subscribe((value) => {
 		for (let message of value) {
@@ -35,7 +37,7 @@
 					chatMessageElem?.appendChild(bulletMessage);
 					bulletMessage.style.top = `${bulletHeight}px`;
 					bulletHeight += 20;
-					if (bulletHeight > videoHeight - 80) {
+					if (bulletHeight > videoHeight - 200) {
 						bulletHeight = 40;
 					}
 					setTimeout(() => {
@@ -44,6 +46,17 @@
 				}
 			}
 		}
+	});
+	function resetCursor() {
+		cursorTime = 3;
+	}
+	onMount(() => {
+		setInterval(() => {
+			cursorTime--;
+			if (cursorTime <= 0) {
+				cursorTime = 0;
+			}
+		}, 1000);
 	});
 	const changeLeader = () => {
 		if ($user.accessLevel >= $permissions.leader) {
@@ -55,10 +68,13 @@
 	};
 </script>
 
+<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div
 	id="videoContainer"
 	style="width:100%"
 	bind:clientHeight={videoHeight}
+	on:mousemove={() => resetCursor()}
+	style:cursor={cursorTime > 1 ? 'auto' : 'none'}
 	style:background-image={$settings.videoBG ? `url(${$settings.videoBG})` : ''}
 >
 	{#key reset}<Video />{/key}
@@ -66,6 +82,7 @@
 		<div
 			id="videoControls"
 			style={($userSettings.display.chat == 'left' ? 'right' : 'left') + ':4rem;'}
+			style:display={cursorTime > 1 ? 'block' : 'none'}
 		>
 			{#if $video.type == 'raw'}
 				{#if $video.url.split('????').length > 1}
