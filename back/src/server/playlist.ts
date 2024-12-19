@@ -238,7 +238,7 @@ class PlayList {
               .utc()
               .add(playlistItem.duration, "seconds");
           }
-          playlistItem.duration += 1;
+          if (playlistItem.duration > 0) playlistItem.duration += 1;
           playlistItem.scheduledID = scheduleID;
           if (last) {
             this.playlist.push(playlistItem);
