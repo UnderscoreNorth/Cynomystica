@@ -5,7 +5,7 @@ import moment from "moment";
 
 export const getSchedule = async (
   socket: socketInterface | null,
-  date = "2000-01-01 00:00:00"
+  date = "2000-01-01T00:00:00.000Z"
 ) => {
   let socketSchedule = await schedule.getAll(moment(date).subtract(1, "day"));
   const sendSchedule = (socket: socketInterface) => {

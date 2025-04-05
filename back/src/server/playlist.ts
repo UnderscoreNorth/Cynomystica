@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import { socketInterface, default as IO } from "./socket";
-import parseURL, { parseRaw } from "../lib/parseURL";
 import { cycle } from "./cycle";
 import schedule from "../sqliteTables/schedule";
 import moment from "moment";
@@ -11,6 +10,8 @@ import permissions from "./permissions";
 import settings from "./settings";
 import { Moment } from "moment";
 import subs from "./subs";
+import { parseURLWorker } from "../lib/parseURLWorker";
+import { parseRaw } from "../lib/parseURL";
 
 export type PlaylistOrder = Array<number>;
 export type PlaylistObj = Array<PlaylistItem>;
@@ -192,7 +193,7 @@ class PlayList {
       }
     }
 
-    await parseURL(item.mediaURL)
+    await parseURLWorker(item.mediaURL)
       .then((res) => {
         for (const playlistItem of res) {
           playlistItem.id = id;
@@ -335,7 +336,7 @@ class PlayList {
           }
         }
         await this.queueVideo(
-          { mediaURL: item.url },
+          { mediaURL: item.url, title: item.title },
           item.username,
           null,
           item.id,

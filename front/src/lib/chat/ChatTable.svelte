@@ -6,9 +6,6 @@
 	import { tempSettings } from '$lib/stores/tempSettings';
 	import { onMount } from 'svelte';
 	import { settings } from '$lib/stores/settings';
-	import { video } from '$lib/stores/video';
-	import { subs } from './kuromajo';
-	import { pushToChat } from '$lib/stores/socket';
 	let chatScroller: HTMLDivElement;
 	const hidePoll = (pollID: string) => {
 		$tempSettings.hiddenPolls = $tempSettings.hiddenPolls.add(pollID);
@@ -27,30 +24,6 @@
 					}
 					chatScroller?.lastElementChild?.lastElementChild?.lastElementChild?.scrollIntoView();
 				}, 50);
-			}
-		});
-		video.subscribe((e) => {
-			if (
-				e.url.includes(
-					'https://isthisliv.com/dump/Kuromajo-san/%5BTacocat%5D%20Kuromajo-San%20Ga%20Tooru%21%21%20-%2049%20%5B720P%5D%5B7Cb96000%5D.mp4'
-				) &&
-				added == false &&
-				e.seekTime > 0
-			) {
-				added = true;
-				let start = e.seekTime * 1000;
-				for (const sub of subs) {
-					let time = sub[0] - start;
-					if (time > 0)
-						setTimeout(() => {
-							let msg = {
-								icon: 'Kuromajo-san-' + sub[1],
-								username: sub[1],
-								message: sub[2]
-							};
-							$chat = pushToChat($chat, msg);
-						}, time);
-				}
 			}
 		});
 	});

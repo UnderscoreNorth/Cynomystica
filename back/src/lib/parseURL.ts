@@ -100,7 +100,11 @@ export const parseRaw = (text: string) => {
       default:
         break;
     }
-    if (url.href.match(/^.*\.mp4$/) || url.href.match(/^.*\.mp3$/)) {
+    if (
+      url.href.match(/^.*\.mp4$/) ||
+      url.href.match(/^.*\.mp3$/) ||
+      url.href.match(/^.*\webm$/)
+    ) {
       return { type: "raw", id: url.toString() || "" };
     } else {
       return { type: "not supported" };

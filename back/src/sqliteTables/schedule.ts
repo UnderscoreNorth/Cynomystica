@@ -1,8 +1,8 @@
 import { db } from "../sqliteDB";
 import { v4 as uuidv4 } from "uuid";
 import formatDate from "../lib/formatDate";
-import parseURL from "../lib/parseURL";
 import moment, { Moment } from "moment";
+import { parseURLWorker } from "../lib/parseURLWorker";
 
 export interface ScheduleItem {
   id: string;
@@ -37,6 +37,8 @@ export type SubsertObj = {
   snap: "before" | "after";
   hsl: string;
 };
+
+const bulkEpisodeOffset = /\|n\+(\d+)\|/i
 
 export default class {
   static tableName = "schedule";
@@ -124,18 +126,24 @@ export default class {
       let freq = 0;
       let jump = 0;
       let start = obj.playtime.clone();
+      let offset = 0;
       for (let url of urls) {
         if (url.trim().length == 0) continue;
         obj.url = url.trim();
         obj.id = uuidv4();
         obj.title = "";
         if (placeholder) {
-          obj.title = placeholder.replace(/\|n\|/g, num.toString());
+          if(bulkEpisodeOffset.test(placeholder)){
+            offset = parseInt(bulkEpisodeOffset.exec(placeholder)[1]);
+          }
+          obj.title = placeholder.replace(/\|n\|/g, (num + offset).toString());
         }
         await subSert(obj);
-        let prevDuration = await parseURL(obj.url).then((playlistItem) => {
-          return Math.ceil(playlistItem[0].duration);
-        });
+        let prevDuration = await parseURLWorker(obj.url).then(
+          (playlistItem) => {
+            return Math.ceil(playlistItem[0].duration);
+          }
+        );
         let attempts = 0;
         freq++;
         if (freq == obj.freq) {
@@ -158,7 +166,7 @@ export default class {
       await subSert(obj);
     }
     async function subSert(obj: SubsertObj) {
-      await parseURL(obj.url).then((playlistItem) => {
+      await parseURLWorker(obj.url).then((playlistItem) => {
         obj.title = obj.title || playlistItem[0].name;
         obj.duration = Math.ceil(playlistItem[0].duration);
       });

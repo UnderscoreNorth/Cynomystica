@@ -1,8 +1,8 @@
 import { socketInterface } from "../../server/socket";
 import playlists from "../../sqliteTables/playlists";
 import playlistItems from "../../sqliteTables/playlistItems";
-import parseURL from "../../lib/parseURL";
 import { PlaylistItem } from "../../server/playlist";
+import { parseURLWorker } from "../../lib/parseURLWorker";
 export default async function addToPlaylist(socket: socketInterface, msg: any) {
   let playlist = await playlists.getPlaylist(msg.playlist);
   if (socket.accessLevel >= playlist.minAccessLevel) {
@@ -31,7 +31,7 @@ export default async function addToPlaylist(socket: socketInterface, msg: any) {
     let video: PlaylistItem[];
     for (const url of msg.url.split(",").map((x) => x.trim())) {
       try {
-        video = await parseURL(url, true);
+        video = await parseURLWorker(url, true);
       } catch (error) {
         socket.emit("alert", {
           type: "playlist",

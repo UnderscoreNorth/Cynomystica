@@ -5,7 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.ts",
+    "dev":  "concurrently \"npm run server\" \"npm run worker\" ",
+    "server": "nodemon src/index.ts",
+    "worker": "nodemon src/worker.ts",
     "subs": "ts-node src/subCreator.ts"
   },
   "author": "_North",
@@ -13,7 +15,8 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "better": "^0.1.0",
-    "better-sqlite3": "^8.6.0",
+    "better-sqlite3": "^11.7.0",
+    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "csv": "^6.3.5",
     "dayjs": "^1.11.9",

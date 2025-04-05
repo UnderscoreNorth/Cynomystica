@@ -10,7 +10,7 @@ import { queueWatchInit } from "./init/queueWatchInit";
 let app: Express;
 dbInit().then(() => {
   app = express();
-  const port = config.PORT;
+  const port = config.MAIN_PORT;
   const server = createServer(app);
   // @ts-ignore
   init(server);

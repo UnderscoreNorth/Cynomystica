@@ -27,8 +27,8 @@ export default function messageFormatter(msg: string) {
     { type: "italic", matchRegex: /(_[^_]+_)/, replaceRegex: /_([^_]+)_/ },
     {
       type: "spoiler",
-      matchRegex: /(\[s\][^`]+\[\/s\])/,
-      replaceRegex: /\[s\]([^`]+)\[\/s\]/,
+      matchRegex: /(\[s\][^`]+?\[\/s\])/,
+      replaceRegex: /\[s\]([^`]+?)\[\/s\]/,
     },
   ];
   msg = msg.trim();
