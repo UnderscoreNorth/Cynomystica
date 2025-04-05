@@ -47,6 +47,10 @@ Playlists can be created for later use. Playlists can be configured to range fro
 After starting the backend, there'll be a queue folder in the root. Placing a txt file with a link inside will queue up that link. This can be used by other applications or scripts.
 
 ### Update Log
+#### Apr 5, 2025
+
+- Video meta processing offloaded to a worker to keep chat and video syncing smooth
+- Bulk adding can now provide an offset Eg. |n+3| would start the bulk on 4 instead of 1
 
 #### Nov 15, 2024
 
