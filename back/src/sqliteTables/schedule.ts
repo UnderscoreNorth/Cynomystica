@@ -38,7 +38,7 @@ export type SubsertObj = {
   hsl: string;
 };
 
-const bulkEpisodeOffset = /\|n\+(\d+)\|/i
+const bulkEpisodeOffset = /\|n\+(\d+)\|/gi
 
 export default class {
   static tableName = "schedule";
@@ -126,17 +126,19 @@ export default class {
       let freq = 0;
       let jump = 0;
       let start = obj.playtime.clone();
-      let offset = 0;
       for (let url of urls) {
         if (url.trim().length == 0) continue;
         obj.url = url.trim();
         obj.id = uuidv4();
         obj.title = "";
         if (placeholder) {
-          if(bulkEpisodeOffset.test(placeholder)){
-            offset = parseInt(bulkEpisodeOffset.exec(placeholder)[1]);
+          if(bulkEpisodeOffset.test(placeholder) === true){
+            bulkEpisodeOffset.exec(placeholder)
+            const offset = parseInt(bulkEpisodeOffset.exec(placeholder)[1]);
+            obj.title = placeholder.replace(bulkEpisodeOffset, (num + offset).toString());
+          } else {
+            obj.title = placeholder.replace(/\|n\|/g, (num).toString());
           }
-          obj.title = placeholder.replace(/\|n\|/g, (num + offset).toString());
         }
         await subSert(obj);
         let prevDuration = await parseURLWorker(obj.url).then(

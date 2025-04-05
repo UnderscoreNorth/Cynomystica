@@ -168,7 +168,7 @@
 				<input
 					bind:value={title}
 					disabled={loading}
-					placeholder={bulkMode ? 'use |n| for episode #' : 'Override title'}
+					placeholder={bulkMode ? 'use |n+d| for episode #+d' : 'Override title'}
 				/></td
 			>
 		</tr>

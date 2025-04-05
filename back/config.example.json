@@ -1,6 +1,7 @@
 {
   "YT_API_KEY": "YOUTUBE API KEY",
-  "PORT": "PORT NUMBER",
+  "MAIN_PORT": "PORT NUMBER",
+  "WORKER_PORT":"DIFFERENT NUMBER",
   "JWT_SALT": "ANY STRING",
   "DEBUG": "BOOL",
   "FFPROBE": "ffprobe path, may need to install ffmpeg manually on linux and point to that"
