@@ -28,7 +28,7 @@ function consoleVitals(beat: number) {
       currentURL: playlist.playlist?.[0]?.url,
     });
 
-  const memoryUsage = process.memoryUsage();
+  /*const memoryUsage = process.memoryUsage();
   if (memoryUsage.heapTotal / 1024 / 1024 > 200) {
     console.log(`Memory Usage: ` + new Date().toLocaleTimeString());
     console.log(`  RSS: ${Math.round(memoryUsage.rss / 1024 / 1024)} MB`);
@@ -41,7 +41,7 @@ function consoleVitals(beat: number) {
     console.log(
       `  External: ${Math.round(memoryUsage.external / 1024 / 1024)} MB`
     );
-  }
+  }*/
 }
 async function logActivity() {
   let { active, total } = await activityCheck();

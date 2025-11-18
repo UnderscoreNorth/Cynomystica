@@ -60,6 +60,7 @@ import addToPlaylist from "../controller/playlists/add-to-playlist";
 import getPlaylists from "../controller/playlists/get-playlists";
 import upsertPlaylist from "../controller/playlists/upsert-playlist";
 import deletePlaylist from "../controller/playlists/delete-playlist";
+import parseURLs from "../controller/parseURLs";
 export default function ioInit(io: Server) {
   settingsInit();
   permissionsInit();
@@ -105,6 +106,7 @@ export default function ioInit(io: Server) {
     "delete-playlist": deletePlaylist,
     recheck: recheck,
     effect: effect,
+    'parse-urls':parseURLs
   };
   io.on("connection", async (socket: socketInterface) => {
     socket.uuid = uuidv4();

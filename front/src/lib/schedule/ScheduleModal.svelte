@@ -143,31 +143,11 @@
 		return false;
 	};
 	async function parseURLs() {
-		if (typeof urlParserText !== 'string' || urlParserText.length == 0) return;
-		try {
-			let urls = urlParserText.split(',');
-			let data: string[][];
-			for (let url of urls) {
-				const response = await (await fetch(url.trim())).text();
-				console.log(response);
-				const parser = new DOMParser();
-				const doc = parser.parseFromString(response, 'text/html');
-				const links = Array.from(doc.querySelectorAll('a[href]'))
-					.map((link) => link.href)
-					.filter((href) => href.toLowerCase().endsWith('.mp4'))
-					.sort();
-				for (let i in links) {
-					if (data[i] == undefined) {
-						data[i] = [];
-					}
-					data[i].push(links[i]);
-				}
-			}
-			url = data.map((i) => i.join('????')).join('\n');
-		} catch (err) {
-			console.log(err);
-		}
+		io.emit('parse-urls', urlParserText);
 	}
+	io.on('urls-parsed', (e) => {
+		url = e;
+	});
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
