@@ -24,6 +24,7 @@
 	let freq = 1;
 	let playlists: Record<string, playlistType> = {};
 	let hsl = '#000000';
+	let urlParserText = null;
 	io.emit('get-playlists');
 	io.on('playlists', (e) => {
 		playlists = e;
@@ -141,6 +142,32 @@
 		if (checkDays(daysOfWeek) && bulkMode) return true;
 		return false;
 	};
+	async function parseURLs() {
+		if (typeof urlParserText !== 'string' || urlParserText.length == 0) return;
+		try {
+			let urls = urlParserText.split(',');
+			let data: string[][];
+			for (let url of urls) {
+				const response = await (await fetch(url.trim())).text();
+				console.log(response);
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(response, 'text/html');
+				const links = Array.from(doc.querySelectorAll('a[href]'))
+					.map((link) => link.href)
+					.filter((href) => href.toLowerCase().endsWith('.mp4'))
+					.sort();
+				for (let i in links) {
+					if (data[i] == undefined) {
+						data[i] = [];
+					}
+					data[i].push(links[i]);
+				}
+			}
+			url = data.map((i) => i.join('????')).join('\n');
+		} catch (err) {
+			console.log(err);
+		}
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -160,7 +187,15 @@
 		{#if !selectedID?.id}
 			<tr>
 				<th>Bulk Mode</th>
-				<td><input type="checkbox" bind:checked={bulkMode} /></td>
+				<td
+					><input type="checkbox" bind:checked={bulkMode} />
+					{#if bulkMode}
+						<input bind:value={urlParserText} /><br />
+						<button on:click={() => parseURLs()}
+							>Parse URLs (Seperate by <br />comma for multilinks)</button
+						>
+					{/if}</td
+				>
 			</tr>
 		{/if}
 		<tr>
