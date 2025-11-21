@@ -44,6 +44,11 @@
 			io.emit('upsert-schedule', Object.assign(item, { playtime, hsl }));
 		}
 	}
+	function deleteSelected() {
+		for (const item of Array.from(bulkIDs)) {
+			io.emit('delete-schedule', { id: item.id });
+		}
+	}
 </script>
 
 {#if $user.accessLevel >= $permissions.manageSchedule}
@@ -72,6 +77,7 @@
 {#if bulkEdit}
 	<input bind:value={bulkMinuteShift} style:width="5rem" />
 	<button on:click={() => shiftSelected()}>Shift selected (minutes)</button>
+	<button on:click={() => deleteSelected()}>Delete items</button>
 {/if}
 <i style:float={'right'}>Schedules are shown in your device's timezone</i>
 {#if $user.accessLevel >= $permissions.viewDebug}

@@ -207,43 +207,95 @@ export default class {
           obj.startTime = formatDate(moment.utc(adjItem.finishTimeUTC));
         }
       }
+
+      // Check for conflicts and handle them (for bulk inserts)
       let conflict = await db
         .prepare(
           `
-    SELECT 
-      COUNT(*) AS c 
-    FROM 
-      schedule 
-    WHERE 
+    SELECT
+      COUNT(*) AS c
+    FROM
+      schedule
+    WHERE
       (@start >= playTimeUTC AND @start <= finishTimeUTC)
       OR
       (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
         )
         .get({ start: obj.startTime, finish: obj.finishTime });
-      if (conflict.c >= 0) {
-        await db
-          .prepare(
-            `
-              INSERT INTO schedule 
-              (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway,prequeueMinutes,hsl) 
-              VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway,@prequeueMinutes,@hsl)
-              ON CONFLICT(id) DO UPDATE SET
-                  url=@url,
-                  playTimeUTC = @startTime, 
-                  finishTimeUTC=@finishTime, 
-                  title=@title,
-                  duration=@duration,
-                  selection=@selection,
-                  playlist=@playlist,
-                  visible=@visible,
-                  leeway=@leeway,
-                  prequeueMinutes=@prequeueMinutes,
-                  hsl=@hsl`
-          )
-          .run(obj);
-      } else {
-        //console.log(obj.title, conflict.c);
+
+      if (conflict.c > 0) {
+        // There's a conflict - for bulk inserts, skip to next day and try again
+        // Only apply this logic if we're in bulk insert mode (freq >= 1)
+        if (obj.freq >= 1) {
+          let maxAttempts = 365; // Prevent infinite loops
+          let attemptCount = 0;
+
+          while (conflict.c > 0 && attemptCount < maxAttempts) {
+            // Move to the next day
+            obj.playtime.add(1, "days");
+
+            // Check if this day is allowed based on dow (day of week)
+            if (obj.dow && !obj.dow[obj.playtime.day()][1]) {
+              attemptCount++;
+              continue; // Skip to next day if not allowed
+            }
+
+            // Recalculate start and finish times
+            obj.startTime = formatDate(obj.playtime);
+            obj.finishTime = formatDate(
+              obj.playtime.clone().add(obj.duration, "seconds")
+            );
+
+            // Check for conflicts again
+            conflict = await db
+              .prepare(
+                `
+        SELECT
+          COUNT(*) AS c
+        FROM
+          schedule
+        WHERE
+          (@start >= playTimeUTC AND @start <= finishTimeUTC)
+          OR
+          (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
+              )
+              .get({ start: obj.startTime, finish: obj.finishTime });
+
+            attemptCount++;
+          }
+
+          if (attemptCount >= maxAttempts) {
+            console.log(`Could not find non-conflicting slot for: ${obj.title}`);
+            return; // Skip this item
+          }
+        } else {
+          // For non-bulk inserts, just skip if there's a conflict
+          console.log(`Conflict detected for: ${obj.title}`);
+          return;
+        }
       }
+
+      // No conflict, insert the item
+      await db
+        .prepare(
+          `
+            INSERT INTO schedule
+            (id,username,title,url,playTimeUTC,visible,finishTimeUTC,duration,playlist,selection,leeway,prequeueMinutes,hsl)
+            VALUES (@id,@username,@title,@url,@startTime,@visible,@finishTime,@duration,@playlist,@selection,@leeway,@prequeueMinutes,@hsl)
+            ON CONFLICT(id) DO UPDATE SET
+                url=@url,
+                playTimeUTC = @startTime,
+                finishTimeUTC=@finishTime,
+                title=@title,
+                duration=@duration,
+                selection=@selection,
+                playlist=@playlist,
+                visible=@visible,
+                leeway=@leeway,
+                prequeueMinutes=@prequeueMinutes,
+                hsl=@hsl`
+        )
+        .run(obj);
     }
   };
 }
