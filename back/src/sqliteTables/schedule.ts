@@ -217,9 +217,9 @@ export default class {
     FROM
       schedule
     WHERE
-      (@start >= playTimeUTC AND @start <= finishTimeUTC)
+      (@start > playTimeUTC AND @start < finishTimeUTC)
       OR
-      (@finish >= playTimeUTC AND @finish <= finishTimeUTC)`
+      (@finish > playTimeUTC AND @finish < finishTimeUTC)`
         )
         .get({ start: obj.startTime, finish: obj.finishTime });
 
