@@ -217,11 +217,12 @@ export default class {
     FROM
       schedule
     WHERE
-      (@start > playTimeUTC AND @start < finishTimeUTC)
+      ((@start > playTimeUTC AND @start < finishTimeUTC)
       OR
-      (@finish > playTimeUTC AND @finish < finishTimeUTC)`
+      (@finish > playTimeUTC AND @finish < finishTimeUTC))
+      AND id != @id`
         )
-        .get({ start: obj.startTime, finish: obj.finishTime });
+        .get({ start: obj.startTime, finish: obj.finishTime, id:obj.id });
 
       if (conflict.c > 0) {
         // There's a conflict - for bulk inserts, skip to next day and try again
