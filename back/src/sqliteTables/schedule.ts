@@ -181,34 +181,7 @@ export default class {
       obj.finishTime = formatDate(
         obj.playtime.clone().add(obj.duration, "seconds")
       );
-
-      if (obj.snap == "before") {
-        let adjItem = await db
-          .prepare(
-            `SELECT * FROM schedule WHERE playTimeUTC >= @finish ORDER BY playTimeUTC LIMIT 1`
-          )
-          .get({ finish: obj.finishTime });
-        if (adjItem) {
-          obj.finishTime = formatDate(moment.utc(adjItem.playTimeUTC));
-          obj.startTime = formatDate(
-            moment.utc(adjItem.playTimeUTC).subtract(obj.duration, "seconds")
-          );
-        }
-      } else if (obj.snap == "after") {
-        let adjItem = await db
-          .prepare(
-            `SELECT * FROM schedule WHERE finishTimeUTC <= @start ORDER BY playTimeUTC DESC LIMIT 1`
-          )
-          .get({ start: obj.startTime });
-        if (adjItem) {
-          obj.finishTime = formatDate(
-            moment.utc(adjItem.finishTimeUTC).add(obj.duration, "seconds")
-          );
-          obj.startTime = formatDate(moment.utc(adjItem.finishTimeUTC));
-        }
-      }
-
-      // Check for conflicts and handle them (for bulk inserts)
+// Check for conflicts and handle them (for bulk inserts)
       let conflict = await db
         .prepare(
           `
@@ -273,6 +246,31 @@ export default class {
           // For non-bulk inserts, just skip if there's a conflict
           console.log(`Conflict detected for: ${obj.title}`);
           return;
+        }
+      }
+      if (obj.snap == "before") {
+        let adjItem = await db
+          .prepare(
+            `SELECT * FROM schedule WHERE playTimeUTC >= @finish ORDER BY playTimeUTC LIMIT 1`
+          )
+          .get({ finish: obj.finishTime });
+        if (adjItem) {
+          obj.finishTime = formatDate(moment.utc(adjItem.playTimeUTC));
+          obj.startTime = formatDate(
+            moment.utc(adjItem.playTimeUTC).subtract(obj.duration, "seconds")
+          );
+        }
+      } else if (obj.snap == "after") {
+        let adjItem = await db
+          .prepare(
+            `SELECT * FROM schedule WHERE finishTimeUTC <= @start ORDER BY playTimeUTC DESC LIMIT 1`
+          )
+          .get({ start: obj.startTime });
+        if (adjItem) {
+          obj.finishTime = formatDate(
+            moment.utc(adjItem.finishTimeUTC).add(obj.duration, "seconds")
+          );
+          obj.startTime = formatDate(moment.utc(adjItem.finishTimeUTC));
         }
       }
 
