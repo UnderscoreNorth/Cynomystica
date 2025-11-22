@@ -140,7 +140,7 @@ export default class {
             obj.title = placeholder.replace(/\|n\|/g, (num).toString());
           }
         }
-        await subSert(obj);
+        await subSert(obj, true);
         let prevDuration = await parseURLWorker(obj.url).then(
           (playlistItem) => {
             return Math.ceil(playlistItem[0].duration);
@@ -167,7 +167,7 @@ export default class {
     } else {
       await subSert(obj);
     }
-    async function subSert(obj: SubsertObj) {
+    async function subSert(obj: SubsertObj, checkConflict = false) {
       await parseURLWorker(obj.url).then((playlistItem) => {
         obj.title = obj.title || playlistItem[0].name;
         obj.duration = Math.ceil(playlistItem[0].duration);
@@ -197,7 +197,7 @@ export default class {
         )
         .get({ start: obj.startTime, finish: obj.finishTime, id:obj.id });
 
-      if (conflict.c > 0) {
+      if (conflict.c > 0 && checkConflict) {
         // There's a conflict - for bulk inserts, skip to next day and try again
         // Only apply this logic if we're in bulk insert mode (freq >= 1)
         if (obj.freq >= 1) {
