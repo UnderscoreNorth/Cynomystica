@@ -42,9 +42,8 @@
 			'upsert-schedule-bulk',
 			Array.from(bulkIDs).map((item) => {
 				let playtime = moment.utc(item.playTimeUTC).add(bulkMinuteShift, 'minutes').format();
-				let snap = 'after';
 				let hsl = item.hsl.join(',');
-				return Object.assign(item, { snap, hsl, playtime });
+				return Object.assign(item, { hsl, playtime });
 			})
 		);
 	}
