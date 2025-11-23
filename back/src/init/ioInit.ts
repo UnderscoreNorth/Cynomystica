@@ -61,6 +61,7 @@ import getPlaylists from "../controller/playlists/get-playlists";
 import upsertPlaylist from "../controller/playlists/upsert-playlist";
 import deletePlaylist from "../controller/playlists/delete-playlist";
 import parseURLs from "../controller/parseURLs";
+import upsertScheduleBulk from "../controller/upsert-schedule-bulk";
 export default function ioInit(io: Server) {
   settingsInit();
   permissionsInit();
@@ -76,6 +77,7 @@ export default function ioInit(io: Server) {
     "sign-in": signIn,
     "sign-up": signUp,
     "upsert-schedule": upsertSchedule,
+    "upsert-schedule-bulk":upsertScheduleBulk,
     "login-token": loginToken,
     "get-schedule": getSchedule,
     "user-mod": userMod,

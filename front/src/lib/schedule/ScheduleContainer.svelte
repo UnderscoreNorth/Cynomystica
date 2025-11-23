@@ -38,11 +38,26 @@
 		bulkIDs = bulkIDs;
 	}
 	function shiftSelected() {
-		for (const item of Array.from(bulkIDs)) {
-			let playtime = moment.utc(item.playTimeUTC).add(bulkMinuteShift, 'minutes').format();
-			let hsl = item.hsl.join(',');
-			io.emit('upsert-schedule', Object.assign(item, { playtime, hsl }));
-		}
+		io.emit(
+			'upsert-schedule-bulk',
+			Array.from(bulkIDs).map((item) => {
+				let playtime = moment.utc(item.playTimeUTC).add(bulkMinuteShift, 'minutes').format();
+				let snap = 'after';
+				let hsl = item.hsl.join(',');
+				return Object.assign(item, { snap, hsl, playtime });
+			})
+		);
+	}
+	function snapSelected() {
+		io.emit(
+			'upsert-schedule-bulk',
+			Array.from(bulkIDs).map((item) => {
+				let playtime = moment.utc(item.playTimeUTC).format();
+				let snap = 'after';
+				let hsl = item.hsl.join(',');
+				return Object.assign(item, { snap, hsl, playtime });
+			})
+		);
 	}
 	function deleteSelected() {
 		for (const item of Array.from(bulkIDs)) {
@@ -78,6 +93,7 @@
 	<input bind:value={bulkMinuteShift} style:width="5rem" />
 	<button on:click={() => shiftSelected()}>Shift selected (minutes)</button>
 	<button on:click={() => deleteSelected()}>Delete items</button>
+	<button on:click={() => snapSelected()}>Snap items</button>
 {/if}
 <i style:float={'right'}>Schedules are shown in your device's timezone</i>
 {#if $user.accessLevel >= $permissions.viewDebug}

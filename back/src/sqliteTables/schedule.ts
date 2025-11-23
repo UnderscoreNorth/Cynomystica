@@ -248,6 +248,7 @@ export default class {
           return;
         }
       }
+      console.log(obj.snap)
       if (obj.snap == "before") {
         let adjItem = await db
           .prepare(
