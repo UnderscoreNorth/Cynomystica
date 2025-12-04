@@ -4,28 +4,34 @@
 	import { io } from '$lib/realtime';
 	import { leader } from '$lib/stores/video';
 	import { user } from '$lib/stores/user';
-	let el:HTMLVideoElement;
-	const syncTime = () => {		
+	let el: HTMLVideoElement;
+	const syncTime = () => {
 		let clientTime = el.currentTime;
 		let serverTime = $video.seekTime;
-		const isLeader = ($user.username == $leader && $leader !== '');
+		const isLeader = $user.username == $leader && $leader !== '';
 		if (
-			Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000
-			&& el.paused == false 
-			&& $video.duration > 0
-			&& !isLeader) {
+			Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 &&
+			el.paused == false &&
+			$video.duration > 0 &&
+			!isLeader &&
+			!io.disconnected
+		) {
 			el.currentTime = serverTime;
 		}
-		if (isLeader){			
-			io.emit('leader-sync',el.currentTime);
+		if (isLeader) {
+			io.emit('leader-sync', el.currentTime);
 		}
-		if(el){
-			setTimeout(()=>{
-				syncTime();
-			}, isLeader ? 1000 : $userSettings.sync.threshold)
+		if (el) {
+			setTimeout(
+				() => {
+					syncTime();
+				},
+				isLeader ? 1000 : $userSettings.sync.threshold
+			);
 		}
 	};
 </script>
+
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
 	bind:volume={$userSettings.videoVolume}

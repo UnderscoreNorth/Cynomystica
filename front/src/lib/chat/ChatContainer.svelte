@@ -16,6 +16,9 @@
 	import Tooltip from '$lib/ui/tooltip.svelte';
 	import UserList from './UserList.svelte';
 	import { permissions } from '$lib/stores/permissions';
+	import { queue } from '$lib/stores/queue';
+	import PlaylistItem from '$lib/playlist/PlaylistItem.svelte';
+
 	//import EffectsController from '$lib/special/EffectsController.svelte';
 	let settingsObj: any;
 	let usersObj: usersType;
@@ -68,7 +71,7 @@
 					<div class="svgIcon" on:click={() => toggleUserList()}><MdGroup /></div>
 				{/if}
 				<span style:flex-grow="1">
-					{getUserCountText($users.connectedUsers, $settings.userCountText)}
+					{getUserCountText($users.connectedUsers, String($settings.userCountText))}
 				</span>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<Tooltip title="Toggle autoscroll">
@@ -84,13 +87,22 @@
 					</div>
 				</Tooltip>
 			</div>
+			<div id="queue">
+				{#if $userSettings.numQueue > 0}
+					<table id="queueTable">
+						<tr><th>Queue</th></tr>
+						{#each $queue.filter((i, n) => n < $userSettings.numQueue) as item}
+							<tr><PlaylistItem {item} compact={true} /></tr>
+						{/each}
+					</table>
+				{/if}
+			</div>
 			<div id="chatMessages">
 				{#if userListOpen}
 					<UserList />
 				{/if}
 				<ChatTable />
 			</div>
-
 			<div id="chatBarContainer">
 				<ChatBar />
 			</div>
@@ -113,6 +125,7 @@
 		order: 4;
 		display: flex;
 		overflow: visible;
+		height: 32px;
 	}
 	@media (orientation: portrait) {
 		#chatHeader {
@@ -133,9 +146,9 @@
 		align-items: center;
 	}
 	#chatGrid {
-		display: grid;
-		grid-template-columns: 1fr;
-		grid-template-rows: 2em 1fr 2em 5px;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
 		gap: 0px 0px;
 		height: 100%;
 		width: 100%;
@@ -143,8 +156,32 @@
 	#chatMessages {
 		position: relative;
 		overflow-y: hidden;
-		order: 2;
-		height: 100%;
+		order: 3;
 		width: inherit;
+		flex-grow: 1;
+	}
+	#queue {
+		order: 2;
+		background: var(--color-bg-3);
+	}
+	#queueTable {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	#queueTable tr {
+		font-size: 12px;
+		color: var(--color-fg-2);
+	}
+	:global(#queueTable td) {
+		border-top: solid 1px white;
+	}
+	:global(#queueTable td) {
+		border-top: solid 1px white;
+	}
+	:global(#queueTable tr:nth-child(2n)) {
+		background: rgba(0, 0, 0, 0.15);
+	}
+	:global(#queueTable tr:nth-child(2)) {
+		background: var(--color-bg-2);
 	}
 </style>

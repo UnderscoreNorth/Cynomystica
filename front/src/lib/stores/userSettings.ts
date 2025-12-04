@@ -18,6 +18,7 @@ export const defaultSettings = {
 	muted: false,
 	videoVolume: 1,
 	scheduleModalStart: '00:00',
-	color: 222
+	color: 222,
+	numQueue: 0
 };
 export const userSettings = writable(defaultSettings);

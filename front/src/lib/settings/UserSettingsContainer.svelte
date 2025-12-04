@@ -5,7 +5,7 @@
 
 <table>
 	<tr>
-		<th rowspan="8">Display</th>
+		<th rowspan="9">Display</th>
 	</tr>
 	<tr>
 		<th>Chat</th>
@@ -101,7 +101,20 @@
 	</tr>
 	<tr>
 		<th>Website Colour</th>
-		<td><input id='colorRange' type="range" min="0" max="360" style:max-width={'100%'} bind:value={$userSettings.color}></td>
+		<td
+			><input
+				id="colorRange"
+				type="range"
+				min="0"
+				max="360"
+				style:max-width={'100%'}
+				bind:value={$userSettings.color}
+			/></td
+		>
+	</tr>
+	<tr>
+		<th>Pinned Queue Items</th>
+		<td><input type="number" step="1" min="0" bind:value={$userSettings.numQueue} /></td>
 	</tr>
 	<tr class="divider"></tr>
 	<tr>
@@ -158,27 +171,26 @@
 		padding: 0 1rem;
 	}
 	#colorRange {
-  		-webkit-appearance: none;
-  		background: var(--color-fg-3);
-		height:10px;
+		-webkit-appearance: none;
+		background: var(--color-fg-3);
+		height: 10px;
 	}
 
+	#colorRange::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 25px;
+		height: 25px;
+		background: var(--color-bg-2);
+		cursor: pointer;
+		border-radius: 50%;
+	}
 
-#colorRange::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  background: var(--color-bg-2);
-  cursor: pointer;
-  border-radius:50%;
-}
-
-#colorRange::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  background: var(--color-bg-2);
-  cursor: pointer;
-  border-radius:50%;
-}
+	#colorRange::-moz-range-thumb {
+		width: 25px;
+		height: 25px;
+		background: var(--color-bg-2);
+		cursor: pointer;
+		border-radius: 50%;
+	}
 </style>

@@ -28,7 +28,6 @@
 	import ChatBar from '$lib/chat/ChatBar.svelte';
 	import SettingsModal from '$lib/settings/SettingsModal.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
-
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
 	let moderationModalOpen: boolean = false;
@@ -106,7 +105,6 @@
 				onClick={toggleModeration}
 				tooltip={'User Management'}
 			/>
-
 			<div id="loginLi"><Login /></div>
 		</nav>
 	{/if}

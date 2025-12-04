@@ -7,7 +7,7 @@
 	import { user } from '$lib/stores/user';
 	import { io } from '$lib/realtime';
 	import { leader } from '$lib/stores/video';
-	let player: YouTubePlayer | null;
+	let player: YouTubePlayer;
 	const debounceDuration = 100;
 	let debounced = false;
 	let lastSeek = 0;
@@ -24,21 +24,25 @@
 				const syncTime = async () => {
 					let clientTime = await player.getCurrentTime();
 					let serverTime = $video.seekTime;
-					const isLeader = ($user.username == $leader && $leader !== '');
-					if 
-						(Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 
-						&& $video.type == 'yt'
-						&& !isLeader
-						) {
+					const isLeader = $user.username == $leader && $leader !== '';
+					if (
+						Math.abs(clientTime - serverTime) > $userSettings.sync.threshold / 1000 &&
+						$video.type == 'yt' &&
+						!isLeader &&
+						!io.disconnected
+					) {
 						player.seekTo(serverTime, true);
 					}
-					if (isLeader){			
-						io.emit('leader-sync',clientTime);
+					if (isLeader) {
+						io.emit('leader-sync', clientTime);
 					}
-					if(player){
-						setTimeout(()=>{
-							syncTime();
-						}, isLeader ? 1000 : $userSettings.sync.threshold)
+					if (player) {
+						setTimeout(
+							() => {
+								syncTime();
+							},
+							isLeader ? 1000 : $userSettings.sync.threshold
+						);
 					}
 				};
 				syncTime();
@@ -64,6 +68,7 @@
 		});
 	});
 	onDestroy(() => {
+		//@ts-ignore
 		player = null;
 		let playerEl = document.getElementById('player');
 		while (playerEl?.firstChild) {
