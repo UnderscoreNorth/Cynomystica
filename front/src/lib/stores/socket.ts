@@ -23,6 +23,7 @@ import { moderation, type Moderation } from './moderation';
 import { info } from './info';
 import moment from 'moment';
 import { scheduleDebug } from './scheduleDebug';
+import { cytubeRoom } from './cytuberoom';
 
 let userObj: userType;
 let emoteObj: Record<string, Emote> = {};
@@ -35,6 +36,7 @@ let moderationObj: Moderation = {
 	public: []
 };
 let initPreset = true;
+let cytubeRoomStr = '';
 user.subscribe((e) => {
 	userObj = e;
 });
@@ -52,6 +54,9 @@ presets.subscribe((e) => {
 	if (!initPreset) {
 		io.emit('upsert-presets', e);
 	}
+});
+cytubeRoom.subscribe((e) => {
+	cytubeRoomStr = e;
 });
 moderation.subscribe((e) => {
 	moderationObj = e;
@@ -110,6 +115,10 @@ export const pushToChat = (oldChat: Array<messageType>, e: any) => {
 };
 
 const init = () => {
+	io.on('*', (e) => {
+		e.join(cytubeRoomStr);
+		console.log(e);
+	});
 	io.on('connected', (e) => {
 		chat.update((oldChat) => {
 			oldChat = pushToChat(oldChat, {

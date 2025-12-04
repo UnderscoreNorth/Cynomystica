@@ -28,6 +28,9 @@
 	import ChatBar from '$lib/chat/ChatBar.svelte';
 	import SettingsModal from '$lib/settings/SettingsModal.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
+	import * as CONFIG from '$lib/clientconfig.json';
+	import { cytubeRoom } from '$lib/stores/cytuberoom';
+	import { io } from '$lib/realtime';
 
 	let userSettingsModalOpen: boolean = false;
 	let playListModalOpen: boolean = false;
@@ -77,6 +80,11 @@
 		<Effects />
 	{/if}
 	*/
+	let cytubeRoomInput = $cytubeRoom;
+	const switchRooms = () => {
+		$cytubeRoom = cytubeRoomInput;
+		io.connect();
+	};
 </script>
 
 <header>
@@ -98,15 +106,22 @@
 			</div>
 			<IconButton Icon={MdSettings} onClick={toggleSettings} tooltip={'Settings'} />
 			<IconButton Icon={MdViewList} onClick={togglePlaylist} tooltip={'Queue'} />
-			<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
-			<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info'} />
-			<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
-			<IconButton
-				Icon={MdSentimentVeryDissatisfied}
-				onClick={toggleModeration}
-				tooltip={'User Management'}
-			/>
-
+			{#if CONFIG.TYPE !== 'CYTUBE'}
+				<IconButton Icon={MdDateRange} onClick={toggleSchedule} tooltip={'Schedule'} />
+				<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info'} />
+				<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
+				<IconButton
+					Icon={MdSentimentVeryDissatisfied}
+					onClick={toggleModeration}
+					tooltip={'User Management'}
+				/>
+			{:else}
+				<IconButton Icon={MdInfoOutline} onClick={toggleInfo} tooltip={'Info'} />
+				<IconButton Icon={MdPoll} onClick={togglePoll} tooltip={'Polls/Pinned Messages'} />
+				<input bind:value={cytubeRoomInput} /><button onClick={() => switchRooms()}
+					>Switch Rooms</button
+				>
+			{/if}
 			<div id="loginLi"><Login /></div>
 		</nav>
 	{/if}
