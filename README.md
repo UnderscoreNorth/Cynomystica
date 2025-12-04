@@ -47,6 +47,17 @@ Playlists can be created for later use. Playlists can be configured to range fro
 After starting the backend, there'll be a queue folder in the root. Placing a txt file with a link inside will queue up that link. This can be used by other applications or scripts.
 
 ### Update Log
+
+#### Dec 4, 2025
+
+- The queue can be pinned above the chat messages, the number of items can be set in the user settings
+
+#### Nov 21, 2025
+
+- Items can be snapped and deleted in bulk
+- Bulk queueing now skips a day if it conflicts with something in the schedule
+- Bulk queuing can parse folder links to grab all the video links, chaining URLs with a comma will glue the links together (Used for cases where videos are hosted on multiple servers)
+
 #### Apr 5, 2025
 
 - Video meta processing offloaded to a worker to keep chat and video syncing smooth
