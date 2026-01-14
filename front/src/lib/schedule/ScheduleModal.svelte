@@ -151,12 +151,7 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div
-	class="modalbg"
-	on:click={() => {
-		changeSelectedID(undefined);
-	}}
->
+<div class="modalbg">
 	<table
 		id="scheduleModal"
 		class="modal"
@@ -164,6 +159,16 @@
 			e.stopPropagation();
 		}}
 	>
+		<tr>
+			<td colspan="2"
+				><button
+					style="float:right"
+					on:click={() => {
+						changeSelectedID(undefined);
+					}}>X</button
+				></td
+			>
+		</tr>
 		{#if !selectedID?.id}
 			<tr>
 				<th>Bulk Mode</th>
@@ -316,9 +321,11 @@
 		border: solid 1px var(--color-bg-dark-1);
 		padding: 1rem;
 		max-height: calc(100vh - 6rem);
+		height: fit-content;
 		overflow-y: auto;
 	}
-	input {
-		width: fit-content;
+	textarea {
+		width: 20rem;
+		height: 10rem;
 	}
 </style>

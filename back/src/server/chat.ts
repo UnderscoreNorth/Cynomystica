@@ -5,6 +5,7 @@ import { default as IO, socketInterface } from "./socket";
 import { Server } from "socket.io";
 import { Moment } from "moment";
 import subs from "./subs";
+import { v4 as uuidv4 } from "uuid";
 
 export interface Message {
   username: string;
@@ -14,6 +15,18 @@ export interface Message {
 }
 export type Messages = Array<Message>;
 
+let users = [];
+setInterval(async()=>{
+  let sockets = await IO().sockets.fetchSockets();
+  users = [];
+  for (let socket of Object.values(
+       sockets   
+        ) as unknown as socketInterface[]) {
+          if(socket.username.includes('_'))
+          users.push(socket.username);
+        }
+},1000);
+
 export class Chat {
   recentMsgs: Messages;
   unloggedMsgs: Messages;
@@ -21,7 +34,7 @@ export class Chat {
     this.recentMsgs = [];
     this.unloggedMsgs = [] as Array<Message>;
   }
-  message(message: Message, socket: socketInterface) {
+ message(message: Message, socket: socketInterface) {
     if (message.message == "/reload" && socket.accessLevel >= 4) {
       IO().emit("alert", { type: "Reload" });
     } else if (
@@ -35,7 +48,19 @@ export class Chat {
         message.message = message.message.replace(/(http[^\s]+):pic/gim, "$1");
         message.message = message.message.replace(/(http[^\s]+):vid/gim, "$1");
       }
+      const conversionIndex:Record<string,string> = {};
+      for(const user of users){
+        if(message.message.includes(user)){
+          const uuid = uuidv4()
+          conversionIndex[uuid] = user;
+          message.message = message.message.replaceAll(user,uuid);
+        }
+      }
+
       message.message = messageFormatter(message.message);
+      for(let uuid in conversionIndex){
+         message.message = message.message.replaceAll(uuid,conversionIndex[uuid]);
+      }
       this.recentMsgs.push(message);
       this.unloggedMsgs.push(message);
       subs().message(message);
