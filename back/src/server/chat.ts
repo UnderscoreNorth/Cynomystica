@@ -22,7 +22,7 @@ setInterval(async()=>{
   for (let socket of Object.values(
        sockets   
         ) as unknown as socketInterface[]) {
-          if(socket.username.includes('_'))
+          if(socket.username && socket.username.includes('_'))
           users.push(socket.username);
         }
 },1000);
