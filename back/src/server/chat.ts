@@ -53,13 +53,13 @@ export class Chat {
         if(message.message.includes(user)){
           const uuid = uuidv4()
           conversionIndex[uuid] = user;
-          message.message = message.message.replaceAll(user,uuid);
+          message.message = message.message.replace(new RegExp(user,'g'),uuid);
         }
       }
 
       message.message = messageFormatter(message.message);
       for(let uuid in conversionIndex){
-         message.message = message.message.replaceAll(uuid,conversionIndex[uuid]);
+         message.message = message.message.replace(new RegExp(uuid,'g'),conversionIndex[uuid]);
       }
       this.recentMsgs.push(message);
       this.unloggedMsgs.push(message);
