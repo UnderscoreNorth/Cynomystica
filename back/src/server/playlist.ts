@@ -50,36 +50,6 @@ class PlayList {
     for (const id in this.order) {
       clientPlaylist[id] = this.playlist[this.order[id]];
     }*/
-    if (this.playlist?.[0]?.name.includes("School Days")) {
-      if (theThreeGuys.length == 0) {
-        theThreeGuys = ["TheThirdGuy"];
-        let sockets = Object.values(await IO().sockets.fetchSockets());
-        theThreeGuys = [];
-        for (let socket of sockets as unknown as socketInterface[]) {
-          if (socket.username) {
-            theThreeGuys.push(socket);
-          }
-        }
-        theThreeGuys = theThreeGuys
-          .sort(
-            (a: socketInterface, b: socketInterface) =>
-              b?.lastMessage?.unix() ?? 0 - a?.lastMessage?.unix() ?? 0
-          )
-          .slice(0, 10);
-        console.log(
-          "TheTenGuys",
-          theThreeGuys.map((a) => a.username)
-        );
-        theThreeGuys = theThreeGuys
-          .map((value) => ({ value, sort: Math.random() }))
-          .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value.username);
-        theThreeGuys = theThreeGuys.slice(0, 3);
-        console.log("TheThreeGuys", theThreeGuys);
-      }
-    } else {
-      theThreeGuys = [];
-    }
     socket.emit("playlist", {
       status: "success",
       playlist: this.playlist,
