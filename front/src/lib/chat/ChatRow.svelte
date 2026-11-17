@@ -56,7 +56,10 @@
 					{/if}
 				</span>
 				{#if message.message.indexOf('/me ') == 0}
-					<span class="actiontext">
+					<span
+						class="actiontext"
+						style={`--max-height:${$settings.maxImageHeight}px;--max-emote-height:${$settings.maxEmoteHeight}px`}
+					>
 						{parseUser(message)}
 						{@html message.message.substring(4)}
 					</span>
@@ -105,7 +108,7 @@
 	.userHighlighted {
 		color: white;
 	}
-	:global(.chatMsg img, .chatMsg video) {
+	:global(.chatMsg img, .chatMsg video, .actiontext img) {
 		max-width: 100%;
 		max-height: var(--max-height);
 		vertical-align: middle;
